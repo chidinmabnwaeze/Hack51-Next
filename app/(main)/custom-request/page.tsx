@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import StepContent from "@/components/StepContent";
 import StepIndicator from "@/components/StepIndicator";
-import { ArrowLeftIcon} from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {
   const router = useRouter();
@@ -24,15 +24,20 @@ export default function NewRequestPage() {
       </span>
       <section className="flex justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-4">New Request</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            Create Your Custom Request
+          </h1>
           <p className="text-gray-600 mb-6">
             Create a new hiring request to find the best candidates for your
             team.
           </p>
         </div>
         <div>
-          <button className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg" onClick={ ()=>router.push("./custom-request")}>
-            Create Custom Request
+          <button
+            className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg"
+            onClick={() => router.push("./new-request")}
+          >
+            Use Existing Request
           </button>
         </div>
       </section>

@@ -2,7 +2,11 @@
 
 import { stepConfig } from "@/components/StepContent";
 
-export default function StepIndicator({ currentStep }: { currentStep: number }) {
+export default function StepIndicator({
+  currentStep,
+}: {
+  currentStep: number;
+}) {
   const getStatusStyles = (status: "completed" | "current" | "pending") => {
     switch (status) {
       case "completed":
@@ -20,7 +24,11 @@ export default function StepIndicator({ currentStep }: { currentStep: number }) 
           {stepConfig.map((step, index) => {
             const isDone = index < currentStep - 1;
             const isActive = index === currentStep - 1;
-            const status = isDone ? "completed" : isActive ? "current" : "pending";
+            const status = isDone
+              ? "completed"
+              : isActive
+                ? "current"
+                : "pending";
 
             return (
               <div key={step.id} className="flex items-center gap-4">
@@ -46,7 +54,9 @@ export default function StepIndicator({ currentStep }: { currentStep: number }) 
           <span
             key={step.id}
             className={`w-[11%] text-center ${
-              index === currentStep - 1 ? "font-bold text-black" : "text-gray-500"
+              index === currentStep - 1
+                ? "font-bold text-black"
+                : "text-gray-500"
             }`}
           />
         ))}
