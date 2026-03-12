@@ -3,6 +3,7 @@
 import Link from "next/link";
 import RequestTable from "@/components/RequestTable";
 import type { ActiveRequest } from "@/components/RequestTable";
+import ChallengeButton from "./ChallengeButton";
 
 interface DashboardProps {
   title: string;
@@ -16,7 +17,10 @@ interface Metrics {
   info: string;
 }
 
-export default function DashboardClient({ title, description }: DashboardProps) {
+export default function DashboardClient({
+  title,
+  description,
+}: DashboardProps) {
   const metrics: Metrics[] = [
     {
       name: "Total Active Requests",
@@ -66,14 +70,8 @@ export default function DashboardClient({ title, description }: DashboardProps) 
           <h1 className="text-3xl font-bold">{title}</h1>
           <p className="text-gray-600 mt-2">{description}</p>
         </div>
-        <div>
-          <Link
-            href="/new-request"
-            className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg"
-          >
-            Hire A New Role
-          </Link>
-        </div>
+
+        <ChallengeButton />
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
@@ -89,10 +87,10 @@ export default function DashboardClient({ title, description }: DashboardProps) 
                   metric.status === "Success"
                     ? "bg-green-100 text-green-800"
                     : metric.status === "Growth"
-                    ? "bg-green-100 text-green-800"
-                    : metric.status === "Action Needed"
-                    ? "bg-red-100 text-red-800"
-                    : "bg-gray-100 text-gray-800"
+                      ? "bg-green-100 text-green-800"
+                      : metric.status === "Action Needed"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-gray-100 text-gray-800"
                 }`}
               >
                 {metric.status}
@@ -104,10 +102,10 @@ export default function DashboardClient({ title, description }: DashboardProps) 
                 metric.status === "Current"
                   ? "text-green-500"
                   : metric.status === "Growth"
-                  ? "text-green-500"
-                  : metric.status === "Action Needed"
-                  ? "text-red-500"
-                  : "text-gray-500"
+                    ? "text-green-500"
+                    : metric.status === "Action Needed"
+                      ? "text-red-500"
+                      : "text-gray-500"
               }`}
             >
               {metric.info}

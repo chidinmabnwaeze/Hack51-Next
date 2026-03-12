@@ -31,16 +31,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(main)/requests/page.js"
     ],
-    "/(main)/shortlists/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(main)/shortlists/page.js"
-    ],
-    "/(main)/billing/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(main)/billing/page.js"
-    ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

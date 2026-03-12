@@ -1,5 +1,6 @@
 import RequestTable from "@/components/RequestTable";
 import type { ActiveRequest } from "@/components/RequestTable";
+import ChallengeButton from "@/components/ChallengeButton";
 
 const activeRequests: ActiveRequest[] = [
   {
@@ -47,13 +48,14 @@ const activeRequests: ActiveRequest[] = [
 export default function RequestsPage() {
   return (
     <div>
-      <section className="flex justify-between">
+      <section className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">All Requests</h1>
           <p className="text-gray-600 mt-2">
             Manage the lifecycle of your hiring challenges across all statuses.
           </p>
         </div>
+        <ChallengeButton />
       </section>
 
       {/* tabs */}
