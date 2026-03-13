@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import StepContent from "@/components/StepContent";
-import StepIndicator from "@/components/StepIndicator";
+import CustomStepsContent, {stepConfig} from "@/components/CustomStepsContent";
+import CustomStepsIndicator from "@/components/CustomStepsIndicator";
 import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {
@@ -42,8 +42,8 @@ export default function NewRequestPage() {
         </div>
       </section>
 
-      <StepIndicator currentStep={step} />
-      <StepContent step={step} />
+      <CustomStepsIndicator currentStep={step} />
+      <CustomStepsContent step={step} />
 
       <div className="flex justify-end mt-6">
         {step > 1 && (
@@ -54,19 +54,31 @@ export default function NewRequestPage() {
             Previous
           </button>
         )}
-        {step < 8 ? (
+
+        {step < stepConfig.length - 1 && (
           <button
             onClick={nextStep}
             className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
           >
             Next
           </button>
-        ) : (
+        )}
+
+        {step === stepConfig.length - 1 && (
+          <button
+            onClick={nextStep}
+            className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
+          >
+            Submit
+          </button>
+        )}
+
+        {step === stepConfig.length && (
           <button
             onClick={() => router.push("/requests")}
             className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
           >
-            Submit
+            Go Back
           </button>
         )}
       </div>

@@ -26,15 +26,16 @@ export default function CreateRole() {
       
         <div
           
-          className="p-4 mt-4 gap-4 cursor-pointer hover:bg-gray-100 flex items-center"
+          className="p-4 mt-4 gap-4 cursor-pointer flex items-center"
         >
           <input
-            type="radio"
+            type="text"
             name="role"
             // value={role}
             // checked={selectedRole === role}
             // onChange={handleRoleChange}
-            className="rounded-full p-2 checked:bg-red-700"
+            placeholder="Enter role name"
+            className="rounded-lg p-2 w-full border border-gray-300 focus:ring-1   "
           />
           <label htmlFor="role" className="ml-3">
             {/* {role} */}

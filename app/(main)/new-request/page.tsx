@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import StepContent from "@/components/StepContent";
+import StepContent, { stepConfig } from "@/components/StepContent";
 import StepIndicator from "@/components/StepIndicator";
-import { ArrowLeftIcon} from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {
   const router = useRouter();
@@ -31,7 +31,10 @@ export default function NewRequestPage() {
           </p>
         </div>
         <div>
-          <button className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg" onClick={ ()=>router.push("./custom-request")}>
+          <button
+            className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg"
+            onClick={() => router.push("./custom-request")}
+          >
             Create Custom Request
           </button>
         </div>
@@ -49,19 +52,31 @@ export default function NewRequestPage() {
             Previous
           </button>
         )}
-        {step < 8 ? (
+
+        {step < stepConfig.length - 1 && (
           <button
             onClick={nextStep}
             className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
           >
             Next
           </button>
-        ) : (
+        )}
+
+        {step === stepConfig.length - 1 && (
+          <button
+            onClick={nextStep}
+            className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
+          >
+            Submit
+          </button>
+        )}
+
+        {step === stepConfig.length && (
           <button
             onClick={() => router.push("/requests")}
             className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
           >
-            Submit
+            Go Back
           </button>
         )}
       </div>
