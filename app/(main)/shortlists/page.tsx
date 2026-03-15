@@ -1,48 +1,45 @@
 import RequestTable from "@/components/RequestTable";
 import type { ActiveRequest } from "@/components/RequestTable";
+import type { Shortlists } from "@/components/ShortlistTable";
 import ChallengeButton from "@/components/ChallengeButton";
+import ShortlistTable from "@/components/ShortlistTable";
 
 export default function ShortlistPage() {
-  const activeRequests: ActiveRequest[] = [
+  const shortlists: Shortlists[] = [
     {
       id: "REQ-2401-09",
       title: "Senior Product Designer",
       role: "Product Designer (L3)",
-      submissions: [{ submitted: 13, total: 21, percentage: 62 }],
-      days_left: 12,
-      status: "Open for submissions",
+      shortlist_size: 5,
+      date_delivered: 12 - 1 - 2026,
     },
     {
       id: "REQ-2401-12",
       title: "Backend Engineer (Go/Rust)",
       role: "Backend Engineer (L4)",
-      submissions: [{ submitted: 21, total: 21, percentage: 100 }],
-      days_left: 2,
-      status: "Evaluation in progress",
+      shortlist_size: 5,
+      date_delivered: 12 - 1 - 2026,
     },
     {
       id: "REQ-2401-15",
       title: "Marketing Lead (Growth)",
       role: "Marketing Lead (L4)",
-      submissions: [{ submitted: 50, total: 50, percentage: 100 }],
-      days_left: 0,
-      status: "Shortlist ready",
+      shortlist_size: 5,
+      date_delivered: 12 - 1 - 2026,
     },
     {
       id: "REQ-2402-01",
       title: "Q2 Junior Frontend Intake",
       role: "Frontend Engineer (L1)",
-      submissions: [{ submitted: 0, total: 30, percentage: 0 }],
-      days_left: "-",
-      status: "Draft",
+      shortlist_size: 5,
+      date_delivered: 12 - 1 - 2026,
     },
     {
       id: "REQ-2312-05",
       title: "Staff Data Scientist",
       role: "Data Scientist (L5)",
-      submissions: [{ submitted: 15, total: 15, percentage: 100 }],
-      days_left: "-",
-      status: "Closed",
+      shortlist_size: 5,
+      date_delivered: 12 - 1 - 2026,
     },
   ];
 
@@ -89,7 +86,7 @@ export default function ShortlistPage() {
       </div>
 
       <section className="mt-6 shadow bg-white p-6 rounded-2xl">
-        <RequestTable requests={activeRequests} detailed />
+        <ShortlistTable shortlists={shortlists} detailed />
       </section>
 
       <div className="flex justify-end items-center mt-4 gap-2">
