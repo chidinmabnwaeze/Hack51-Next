@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import path from "path";
 
 const sidebarItems = [
   { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/dashboard" },
@@ -9,7 +8,7 @@ const sidebarItems = [
   { name: "Billing", icon: "/icons/billing.svg", path: "/billing" },
 ];
 
-export default function MainLayout({
+export default function EmployerLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -25,7 +24,7 @@ export default function MainLayout({
           logo="/logo.png"
           firstname="John"
           lastname="Doe"
-          usermode="Admin"
+          usermode="Employer"
           avatar="/avatar.png"
         />
         <main className="ml-64 mt-24 p-6 bg-gray-50 min-h-screen">

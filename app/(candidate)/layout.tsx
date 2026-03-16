@@ -1,15 +1,26 @@
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import path from "path";
 
 const sidebarItems = [
-  { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/dashboard" },
-  { name: "Requests", icon: "/icons/requests.svg", path: "/requests" },
-  { name: "Shortlists", icon: "/icons/shortlists.svg", path: "/shortlists" },
-  { name: "Billing", icon: "/icons/billing.svg", path: "/billing" },
+  {
+    name: "Dashboard",
+    icon: "/icons/dashboard.svg",
+    path: "/candidate/dashboard",
+  },
+  {
+    name: "Challenges",
+    icon: "/icons/requests.svg",
+    path: "/candidate/challenges",
+  },
+  {
+    name: "Applications",
+    icon: "/icons/shortlists.svg",
+    path: "/candidate/applications",
+  },
+  { name: "Profile", icon: "/icons/billing.svg", path: "/candidate/profile" },
 ];
 
-export default function MainLayout({
+export default function CandidateLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -23,9 +34,9 @@ export default function MainLayout({
       <div className="flex-1">
         <Header
           logo="/logo.png"
-          firstname="John"
-          lastname="Doe"
-          usermode="Admin"
+          firstname="Candidate"
+          lastname="User"
+          usermode="Candidate"
           avatar="/avatar.png"
         />
         <main className="ml-64 mt-24 p-6 bg-gray-50 min-h-screen">
