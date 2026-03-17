@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import { LayoutDashboard } from "lucide-react";
 
 const sidebarItems = [
   { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/dashboard" },
