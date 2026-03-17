@@ -1,12 +1,12 @@
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { LayoutDashboard } from "lucide-react";
+// import { LayoutDashboard, FileText, StarsIcon, CreditCard } from "lucide-react";
 
 const sidebarItems = [
   { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/dashboard" },
-  { name: "Requests", icon: "/icons/requests.svg", path: "/requests" },
-  { name: "Shortlists", icon: "/icons/shortlists.svg", path: "/shortlists" },
-  { name: "Billing", icon: "/icons/billing.svg", path: "/billing" },
+  { name: "Requests", icon: "/icons/charm_git-request.svg", path: "/requests" },
+  { name: "Shortlists", icon: "/icons/shortlist_icon.svg", path: "/shortlists" },
+  { name: "Billing", icon: "/icons/billing_icon.svg", path: "/billing" },
 ];
 
 export default function EmployerLayout({

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { LogOut } from "lucide-react";
 
 type SidebarProps = {
   title: string;
@@ -23,7 +24,9 @@ export default function Sidebar({ title, items }: SidebarProps) {
               key={index}
               href={item.path}
               className={`block p-2 font-semibold rounded-lg hover:bg-gray-100 text-gray-800 hover:text-gray-900 ${
-                isActive ? "bg-[#FF0046] text-white hover:bg-red-700 hover:text-white" : "bg-white"
+                isActive
+                  ? "bg-[#FF0046] text-white hover:bg-red-700 hover:text-white"
+                  : "bg-white"
               }`}
             >
               {item.icon && (
@@ -47,13 +50,14 @@ export default function Sidebar({ title, items }: SidebarProps) {
           href="/logout"
           className="block p-2 text-red-500 font-bold bg-white hover:bg-red-600 hover:text-white rounded"
         >
-          <Image
-            src="/icons/logout.svg"
+          {/* <Image
+            src={LogOut}
             alt="Logout icon"
             width={20}
             height={20}
             className="inline-block w-5 h-5 mr-2"
-          />
+          /> */}
+          <LogOut className="inline-block w-5 h-5 mr-2" />
           Logout
         </Link>
       </div>

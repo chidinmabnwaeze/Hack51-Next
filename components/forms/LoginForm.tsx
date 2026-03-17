@@ -35,9 +35,11 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md">
-      <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
-      <p className="text-gray-600 mb-8">Sign in to your account</p>
+    <div className="w-full max-w-lg bg-white p-8 rounded-lg">
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="text-3xl font-bold mb-2">Welcome back !</h1>
+        <p className="text-gray-600 mb-8">Sign in to your account</p>
+      </div>
 
       {/* Role Selection */}
       <div className="mb-6">
@@ -45,7 +47,7 @@ export default function LoginForm() {
           I am signing in as:
         </label>
         <div className="space-y-3">
-          {["employer", "admin", "candidate"].map((role) => (
+          {["employer", "candidate", "admin"].map((role) => (
             <label key={role} className="flex items-center cursor-pointer">
               <input
                 type="radio"
@@ -53,7 +55,7 @@ export default function LoginForm() {
                 value={role}
                 checked={selectedRole === role}
                 onChange={(e) => setSelectedRole(e.target.value as UserRole)}
-                className="w-4 h-4 text-blue-600"
+                className="w-4 h-4 text-[#FF0046]"
               />
               <span className="ml-3 text-gray-700 capitalize">{role}</span>
             </label>
@@ -74,7 +76,7 @@ export default function LoginForm() {
             placeholder="Enter your email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
             disabled={isLoading}
           />
           <Mail className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
@@ -88,7 +90,7 @@ export default function LoginForm() {
             placeholder="Enter your password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
             disabled={isLoading}
           />
           <Lock className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
@@ -97,7 +99,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+          className="w-full mt-6 bg-[#FF0046] text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
         >
           {isLoading ? "Signing in..." : "Sign in"}
         </button>
@@ -107,9 +109,9 @@ export default function LoginForm() {
         Don't have an account?{" "}
         <a
           href="/auth/register"
-          className="text-blue-600 font-medium hover:underline"
+          className="text-[#FF0046] font-medium hover:underline"
         >
-          Sign up
+          Create an account
         </a>
       </p>
     </div>

@@ -47,9 +47,11 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="w-full max-w-md">
-      <h1 className="text-3xl font-bold mb-2">Create an account</h1>
-      <p className="text-gray-600 mb-8">Enter your details to get started</p>
+    <div className="w-full max-w-lg bg-white p-8 rounded-lg">
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="text-3xl font-bold mb-2">Create an account</h1>
+        <p className="text-gray-600 mb-8">Enter your details to get started</p>
+      </div>
 
       {/* Role Selection */}
       <div className="mb-6">
@@ -86,7 +88,7 @@ export default function RegisterForm() {
             placeholder="Enter your email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
             disabled={isLoading}
           />
           <Mail className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
@@ -100,7 +102,7 @@ export default function RegisterForm() {
             placeholder="Choose a username"
             value={formData.username}
             onChange={handleChange}
-            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
             disabled={isLoading}
           />
           <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
@@ -114,7 +116,7 @@ export default function RegisterForm() {
             placeholder="Enter your password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
             disabled={isLoading}
           />
           <Lock className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
@@ -128,7 +130,7 @@ export default function RegisterForm() {
             placeholder="Confirm your password"
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
             disabled={isLoading}
           />
           <Lock className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
@@ -137,7 +139,7 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+          className="w-full mt-6 bg-[#FF0046] text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
         >
           {isLoading ? "Creating account..." : "Create account"}
         </button>
@@ -147,7 +149,7 @@ export default function RegisterForm() {
         Already have an account?{" "}
         <a
           href="/auth/login"
-          className="text-blue-600 font-medium hover:underline"
+          className="text-[#FF0046] font-medium hover:underline"
         >
           Sign in
         </a>
