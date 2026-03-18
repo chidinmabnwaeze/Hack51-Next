@@ -5,9 +5,9 @@ const sidebarItems = [
   { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/admin/dashboard" },
   { name: "Users", icon: "/icons/requests.svg", path: "/admin/users" },
   {
-    name: "Analytics",
+    name: "Review",
     icon: "/icons/shortlists.svg",
-    path: "/admin/analytics",
+    path: "/admin/review",
   },
   { name: "Settings", icon: "/icons/billing.svg", path: "/admin/settings" },
 ];
