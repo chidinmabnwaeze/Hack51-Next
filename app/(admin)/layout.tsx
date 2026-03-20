@@ -3,12 +3,13 @@ import Sidebar from "@/components/Sidebar";
 
 const sidebarItems = [
   { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/admin/dashboard" },
-  { name: "Users", icon: "/icons/requests.svg", path: "/admin/users" },
+  { name: "Submissions", icon: "/icons/submissions.svg", path: "/admin/subissions" },
   {
     name: "Review",
     icon: "/icons/shortlists.svg",
     path: "/admin/review",
   },
+  { name: "Catalog", icon: "/icons/catalog.svg", path: "/admin/catalog" },
   { name: "Settings", icon: "/icons/billing.svg", path: "/admin/settings" },
 ];
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, Link2, Download, ChevronDown } from "lucide-react";
 import RejectModal from "./RejectModal";
+import { useRouter } from "next/navigation";
 
 interface RubricItem {
   name: string;
@@ -32,14 +33,47 @@ export interface EvaluationDetailProps {
 
 const scoreOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
+const DUMMY_DELIVERABLES: Deliverable[] = [
+  { label: "RoadMap Document (PDF)", submitted: false },
+  { label: "Feature Prioritization Matrix", submitted: true },
+  { label: "Implementation Timeline", submitted: true },
+];
+
+const DUMMY_RUBRIC_ITEMS: RubricItem[] = [
+  {
+    name: "Code Quality",
+    weight: 30,
+    description: "Code quality, design and efficiency",
+    judgeNote: "Code should be properly formatted",
+  },
+  {
+    name: "Code technicality",
+    weight: 30,
+    description: "Code quality, design and efficiency",
+    judgeNote: "Code should be properly formatted",
+  },
+  {
+    name: "Code functionality",
+    weight: 40,
+    description: "Code quality, design and efficiency",
+    judgeNote: "Code should be properly formatted",
+  },
+];
+
+const DUMMY_SCORES: Record<string, number> = {
+  "Code Quality": 30,
+  "Code technicality": 40,
+  "Code functionality": 80,
+};
+
 export default function EvaluationDetail({
   submissionId,
   candidateName,
   scenario,
   submissionStatement,
-  deliverables,
-  rubricItems,
-  scores: initialScores,
+  deliverables = DUMMY_DELIVERABLES,
+  rubricItems = DUMMY_RUBRIC_ITEMS,
+  scores: initialScores = DUMMY_SCORES,
   totalScore,
   adminNote,
   onBack,
@@ -49,6 +83,7 @@ export default function EvaluationDetail({
   const [activeTab, setActiveTab] = useState<"link" | "document">("link");
   const [scores, setScores] = useState(initialScores);
 
+  const router = useRouter()
   const handleReject = (reason: string) => {
     // TODO: wire to API
     console.log("Rejected:", submissionId, "Reason:", reason);
@@ -57,7 +92,7 @@ export default function EvaluationDetail({
   return (
     <>
       {/* Back link */}
-      <button
+      {/* <button
         onClick={onBack}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#F01E5A] transition-colors mb-4"
       >
@@ -68,13 +103,15 @@ export default function EvaluationDetail({
       <h1 className="text-2xl font-bold">Evaluation</h1>
       <p className="text-sm text-gray-400 mt-0.5 mb-5">
         Evaluate requests and shortlist candidates
-      </p>
+      </p> */}
 
       {/* Candidate bar */}
       <div className="bg-white rounded-xl px-6 py-4 flex items-center justify-between shadow-sm border border-gray-100 mb-5">
         <div>
           <p className="font-bold text-base">{candidateName}</p>
-          <p className="text-xs text-gray-400 font-mono mt-0.5">{submissionId}</p>
+          <p className="text-xs text-gray-400 font-mono mt-0.5">
+            {submissionId}
+          </p>
         </div>
         <div className="flex gap-3">
           <button
@@ -129,7 +166,9 @@ export default function EvaluationDetail({
               </button>
             </div>
 
-            <p className="text-sm font-semibold mt-4 mb-2">Submission statement</p>
+            <p className="text-sm font-semibold mt-4 mb-2">
+              Submission statement
+            </p>
             <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-600 italic leading-relaxed">
               "{submissionStatement}"
             </div>
@@ -142,9 +181,12 @@ export default function EvaluationDetail({
             <p className="text-sm font-semibold mb-2">Deliverables</p>
             <div className="space-y-2.5">
               {deliverables.map((d) => (
-                <div key={d.label} className="flex items-center gap-2.5 text-sm">
+                <div
+                  key={d.label}
+                  className="flex items-center gap-2.5 text-sm"
+                >
                   <span
-                    className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    className={`w-3 h-3 rounded-full shrink-0 ${
                       d.submitted
                         ? "bg-[#F01E5A]"
                         : "border-2 border-gray-300 bg-transparent"
@@ -155,7 +197,9 @@ export default function EvaluationDetail({
               ))}
             </div>
 
-            <p className="text-sm font-semibold mt-5 mb-2">Score against Rubric</p>
+            <p className="text-sm font-semibold mt-5 mb-2">
+              Score against Rubric
+            </p>
             <div className="space-y-2.5">
               {rubricItems.map((item) => (
                 <div
@@ -174,7 +218,7 @@ export default function EvaluationDetail({
                           [item.name]: Number(e.target.value),
                         }))
                       }
-                      className="appearance-none px-4 py-3 pr-8 text-sm font-semibold bg-transparent outline-none cursor-pointer min-w-[80px]"
+                      className="appearance-none px-4 py-3 pr-8 text-sm font-semibold bg-transparent outline-none cursor-pointer min-w-20"
                     >
                       {scoreOptions.map((v) => (
                         <option key={v} value={v}>
@@ -198,7 +242,9 @@ export default function EvaluationDetail({
 
             <div className="mt-5">
               <p className="text-sm font-bold mb-1">Total Score</p>
-              <span className="text-4xl font-bold text-[#F01E5A]">{totalScore}</span>
+              <span className="text-4xl font-bold text-[#F01E5A]">
+                {totalScore}
+              </span>
               <span className="text-2xl font-semibold text-gray-800">/100</span>
             </div>
           </div>
@@ -208,26 +254,30 @@ export default function EvaluationDetail({
         <div className="space-y-5">
           {/* Format & Rules */}
           <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-            <h3 className="text-sm font-bold text-[#F01E5A] mb-4">Format and Rules</h3>
+            <h3 className="text-sm font-bold text-[#F01E5A] mb-4">
+              Format and Rules
+            </h3>
             <div className="mb-4">
               <p className="text-sm font-bold mb-1.5">Submission Format</p>
               <p className="text-xs text-gray-500 leading-relaxed">
-                Upload a single zip file containing all required documents, or provide a
-                link to a secure google Drive folder with viewer.
+                Upload a single zip file containing all required documents, or
+                provide a link to a secure google Drive folder with viewer.
               </p>
             </div>
             <div>
               <p className="text-sm font-bold mb-1.5">Constraints</p>
               <p className="text-xs text-gray-500 leading-relaxed">
-                Use the MoSCoW method. Max 10 pages. Do not include external links or info
-                in the artifact.
+                Use the MoSCoW method. Max 10 pages. Do not include external
+                links or info in the artifact.
               </p>
             </div>
           </div>
 
           {/* Scoring Rubric */}
           <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-            <h3 className="text-sm font-bold text-[#F01E5A] mb-4">Scoring Rubric</h3>
+            <h3 className="text-sm font-bold text-[#F01E5A] mb-4">
+              Scoring Rubric
+            </h3>
             <div className="space-y-3">
               {rubricItems.map((item) => (
                 <div
@@ -238,7 +288,9 @@ export default function EvaluationDetail({
                     Scoring Weight %: {item.weight}
                   </p>
                   <p className="text-sm font-bold mb-0.5">{item.name}</p>
-                  <p className="text-[11px] text-gray-400 mb-2">{item.description}</p>
+                  <p className="text-[11px] text-gray-400 mb-2">
+                    {item.description}
+                  </p>
                   <p className="text-[11px] text-gray-500 mb-1">Judge note</p>
                   <textarea
                     defaultValue={item.judgeNote}
