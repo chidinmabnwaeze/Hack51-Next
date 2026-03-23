@@ -3,7 +3,7 @@ import Sidebar from "@/components/Sidebar";
 
 const sidebarItems = [
   { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/admin/dashboard" },
-  { name: "Submissions", icon: "/icons/submissions.svg", path: "/admin/subissions" },
+  { name: "Submissions", icon: "/icons/submissions.svg", path: "/admin/submissions" },
   {
     name: "Review",
     icon: "/icons/shortlists.svg",
