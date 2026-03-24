@@ -1,8 +1,13 @@
 "use client";
-import { KeyboardEventHandler, MouseEventHandler, useState, useEffect } from "react";
+import {
+  KeyboardEventHandler,
+  MouseEventHandler,
+  useState,
+  useEffect,
+} from "react";
 import { useRouter } from "next/navigation";
 import ChallengeCardInput from "../../components/ChallengeCardInput";
-import { ArrowLeftIcon, X } from "lucide-react";
+import { ArrowLeftIcon, PlusCircle, X } from "lucide-react";
 
 export type Challenge = {
   id: number;
@@ -24,18 +29,11 @@ export default function ChallengeDetails() {
   const [requirement, setRequirement] = useState("");
   const [isSidebarOpen, setIsSideBarOpen] = useState(false);
 
-  // const handleChange = (field: keyof Challenge, value: string) => {
-  //   setChallenge((prev) => ({
-  //     ...prev,
-  //     [field]: value,
-  //   }));
-  // };
-
-    useEffect(() => {
+  useEffect(() => {
     localStorage.setItem("challenges", JSON.stringify(challenges));
   }, [challenges]);
 
- // To add requirement
+  // To add requirement
   const handleAddRequirement = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -51,7 +49,7 @@ export default function ChallengeDetails() {
     }
   };
 
-  const handleSaveChallenge = (e:React.FormEvent) => {
+  const handleSaveChallenge = (e: React.FormEvent) => {
     e.preventDefault();
     if (!challenge.title.trim()) return;
 
@@ -71,7 +69,7 @@ export default function ChallengeDetails() {
     });
 
     setRequirement("");
-     setIsSideBarOpen(false);
+    setIsSideBarOpen(false);
   };
 
   const handleToggle = () => {
@@ -101,9 +99,10 @@ export default function ChallengeDetails() {
             </section>
           </div>
           <button
-            className="px-5 py-2.5 bg-[#FF0046] hover:bg-[#c0144a] text-white text-sm font-semibold rounded-lg transition-colors"
+            className="flex px-5 py-2.5 bg-[#FF0046] hover:bg-[#c0144a] text-white text-sm font-semibold rounded-lg transition-colors"
             onClick={handleToggle}
           >
+            <PlusCircle />
             Create Challenge
           </button>
         </div>
@@ -111,7 +110,7 @@ export default function ChallengeDetails() {
         <div className="bg-white p-8 rounded-xl shadow-md w-full h-full mt-4 mx-auto">
           <div className="mt-2">
             <div className="flex justify-between items-center">
-              <h1 className="text-3xl font-bold">Challenge Details</h1>
+              <h1 className="text-3xl font-bold">Challenges</h1>
             </div>
             <section className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {challenges.map((item) => (
