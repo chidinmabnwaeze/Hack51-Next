@@ -1,0 +1,73 @@
+// import AppLayout from "@/components/layout/AppLayout";
+import Link from "next/link";
+import { Search, Clock } from "lucide-react";
+
+const challenges = Array.from({ length: 9 }, (_, i) => ({
+  id: i + 1,
+  company: "nonamecompany",
+  role: "Product Designer",
+  level: "Mid-Level",
+  daysLeft: 12,
+}));
+
+export default function FindChallengesPage() {
+  return (
+    <>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Find challenges</h1>
+        <p className="text-gray-500 text-sm mt-1">Track your active applications and historical performance.</p>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        {/* Search & Filter */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex-1 relative">
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search roles or keywords"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-[#FF1F5A] transition-colors"
+            />
+          </div>
+          <select className="px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:border-[#FF1F5A] bg-white cursor-pointer">
+            <option>All Levels</option>
+            <option>Junior</option>
+            <option>Mid-Level</option>
+            <option>Senior</option>
+          </select>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-3 gap-4">
+          {challenges.map((c) => (
+            <div key={c.id} className="border border-gray-200 rounded-xl p-4 hover:border-[#FF1F5A] hover:shadow-sm transition-all group">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center">
+                    <span className="text-white text-[9px] font-bold">N</span>
+                  </div>
+                  <span className="text-xs text-gray-500">{c.company}</span>
+                </div>
+                <div className="flex items-center gap-1 bg-red-50 text-[#FF1F5A] text-[10px] font-medium px-2 py-0.5 rounded-full">
+                  <Clock size={10} />
+                  {c.daysLeft} days left
+                </div>
+              </div>
+
+              <h3 className="font-bold text-gray-900 text-sm mb-1">{c.role}</h3>
+              <p className="text-xs text-gray-500 mb-4">Level: {c.level}</p>
+
+              <div className="flex justify-end">
+                <Link href={`/challenges/${c.id}`}>
+                  <span className="text-[#FF1F5A] text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                    Details →
+                  </span>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}

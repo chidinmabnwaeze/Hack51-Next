@@ -13,9 +13,9 @@ const sidebarItems = [
     path: "/candidate/challenges",
   },
   {
-    name: "Applications",
+    name: "Submissions",
     icon: "/icons/shortlists.svg",
-    path: "/candidate/applications",
+    path: "/candidate/submissions",
   },
   { name: "Profile", icon: "/icons/billing.svg", path: "/candidate/profile" },
 ];

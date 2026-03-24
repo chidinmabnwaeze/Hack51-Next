@@ -133,7 +133,7 @@ export default function ChallengeDetails() {
         </div>
         <button
           className="mt-8 px-5 py-2.5 bg-[#FF0046] hover:bg-[#c0144a] text-white text-sm font-semibold rounded-lg transition-colors float-end"
-          onClick={() => router.push("")}
+          onClick={() => router.push("/admin/catalog/rubric")}
         >
           Next
         </button>
