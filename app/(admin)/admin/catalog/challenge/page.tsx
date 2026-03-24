@@ -1,13 +1,14 @@
 "use client";
-import { KeyboardEventHandler, MouseEventHandler, useState } from "react";
+import { KeyboardEventHandler, MouseEventHandler, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ChallengeCardInput from "../../components/ChallengeCardInput";
 import { ArrowLeftIcon, X } from "lucide-react";
 
-type Challenge = {
+export type Challenge = {
   id: number;
   title: string;
   desc: string;
+  scenario: string;
   req: string[];
 };
 export default function ChallengeDetails() {
@@ -17,22 +18,29 @@ export default function ChallengeDetails() {
   const [challenge, setChallenge] = useState({
     title: "",
     desc: "",
+    scenario: "",
     req: [],
   });
   const [requirement, setRequirement] = useState("");
   const [isSidebarOpen, setIsSideBarOpen] = useState(false);
 
-  const handleChange = (field: keyof Challenge, value: string) => {
-    setChallenge((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  // const handleChange = (field: keyof Challenge, value: string) => {
+  //   setChallenge((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
 
-  const handleAddRequirement = (e: any) => {
+    useEffect(() => {
+    localStorage.setItem("challenges", JSON.stringify(challenges));
+  }, [challenges]);
+
+ // To add requirement
+  const handleAddRequirement = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       if (!requirement.trim()) return;
+      if (challenge.req.length >= 3) return;
 
       setChallenge((prev) => ({
         ...prev,
@@ -43,7 +51,7 @@ export default function ChallengeDetails() {
     }
   };
 
-  const handleSaveChallenge = (e) => {
+  const handleSaveChallenge = (e:React.FormEvent) => {
     e.preventDefault();
     if (!challenge.title.trim()) return;
 
@@ -58,10 +66,12 @@ export default function ChallengeDetails() {
     setChallenge({
       title: "",
       desc: "",
+      scenario: "",
       req: [],
     });
 
     setRequirement("");
+     setIsSideBarOpen(false);
   };
 
   const handleToggle = () => {
@@ -105,13 +115,19 @@ export default function ChallengeDetails() {
             </div>
             <section className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {challenges.map((item) => (
-                <ChallengeCardInput
-                  //   key={id}
-                  //   id={id}
-                  title={item.title}
-                  desc={item.desc}
-                  req={item.req}
-                />
+                <div
+                  key={item.id}
+                  onClick={() =>
+                    router.push(`/admin/catalog/challenge/${item.id}`)
+                  }
+                  className="cursor-pointer"
+                >
+                  <ChallengeCardInput
+                    title={item.title}
+                    desc={item.desc}
+                    req={item.req}
+                  />
+                </div>
               ))}
             </section>
           </div>
@@ -124,17 +140,17 @@ export default function ChallengeDetails() {
         </button>
       </section>
 
-      {/* editor , toggles open or close when the challenge button is clicked*/}
+      {/* sidebar, toggles open or close when the challenge button is clicked*/}
       {isSidebarOpen && (
         <section
-          className={`fixed top-0 right-0 h-full w-150 bg-white shadow-lg p-8 z-50 transform transition-transform duration-300
-  ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
+          className={`fixed top-0 right-0 h-full overflow-auto w-150 bg-white shadow-lg p-8 z-50 transform transition-transform duration-300
+          ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
         >
           <X
             className="absolute mt-3 top-0 right-0 cursor-pointer"
             onClick={handleToggle}
           />
-          <form action="">
+          <form onSubmit={handleSaveChallenge}>
             <div className="mt-4">
               <label htmlFor="title">Challenge Title</label>
               <input
@@ -158,6 +174,22 @@ export default function ChallengeDetails() {
                 value={challenge.desc}
                 onChange={(e) =>
                   setChallenge((prev) => ({ ...prev, desc: e.target.value }))
+                }
+              />
+            </div>
+            <div className="mt-4">
+              <label htmlFor="desciption">Scenario</label>
+              <textarea
+                rows={5}
+                name="desciption"
+                placeholder="Write a scenario"
+                className="w-full bg-red-50 border border-red-200 mt-4 px-3 py-2 rounded-md outline-none focus:ring-2 focus:ring-red-200"
+                value={challenge.scenario}
+                onChange={(e) =>
+                  setChallenge((prev) => ({
+                    ...prev,
+                    scenario: e.target.value,
+                  }))
                 }
               />
             </div>
