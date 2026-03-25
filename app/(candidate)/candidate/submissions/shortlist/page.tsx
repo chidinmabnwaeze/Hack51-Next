@@ -1,10 +1,10 @@
-import AppLayout from "@/components/layout/AppLayout";
+// import AppLayout from "@/components/layout/AppLayout";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export default function ShortlistPage() {
   return (
-    <AppLayout>
+    <>
       <div className="mb-2">
         <Link href="/submissions" className="text-sm text-gray-500 flex items-center gap-1 hover:text-[#FF1F5A] transition-colors mb-3">
           <ArrowLeft size={14} /> Back to Submissions
@@ -45,6 +45,6 @@ export default function ShortlistPage() {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </>
   );
 }

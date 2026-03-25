@@ -1,7 +1,10 @@
+"use client";
+
 import RequestTable from "@/components/RequestTable";
 import type { ActiveRequest } from "@/components/RequestTable";
 import ChallengeButton from "@/components/ChallengeButton";
 import ReviewTable from "../components/ReviewTable";
+import { useRouter } from "next/navigation";
 
 const activeRequests: ActiveRequest[] = [
   {
@@ -49,6 +52,7 @@ const activeRequests: ActiveRequest[] = [
 
 
 export default function RequestsPage() {
+  const router = useRouter();
   return (
     <div>
       <section className="flex justify-between items-center">
@@ -67,7 +71,10 @@ export default function RequestsPage() {
           <button className="px-4 py-2 border-b-2 border-[#FF0046] text-[#FF0046] font-medium">
             Active Requests
           </button>
-          <button className="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+          <button
+            onClick={() => router.push("/admin/shortlists")}
+            className="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          >
             Shortlists
           </button>
           {/* <button className="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">

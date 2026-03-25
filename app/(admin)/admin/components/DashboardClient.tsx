@@ -2,8 +2,10 @@
 import { FileSpreadsheet } from "lucide-react";
 import Image from "next/image";
 import EvaluationBarChart from "./EvaluationBarChart";
+import RequestPieChart from "./RequestPieChart";
 import RequestTable from "@/components/RequestTable";
 import { ActiveRequest } from "@/components/RequestTable";
+import CustomActiveShapePieChart from "./RequestPieChart";
 
 export default function DashboardClient() {
   const metrics = [
@@ -94,13 +96,13 @@ export default function DashboardClient() {
             <FileSpreadsheet className="text-[#FF0046]" />
             <h1 className="font-bold">Reviewers evaluation per day </h1>
           </div>
-          <EvaluationBarChart />
+         <EvaluationBarChart/>
         </div>
       </section>
 
       <div className="bg-white p-6 rounded-lg shadow mt-6">
         <h2 className="text-xl font-bold mb-4">Recent Requests</h2>
-       
+
         <RequestTable requests={activeRequests} detailed />
       </div>
     </div>

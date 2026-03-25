@@ -21,6 +21,7 @@ export interface ActiveSubmissions {
 
 interface SubmissionsTableProps {
   submissions: ActiveSubmissions[];
+  requestId: string;
   detailed?: boolean;
 }
 
@@ -45,6 +46,7 @@ const badgeClasses = (status: string) => {
 
 export default function SubmissionsList({
   submissions,
+  requestId,
   detailed = false,
 }: SubmissionsTableProps) {
   const headers = [
@@ -118,11 +120,10 @@ export default function SubmissionsList({
               <td className="py-2 px-4 flex gap-2">
                 <button
                   onClick={() => {
-                    router.push("/admin/evaluation");
+                    router.push(`/admin/review/${requestId}/submissions/${request.submissionId}`);
                   }}
                   className=" flex gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
                 >
-                  {/* <Eye /> */}
                   Evaluate
                 </button>
               </td>

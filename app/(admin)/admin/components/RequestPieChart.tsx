@@ -1,6 +1,8 @@
 import { Pie, PieChart, Sector, PieSectorDataItem, Tooltip, TooltipIndex } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
 
+const PIE_FILL = '#8884d8';
+
 // #region Sample data
 const data = [
   { name: 'Group A', value: 400 },
@@ -18,11 +20,12 @@ const renderActiveShape = ({
   outerRadius,
   startAngle,
   endAngle,
-  fill,
   payload,
   percent,
   value,
 }: PieSectorDataItem) => {
+  // `PieSectorDataItem` doesn't include `fill` in recharts' types, so we use the pie's configured fill color.
+  const fill = PIE_FILL;
   const RADIAN = Math.PI / 180;
   const sin = Math.sin(-RADIAN * (midAngle ?? 1));
   const cos = Math.cos(-RADIAN * (midAngle ?? 1));
@@ -92,7 +95,7 @@ export default function CustomActiveShapePieChart({
         cy="50%"
         innerRadius="60%"
         outerRadius="80%"
-        fill="#8884d8"
+        fill={PIE_FILL}
         dataKey="value"
         isAnimationActive={isAnimationActive}
       />
