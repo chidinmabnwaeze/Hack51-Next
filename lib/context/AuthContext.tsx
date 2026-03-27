@@ -14,7 +14,8 @@ interface AuthContextType extends AuthState {
   login: (email: string, password: string, role: UserRole) => Promise<void>;
   register: (
     email: string,
-    username: string,
+    firstName: string,
+    lastName: string,
     password: string,
     role: UserRole,
   ) => Promise<void>;
@@ -65,7 +66,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         const user: User = {
           id: "1",
           email,
-          username: email.split("@")[0],
+          firstName,
+          lastName,
+          // username: email.split("@")[0],
           role,
           createdAt: new Date(),
         };
@@ -96,7 +99,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const register = useCallback(
     async (
       email: string,
-      username: string,
+      firstName: string,
+      lastName: string,
       password: string,
       role: UserRole,
     ) => {
@@ -113,7 +117,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         const user: User = {
           id: "1",
           email,
-          username,
+          firstName,
+          lastName,
           role,
           createdAt: new Date(),
         };

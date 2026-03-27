@@ -4,7 +4,8 @@ export type UserRole = "employer" | "admin" | "candidate";
 export interface User {
   id: string;
   email: string;
-  username: string;
+  firstName: string;
+  lastName: string;
   role: UserRole;
   createdAt: Date;
 }

@@ -7,8 +7,9 @@ import { UserRole } from "@/lib/auth";
 export default function RegisterForm() {
   const { register, isLoading } = useAuth();
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
-    username: "",
     password: "",
     confirmPassword: "",
   });
@@ -29,7 +30,12 @@ export default function RegisterForm() {
       return;
     }
 
-    if (!formData.email || !formData.username || !formData.password) {
+    if (
+      !formData.email ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.password
+    ) {
       setError("Please fill in all fields");
       return;
     }
@@ -37,7 +43,8 @@ export default function RegisterForm() {
     try {
       await register(
         formData.email,
-        formData.username,
+        formData.firstName,
+        formData.lastName,
         formData.password,
         selectedRole,
       );
@@ -47,7 +54,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="w-full max-w-lg bg-white p-8 rounded-lg">
+    <div className="w-full max-w-2xl bg-white p-8 rounded-lg">
       <div className="flex flex-col justify-center items-center">
         <h1 className="text-3xl font-bold mb-2">Create an account</h1>
         <p className="text-gray-600 mb-8">Enter your details to get started</p>
@@ -80,6 +87,36 @@ export default function RegisterForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex w-full">
+          {/* firstName */}
+          <div className="relative mr-2 w-full">
+            <input
+              type="text"
+              name="firstName"
+              placeholder="Enter firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
+              disabled={isLoading}
+            />
+            <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+          </div>
+
+          {/* lastName */}
+          <div className="relative w-full">
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Enter lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
+              disabled={isLoading}
+            />
+            <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+          </div>
+        </div>
+
         {/* Email */}
         <div className="relative">
           <input
@@ -92,20 +129,6 @@ export default function RegisterForm() {
             disabled={isLoading}
           />
           <Mail className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
-        </div>
-
-        {/* Username */}
-        <div className="relative">
-          <input
-            type="text"
-            name="username"
-            placeholder="Choose a username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
-            disabled={isLoading}
-          />
-          <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
         </div>
 
         {/* Password */}
