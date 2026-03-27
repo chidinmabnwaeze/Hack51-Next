@@ -3,8 +3,8 @@ import { FileSpreadsheet } from "lucide-react";
 import Image from "next/image";
 import EvaluationBarChart from "./EvaluationBarChart";
 import RequestPieChart from "./RequestPieChart";
-import RequestTable from "@/components/RequestTable";
-import { ActiveRequest } from "@/components/RequestTable";
+import RequestTable from "@/app/(employer)/components/RequestTable";
+import { ActiveRequest } from "@/app/(employer)/components/RequestTable";
 import CustomActiveShapePieChart from "./RequestPieChart";
 
 export default function DashboardClient() {

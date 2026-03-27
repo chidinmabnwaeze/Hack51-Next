@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomStepsContent, {
   stepConfig,
-} from "@/components/CustomStepsContent";
-import CustomStepsIndicator from "@/components/CustomStepsIndicator";
+} from "@/app/(employer)/components/CustomStepsContent";
+import CustomStepsIndicator from "@/app/(employer)/components/CustomStepsIndicator";
 import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {

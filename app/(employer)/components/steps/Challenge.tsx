@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import ChallengeCard from "@/components/ChallengeCard";
+import ChallengeCard from "../ChallengeCard";
 
 export default function Challenge() {
   const [selectedId, setSelectedId] = useState<number | null>(null);

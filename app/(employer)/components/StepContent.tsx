@@ -1,14 +1,14 @@
 "use client";
 
-import SelectRole from "@/components/steps/SelectRole";
-import SkillLevel from "@/components/steps/SkillLevel";
-import RoleDetails from "@/components/steps/RoleDetails";
-import Challenge from "@/components/steps/Challenge";
-import ChallengeEditor from "@/components/steps/ChallengeEditor";
-import RubricEditor from "@/components/steps/RubricEditor";
-import RequestPreview from "@/components/steps/RequestPreview";
-import Checkout from "@/components/steps/Checkout";
-import Completion from "@/components/steps/Completion";
+import SelectRole from "./steps/SelectRole";
+import SkillLevel from "./steps/SkillLevel";
+import RoleDetails from "./steps/RoleDetails";
+import Challenge from "./steps/Challenge";
+import ChallengeEditor from "./steps/ChallengeEditor";
+import RubricEditor from "./steps/RubricEditor";
+import RequestPreview from "./steps/RequestPreview";
+import Checkout from "./steps/Checkout";
+import Completion from "./steps/Completion";
 
 export const stepConfig = [
   { id: 1, label: "Request Details", component: <SelectRole /> },

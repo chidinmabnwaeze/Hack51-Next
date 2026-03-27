@@ -1,8 +1,8 @@
 "use client";
 
-import RequestTable from "@/components/RequestTable";
-import type { ActiveRequest } from "@/components/RequestTable";
-import ChallengeButton from "@/components/ChallengeButton";
+import RequestTable from "@/app/(employer)/components/RequestTable";
+import type { ActiveRequest } from "@/app/(employer)/components/RequestTable";
+import ChallengeButton from "@/app/(employer)/components/ChallengeButton";
 import ReviewTable from "../components/ReviewTable";
 import { useRouter } from "next/navigation";
 

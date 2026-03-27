@@ -1,8 +1,8 @@
-import RequestTable from "@/components/RequestTable";
-import type { ActiveRequest } from "@/components/RequestTable";
-import type { Shortlists } from "@/components/ShortlistTable";
-import ChallengeButton from "@/components/ChallengeButton";
-import ShortlistTable from "@/components/ShortlistTable";
+import RequestTable from "../components/RequestTable";
+import type { ActiveRequest } from "../components/RequestTable";
+import type { Shortlists } from "../components/ShortlistTable";
+import ChallengeButton from "../components/ChallengeButton";
+import ShortlistTable from "../components/ShortlistTable";
 
 export default function ShortlistPage() {
   const shortlists: Shortlists[] = [

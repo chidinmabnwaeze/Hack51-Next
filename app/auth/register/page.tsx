@@ -1,6 +1,6 @@
 import animation from "../../../public/cubes-human-resources-department-hiring-employee 1.png";
 import Image from "next/image";
-import RegisterForm from "@/components/forms/RegisterForm";
+import RegisterForm from "@/app/components/forms/RegisterForm";
 
 export default function Register() {
   return (

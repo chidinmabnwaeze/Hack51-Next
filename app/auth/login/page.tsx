@@ -1,6 +1,6 @@
 import animation from "../../../public/cubes-human-resources-department-hiring-employee 1.png";
 import Image from "next/image";
-import LoginForm from "@/components/forms/LoginForm";
+import LoginForm from "@/app/components/forms/LoginForm";
 
 export default function Login() {
   return (

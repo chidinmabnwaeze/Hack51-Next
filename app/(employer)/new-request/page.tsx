@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import StepContent, { stepConfig } from "@/components/StepContent";
-import StepIndicator from "@/components/StepIndicator";
+import StepContent, { stepConfig } from "@/app/(employer)/components/StepContent";
+import StepIndicator from "@/app/(employer)/components/StepIndicator";
 import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { stepConfig } from "@/components/StepContent";
+import { stepConfig } from "./StepContent";
 
 export default function StepIndicator({
   currentStep,

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import RequestTable from "@/components/RequestTable";
-import type { ActiveRequest } from "@/components/RequestTable";
+import RequestTable from "./RequestTable";
+import type { ActiveRequest } from "./RequestTable";
 import ChallengeButton from "./ChallengeButton";
 
 interface DashboardProps {

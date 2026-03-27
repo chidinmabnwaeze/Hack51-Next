@@ -1,6 +1,6 @@
-import RequestTable from "@/components/RequestTable";
-import type { ActiveRequest } from "@/components/RequestTable";
-import ChallengeButton from "@/components/ChallengeButton";
+import RequestTable from "../components/RequestTable";
+import type { ActiveRequest } from "../components/RequestTable";
+import ChallengeButton from "../components/ChallengeButton";
 
 const activeRequests: ActiveRequest[] = [
   {

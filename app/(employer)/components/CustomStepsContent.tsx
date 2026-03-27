@@ -1,14 +1,14 @@
 "use client";
 
-import CreateRole from "@/components/customSteps/CreateRole";
-import SkillLevel from "@/components/customSteps/SkillLevel";
-import RoleDetails from "@/components/customSteps/RoleDetails";
-// import Challenge from "@/components/steps/Challenge";
-import ChallengeEditor from "@/components/customSteps/ChallengeEditor";
-import RubricEditor from "@/components/steps/RubricEditor";
-import RequestPreview from "@/components/steps/RequestPreview";
-import Checkout from "@/components/steps/Checkout";
-import Completion from "@/components/steps/Completion";
+import CreateRole from "./customSteps/CreateRole";
+import SkillLevel from "./customSteps/SkillLevel";
+import RoleDetails from "./customSteps/RoleDetails";
+// import Challenge from "./steps/Challenge";
+import ChallengeEditor from "./customSteps/ChallengeEditor";
+import RubricEditor from "./steps/RubricEditor";
+import RequestPreview from "./steps/RequestPreview";
+import Checkout from "./steps/Checkout";
+import Completion from "./steps/Completion";
 
 export const stepConfig = [
   { id: 1, label: "Request Details", component: <CreateRole /> },
