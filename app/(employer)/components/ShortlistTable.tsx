@@ -1,4 +1,7 @@
+"use client";
+
 import { Eye } from "lucide-react";
+import { useRouter } from "next/navigation";
 // export interface Submission {
 //   submitted: number;
 //   total: number;
@@ -42,6 +45,7 @@ export default function ShortlistTable({
   shortlists,
   detailed = false,
 }: ShortlistTableProps) {
+  const router = useRouter();
   const headers = [
     "Request Title",
     "Shortlist size(n)",
@@ -101,7 +105,8 @@ export default function ShortlistTable({
                 </span> */}
               </td>
               <td className="py-2 px-4 flex gap-2">
-                <button className="text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded">
+                <button className="text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
+                onClick={() => router.push(`/shortlists/${list.id}`)}>
                  <Eye size={15} />
                   View Details
                 </button>
