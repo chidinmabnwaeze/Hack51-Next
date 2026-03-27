@@ -66,9 +66,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         const user: User = {
           id: "1",
           email,
-          firstName,
-          lastName,
-          // username: email.split("@")[0],
+          firstName: "",
+          lastName: "",
           role,
           createdAt: new Date(),
         };

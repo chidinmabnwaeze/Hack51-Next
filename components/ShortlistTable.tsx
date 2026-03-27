@@ -1,3 +1,4 @@
+import { Eye } from "lucide-react";
 // export interface Submission {
 //   submitted: number;
 //   total: number;
@@ -101,11 +102,12 @@ export default function ShortlistTable({
               </td>
               <td className="py-2 px-4 flex gap-2">
                 <button className="text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded">
+                 <Eye size={15} />
                   View Details
                 </button>
-                <button className="text-red-500 hover:text-red-700">
+                {/* <button className="text-red-500 hover:text-red-700">
                   Close Request
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}
