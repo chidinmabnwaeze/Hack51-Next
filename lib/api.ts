@@ -1,19 +1,34 @@
+import { ApiResponse } from "@/types/api";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BASE_URL,
-    headers: {
-        "Content-Type": "application/json"
-    }
-})
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-api.interceptors.request.use((config)=>{
-    const token = localStorage.getItem("token");
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token");
 
-    if(token){
-        config.headers.Authorization = `Bearer ${token}`
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response.data,
+
+  (error) => {
+    console.log("Error", error);
+    if (error.response?.status === 401) {
+      localStorage.removeItem("access_token");
+      window.location.href = "/auth/login";
     }
-    return config;
-})
+
+    return Promise.reject(error.response?.data.message || error.message);
+  },
+);
 
 export default api;

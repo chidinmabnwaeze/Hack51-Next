@@ -9,6 +9,7 @@ import React, {
   ReactNode,
 } from "react";
 import { User, UserRole, AuthState, getDashboardRoute } from "@/lib/auth";
+import { register } from "../services/auth.service";
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string, role: UserRole) => Promise<void>;
@@ -55,6 +56,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     async (email: string, password: string, role: UserRole) => {
       setAuthState((prev) => ({ ...prev, isLoading: true }));
       try {
+        
         // TODO: Replace with actual API call
         // const response = await fetch('/api/auth/login', {
         //   method: 'POST',

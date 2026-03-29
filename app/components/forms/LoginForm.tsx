@@ -1,17 +1,23 @@
 "use client";
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
-import { useAuth } from "@/lib/context/AuthContext";
+// import { useAuth } from "@/lib/context/AuthContext";
 import { UserRole } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import { userAuth } from "@/lib/context";
+import { LoginProps } from "@/types/auth";
+import { authService } from "@/lib/services/auth.service";
 
 export default function LoginForm() {
-  const { login, isLoading } = useAuth();
+  const router = useRouter();
+  const login = userAuth((state) => state.login);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [selectedRole, setSelectedRole] = useState<UserRole>("employer");
   const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,6 +27,7 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     if (!formData.email || !formData.password) {
       setError("Please fill in all fields");
@@ -28,9 +35,22 @@ export default function LoginForm() {
     }
 
     try {
-      await login(formData.email, formData.password, selectedRole);
+      const loginData: LoginProps = {
+        email: formData.email,
+        password: formData.password,
+      };
+
+      const data = await login(loginData);
+      console.log("LOGIN RES", data.user);
+
+      //create a helper
+
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
+      console.log("ERROR", err);
+    } finally {
+      setLoading(false);
     }
   };
 
