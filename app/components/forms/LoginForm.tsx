@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
 // import { useAuth } from "@/lib/context/AuthContext";
-import { UserRole } from "@/lib/auth";
+import axios from "axios";
+import { UserRole } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { userAuth } from "@/lib/context";
 import { LoginProps } from "@/types/auth";
@@ -31,6 +32,7 @@ export default function LoginForm() {
 
     if (!formData.email || !formData.password) {
       setError("Please fill in all fields");
+      setLoading(false);
       return;
     }
 
@@ -41,14 +43,20 @@ export default function LoginForm() {
       };
 
       const data = await login(loginData);
-      console.log("LOGIN RES", data.user);
+      console.log("FULL LOGIN RESPONSE", data);
+      if (!data?.user) {
+  throw new Error("User data not returned from API");
+}
 
-      //create a helper
-
-      router.push("/dashboard");
+      //create a helper function to get the route based on the user role
+      const route = authService.getRoleRoute(data.user.role);
+      console.log("USER ROLE", data.user.role);
+      console.log("ROUTE", route);
+      router.push(route);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
       console.log("ERROR", err);
+     
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);
     }

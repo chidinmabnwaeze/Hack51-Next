@@ -1,7 +1,7 @@
 import { LoginProps, RegisterProps } from "@/types/auth";
 import api from "../api";
 import { ApiResponse } from "@/types/api";
-import { User } from "@/types/user";
+import { User, UserRole } from "@/types/user";
 
 export const authService = {
   login: async (data: LoginProps) => {
@@ -13,7 +13,7 @@ export const authService = {
 
     localStorage.setItem("access_token", res.access_token);
     localStorage.setItem("refresh_token", res.refresh_token);
-    return await authService.getProfile(); // Fetch and store user profile after login
+    return await authService.getProfile(); // Fetches and stores user profile after login
   },
 
   register: async (data: RegisterProps) => {
@@ -47,11 +47,22 @@ export const authService = {
 
   getCurrentUser: () => {
     const user = localStorage.getItem("user");
+    console.log("CURRENT USER", user);
     return user ? JSON.parse(user) : null;
   },
 
   isAuthenticated: () => {
-    return !!localStorage.getItem("token");
+    return !!localStorage.getItem("access_token");
+  },
+
+  getRoleRoute: (role: UserRole) => {
+    const roleRoutes: Record<UserRole, string> = {
+      admin: "/admin/dashboard",
+      employer: "/dashboard",
+      candidate: "/candidate/dashboard",
+    };
+
+    return roleRoutes[role];
   },
 
   //   updateProfile: async (profileData) => {

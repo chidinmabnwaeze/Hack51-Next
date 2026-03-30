@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AuthProvider } from "@/lib/context/AuthContext";
+// import { AuthProvider } from "@/lib/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Hack51",
@@ -21,7 +21,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        {children}
       </body>
     </html>
   );

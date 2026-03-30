@@ -27,7 +27,8 @@ api.interceptors.response.use(
       window.location.href = "/auth/login";
     }
 
-    return Promise.reject(error.response?.data.message || error.message);
+    const message = error.response?.data?.message || error.message || "Request failed";
+    return Promise.reject(new Error(message));
   },
 );
 
