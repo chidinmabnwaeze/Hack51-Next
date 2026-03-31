@@ -30,6 +30,7 @@ export const authService = {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
+    document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     window.location.href = "/auth/login";
   },
 
@@ -40,6 +41,7 @@ export const authService = {
     // optionally store user
     if (response) {
       localStorage.setItem("user", JSON.stringify(response));
+      document.cookie = `user=${encodeURIComponent(JSON.stringify(response))}; path=/`;
     }
 
     return { user: response };

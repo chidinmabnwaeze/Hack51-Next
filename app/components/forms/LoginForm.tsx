@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
 // import { useAuth } from "@/lib/context/AuthContext";
-import axios from "axios";
 import { UserRole } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { userAuth } from "@/lib/context";
@@ -45,8 +44,8 @@ export default function LoginForm() {
       const data = await login(loginData);
       console.log("FULL LOGIN RESPONSE", data);
       if (!data?.user) {
-  throw new Error("User data not returned from API");
-}
+        throw new Error("User data not returned from API");
+      }
 
       //create a helper function to get the route based on the user role
       const route = authService.getRoleRoute(data.user.role);
@@ -55,7 +54,7 @@ export default function LoginForm() {
       router.push(route);
     } catch (err) {
       console.log("ERROR", err);
-     
+
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);

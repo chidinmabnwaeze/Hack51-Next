@@ -26,7 +26,7 @@ export default function EmployerLayout({
           firstname="John"
           lastname="Doe"
           usermode="Employer"
-          avatar="/avatar.png"
+          avatar="/public/icons/avatardefault.webp"
         />
         <main className="ml-64 mt-24 p-6 bg-gray-50 min-h-screen">
           {children}

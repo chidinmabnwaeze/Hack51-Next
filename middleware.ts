@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserRole } from "@/lib/auth";
+import { UserRole } from "@/types/user";
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
