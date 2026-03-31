@@ -21,7 +21,7 @@ api.interceptors.response.use(
   (response) => response.data,
 
   (error) => {
-    console.log("Error", error);
+    console.log("Response Error", error);
     if (error.response?.status === 401) {
       localStorage.removeItem("access_token");
       window.location.href = "/auth/login";
