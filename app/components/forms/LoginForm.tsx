@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
-// import { useAuth } from "@/lib/context/AuthContext";
 import { UserRole } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { userAuth } from "@/lib/context";
@@ -15,7 +14,7 @@ export default function LoginForm() {
     email: "",
     password: "",
   });
-  const [selectedRole, setSelectedRole] = useState<UserRole>("employer");
+
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
 
@@ -62,32 +61,10 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-lg bg-white p-8 rounded-lg">
+    <div className="w-full max-w-lg bg-white p-10 rounded-lg">
       <div className="flex flex-col justify-center items-center">
         <h1 className="text-3xl font-bold mb-2">Welcome back !</h1>
-        <p className="text-gray-600 mb-8">Sign in to your account</p>
-      </div>
-
-      {/* Role Selection */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          I am signing in as:
-        </label>
-        <div className="space-y-3">
-          {["employer", "candidate", "admin"].map((role) => (
-            <label key={role} className="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                value={role}
-                checked={selectedRole === role}
-                onChange={(e) => setSelectedRole(e.target.value as UserRole)}
-                className="w-4 h-4 text-[#FF0046]"
-              />
-              <span className="ml-3 text-gray-700 capitalize">{role}</span>
-            </label>
-          ))}
-        </div>
+        <p className="text-gray-600 mb-12">Sign in to your account</p>
       </div>
 
       {error && (
@@ -135,7 +112,7 @@ export default function LoginForm() {
       <p className="text-center text-gray-600 mt-6">
         Don't have an account?{" "}
         <a
-          href="/auth/register"
+          href="/auth/signup"
           className="text-[#FF0046] font-medium hover:underline"
         >
           Create an account

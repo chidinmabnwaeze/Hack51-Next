@@ -17,7 +17,7 @@ export const authService = {
   },
 
   register: async (data: RegisterProps) => {
-    const response: ApiResponse<any> = await api.post("/auth/register", data);
+    const response: ApiResponse<any> = await api.post("/auth/signup", data);
 
     if (response.access_token && response.refresh_token) {
       localStorage.setItem("access_token", response.access_token);

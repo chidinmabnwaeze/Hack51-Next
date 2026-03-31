@@ -27,7 +27,15 @@ api.interceptors.response.use(
       window.location.href = "/auth/login";
     }
 
-    const message = error.response?.data?.message || error.message || "Request failed";
+    const data = error.response?.data;
+    const message =
+      data?.message ||
+      data?.error ||
+      data?.detail ||
+      (typeof data === "string" ? data : null) ||
+      error.message ||
+      "Request failed";
+    console.log("API Error response data:", data);
     return Promise.reject(new Error(message));
   },
 );

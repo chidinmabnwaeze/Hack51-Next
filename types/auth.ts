@@ -1,9 +1,13 @@
+import { LucideIcon } from "lucide-react";
+
 export interface RegisterProps {
+  first_name: string;
+  last_name: string;
   email: string;
-  firstName: string;
-  lastName: string;
   password: string;
-  role: string;
+  timezone: string;
+  avatar_url: string;
+  role_name: string;
 }
 
 export interface LoginProps {
@@ -11,8 +15,8 @@ export interface LoginProps {
   password: string;
 }
 
-export interface DashboardRoute{
+export interface DashboardRoute {
   employer: "/";
-  candidate: "/candidate/dashboard";  
+  candidate: "/candidate/dashboard";
   admin: "/admin/dashboard";
 }

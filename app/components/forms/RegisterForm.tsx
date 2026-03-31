@@ -1,20 +1,27 @@
 "use client";
 import { useState } from "react";
 import { Mail, Lock, User } from "lucide-react";
-import { useAuth } from "@/lib/context/AuthContext";
-import { UserRole } from "@/lib/auth";
+import { userAuth } from "@/lib/context";
+import { UserRole } from "@/types/user";
+import { RegisterProps } from "@/types/auth";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
-  const { register, isLoading } = useAuth();
+  const register = userAuth((state) => state.register);
+  const router = useRouter();
+  const [selectedRole, setSelectedRole] = useState<UserRole>("employer");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    avatar_url: "/icons/avatardefault.webp",
+    role_name: selectedRole,
     confirmPassword: "",
   });
-  const [selectedRole, setSelectedRole] = useState<UserRole>("employer");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,9 +31,11 @@ export default function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
@@ -37,19 +46,27 @@ export default function RegisterForm() {
       !formData.password
     ) {
       setError("Please fill in all fields");
+      setLoading(false);
       return;
     }
 
     try {
-      await register(
-        formData.email,
-        formData.firstName,
-        formData.lastName,
-        formData.password,
-        selectedRole,
-      );
+      const registrationData: RegisterProps = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        timezone: formData.timezone,
+        avatar_url: formData.avatar_url,
+        role_name: selectedRole,
+      };
+      await register(registrationData);
+      router.push("/auth/login");
     } catch (err) {
+      console.log("FULL ERROR", err);
       setError(err instanceof Error ? err.message : "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,7 +114,7 @@ export default function RegisterForm() {
               value={formData.firstName}
               onChange={handleChange}
               className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
-              disabled={isLoading}
+              disabled={loading}
             />
             <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
           </div>
@@ -111,7 +128,7 @@ export default function RegisterForm() {
               value={formData.lastName}
               onChange={handleChange}
               className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
-              disabled={isLoading}
+              disabled={loading}
             />
             <User className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
           </div>
@@ -126,7 +143,7 @@ export default function RegisterForm() {
             value={formData.email}
             onChange={handleChange}
             className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
-            disabled={isLoading}
+            disabled={loading}
           />
           <Mail className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
         </div>
@@ -140,7 +157,7 @@ export default function RegisterForm() {
             value={formData.password}
             onChange={handleChange}
             className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
-            disabled={isLoading}
+            disabled={loading}
           />
           <Lock className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
         </div>
@@ -154,17 +171,17 @@ export default function RegisterForm() {
             value={formData.confirmPassword}
             onChange={handleChange}
             className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF0046]"
-            disabled={isLoading}
+            disabled={loading}
           />
           <Lock className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
         </div>
 
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={loading}
           className="w-full mt-6 bg-[#FF0046] text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
         >
-          {isLoading ? "Creating account..." : "Create account"}
+          {loading ? "Creating account..." : "Create account"}
         </button>
       </form>
 

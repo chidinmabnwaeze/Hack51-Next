@@ -1,7 +1,6 @@
-"use client";
-import { useAuth } from "@/lib/context/AuthContext";
+import { authService } from "@/lib/services/auth.service";
 
 export default function LogoutPage() {
-  const { logout } = useAuth();
+  const logout = authService.logout;
   logout();
 }
