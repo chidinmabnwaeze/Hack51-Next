@@ -9,7 +9,7 @@ import { authService } from "@/lib/services/auth.service";
 
 export default function LoginForm() {
   const router = useRouter();
-  const login = userAuth((state) => state.login);
+  const login = userAuth((state: any) => state.login);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,6 +29,7 @@ export default function LoginForm() {
     setLoading(true);
 
     if (!formData.email || !formData.password) {
+      
       setError("Please fill in all fields");
       setLoading(false);
       return;

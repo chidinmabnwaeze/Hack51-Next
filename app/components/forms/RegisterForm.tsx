@@ -7,16 +7,30 @@ import { RegisterProps } from "@/types/auth";
 import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
-  const register = userAuth((state) => state.register);
+  const register = userAuth((state: any) => state.register);
   const router = useRouter();
-  const [selectedRole, setSelectedRole] = useState<UserRole>("employer");
+  const [selectedRole, setSelectedRole] = useState<UserRole>("employer" );
+
+  const getLocalISOString = () => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    const sign = offset <= 0 ? "+" : "-";
+    const abs = Math.abs(offset);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const tzOffset = `${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`;
+    return (
+      new Date(Date.now() - offset * 60000).toISOString().slice(0, 19) +
+      tzOffset
+    );
+  };
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    avatar_url: "/icons/avatardefault.webp",
+    timezone: getLocalISOString(),
+    avatar_url: "",
     role_name: selectedRole,
     confirmPassword: "",
   });
@@ -57,7 +71,6 @@ export default function RegisterForm() {
         email: formData.email,
         password: formData.password,
         timezone: formData.timezone,
-        avatar_url: formData.avatar_url,
         role_name: selectedRole,
       };
       await register(registrationData);

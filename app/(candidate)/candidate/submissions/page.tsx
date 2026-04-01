@@ -1,6 +1,7 @@
 
 import Link from "next/link";
 import { Search, Lock, RefreshCw, Eye, ChevronDown } from "lucide-react";
+import { SubmissionListProps } from "@/types/submissions";
 
 const submissions = [
   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "pending" },
@@ -12,6 +13,7 @@ const submissions = [
   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "shortlisted" },
   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "shortlisted" },
 ];
+
 
 function StatusBadge({ status }: { status: string }) {
   if (status === "rejected") {

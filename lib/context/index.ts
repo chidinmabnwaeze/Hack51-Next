@@ -40,3 +40,7 @@ export const userAuth = create((set) => ({
   //     set({ user: updatedUser });
   //   },
 }));
+
+export const submission = create((set)=>({
+  
+}))

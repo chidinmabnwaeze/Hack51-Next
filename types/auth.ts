@@ -6,7 +6,7 @@ export interface RegisterProps {
   email: string;
   password: string;
   timezone: string;
-  avatar_url: string;
+  avatar_url?: string;
   role_name: string;
 }
 
