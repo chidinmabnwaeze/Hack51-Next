@@ -19,8 +19,8 @@ export const requestService = {
     return response;
   },
 
-  getRequestById: async (id: number) => {
-    const response = await api.get(`/requests/${id}`);
+  getRequestById: async (request_id: number) => {
+    const response = await api.get(`/requests/${request_id}`);
     return response;
   },
 };
