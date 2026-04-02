@@ -5,8 +5,7 @@ export interface RequestProps {
   competencies: string[];
   scope_description: string;
   status: "evaluation" | "shortlisted";
-  page?: number;
-  limit?: number;
+
 }
 
 export interface SingleRequestProps {

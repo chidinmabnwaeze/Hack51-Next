@@ -3,9 +3,9 @@ import api from "../api";
 
 export const requestService = {
   getRequests: async (data: RequestProps) => {
-    const limit = data.limit || 10;
-    const page = data.page || 1;
-    const sort = data.sort || "created_at";
+    const limit = 10;
+    const page = 1;
+    const sort = "created_at";
     const response = await api.get("/requests", {
       params: { ...data, limit, page, sort },
     });

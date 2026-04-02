@@ -59,7 +59,7 @@ export const authService = {
 
   getRoleRoute: (role: UserRole) => {
     const roleRoutes: Record<UserRole, string> = {
-      admin: "/admin/dashboard",
+      admin_lead: "/admin/dashboard",
       employer: "/dashboard",
       candidate: "/candidate/dashboard",
     };

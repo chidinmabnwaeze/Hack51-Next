@@ -50,7 +50,7 @@ export function middleware(request: NextRequest) {
 
   // Admin routes
   if (pathname.startsWith("/admin")) {
-    if (role !== "admin") {
+    if (role !== "admin_lead") {
       return NextResponse.redirect(new URL("/auth/login", request.url));
     }
   }

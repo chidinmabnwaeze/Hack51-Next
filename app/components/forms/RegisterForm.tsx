@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export default function RegisterForm() {
   const register = userAuth((state: any) => state.register);
   const router = useRouter();
-  const [selectedRole, setSelectedRole] = useState<UserRole>("employer" );
+  const [selectedRole, setSelectedRole] = useState<UserRole>();
 
   const getLocalISOString = () => {
     const now = new Date();
@@ -64,6 +64,12 @@ export default function RegisterForm() {
       return;
     }
 
+    if (!selectedRole) {
+      setError("Please select a role");
+      setLoading(false);
+      return;
+    }
+
     try {
       const registrationData: RegisterProps = {
         first_name: formData.firstName,
@@ -73,6 +79,7 @@ export default function RegisterForm() {
         timezone: formData.timezone,
         role_name: selectedRole,
       };
+      console.log("REGISTRATION DATA", registrationData);
       await register(registrationData);
       router.push("/auth/login");
     } catch (err) {
@@ -96,7 +103,7 @@ export default function RegisterForm() {
           I am registering as:
         </label>
         <div className="space-y-3">
-          {["employer", "admin", "candidate"].map((role) => (
+          {["employer", "candidate"].map((role) => (
             <label key={role} className="flex items-center cursor-pointer">
               <input
                 type="radio"
