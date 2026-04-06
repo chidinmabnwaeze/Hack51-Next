@@ -4,6 +4,7 @@ import { PlusCircle, Pencil, Trash2, Check, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import ReviewTable from "./ReviewTable";
 import { useRouter } from "next/navigation";
+import { catalogService } from "@/lib/services/catalog.service";
 
 type Role = {
   id: number;
@@ -25,7 +26,22 @@ export default function RoleCreation({ params }: any) {
     );
   };
 
-  const handleSave = (id: number) => {
+  const handleSave = async (id: number) => {
+ 
+    try{
+
+
+    }catch(err){
+      console.log("ERROR CREATING ROLE", err);
+    }
+
+
+
+
+
+
+
+
     setRoles((prev) =>
       prev.map((role) =>
         role.id === id && role.name.trim()

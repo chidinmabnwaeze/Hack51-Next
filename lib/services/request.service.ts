@@ -2,13 +2,8 @@ import { RequestProps } from "@/types/requests";
 import api from "../api";
 
 export const requestService = {
-  getRequests: async (data: RequestProps) => {
-    const limit = 10;
-    const page = 1;
-    const sort = "created_at";
-    const response = await api.get("/requests", {
-      params: { ...data, limit, page, sort },
-    });
+  getRequests: async (params: Record<string, any>) => {
+    const response = await api.get("/requests", { params });
     console.log("REQUESTS", response);
 
     return response;
