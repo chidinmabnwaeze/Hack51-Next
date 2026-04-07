@@ -2,11 +2,6 @@
 
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
-// export interface Submission {
-//   submitted: number;
-//   total: number;
-//   percentage: number;
-// }
 
 export interface Shortlists {
   id?: string;
@@ -14,32 +9,12 @@ export interface Shortlists {
   title: string;
   shortlist_size: number;
   date_delivered: number;
-//   status: string;
 }
 
 interface ShortlistTableProps {
   shortlists: Shortlists[];
   detailed?: boolean;
 }
-
-// const badgeClasses = (status: string) => {
-//   const key = status.toLowerCase();
-//   switch (true) {
-//     case key.includes("open"):
-//       return "bg-blue-100 text-blue-800";
-//     case key.includes("evaluation"):
-//     case key.includes("in progress"):
-//       return "bg-yellow-100 text-yellow-800";
-//     case key.includes("shortlist"):
-//       return "bg-green-100 text-green-800";
-//     case key.includes("draft"):
-//       return "bg-gray-100 text-gray-800";
-//     case key.includes("closed"):
-//       return "bg-gray-200 text-gray-500";
-//     default:
-//       return "bg-gray-100 text-gray-800";
-//   }
-// };
 
 export default function ShortlistTable({
   shortlists,
@@ -50,7 +25,6 @@ export default function ShortlistTable({
     "Request Title",
     "Shortlist size(n)",
     "Date Delivered",
-    // "Status",
     "Actions",
   ];
 
@@ -97,18 +71,20 @@ export default function ShortlistTable({
               </td>
 
               <td className="py-2 px-4">{list.date_delivered ?? "-"}</td>
-              <td className="py-2 px-4">
-                {/* <span
+              {/* <td className="py-2 px-4">
+                <span
                   className={`px-2 py-1 rounded text-xs font-bold ${badgeClasses(list.status)}`}
                 >
                   {list.status}
-                </span> */}
-              </td>
+                </span>
+              </td> */}
               <td className="py-2 px-4 flex gap-2">
-                <button className="text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
-                onClick={() => router.push(`/shortlists/${list.id}`)}>
-                 <Eye size={15} />
-                  View Details
+                <button
+                  className="flex items-center gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
+                  onClick={() => router.push(`/shortlists/${list.id}`)}
+                >
+                  <Eye size={15} />
+                  View
                 </button>
                 {/* <button className="text-red-500 hover:text-red-700">
                   Close Request
