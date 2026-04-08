@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Download, Plus, Lock, ExternalLink } from "lucide-react";
+import TalentListModal from "./LockedListModal";
 
 interface CriterionBreakdown {
   label: string;
@@ -75,33 +76,19 @@ const mockCandidates: Candidate[] = [
   },
 ];
 
-const allCandidates: Candidate[] = [
-  ...mockCandidates,
-  {
-    id: "5",
-    name: "Aisha Bello",
-    totalScore: 65,
-    maxScore: 100,
-    criteria: [
-      { label: "Technical execution", weight: "40%", score: "60%" },
-      { label: "Technical Know how", weight: "30%", score: "40%" },
-      { label: "Technical execution", weight: "30%", score: "55%" },
-    ],
-    expertReviewNotes: "Good understanding of concepts.",
-  },
-];
-
 export default function ShortlistedCandidates({
   shortlistId,
   title = "Shortlists",
 }: ShortlistedCandidatesProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"shortlisted" | "all">(
-    "shortlisted"
+    "shortlisted",
   );
+  const [isOpen, setIsOpen] = useState(false);
 
-  const candidates =
-    activeTab === "shortlisted" ? mockCandidates : allCandidates;
+  const candidates = activeTab === "shortlisted" ? mockCandidates : [];
+
+  const onClose = () => setIsOpen(false);
 
   return (
     <div>
@@ -149,7 +136,10 @@ export default function ShortlistedCandidates({
             Shortlisted({mockCandidates.length})
           </button>
           <button
-            onClick={() => setActiveTab("all")}
+            onClick={() => {
+              setActiveTab("all");
+              setIsOpen(true);
+            }}
             className={`pb-3 text-sm font-medium border-b-2 flex items-center gap-1 transition-colors ${
               activeTab === "all"
                 ? "border-[#FF0046] text-[#FF0046]"
@@ -157,7 +147,7 @@ export default function ShortlistedCandidates({
             }`}
           >
             <Lock size={13} />
-            All scored candidates({allCandidates.length})
+            All scored candidates({mockCandidates.length})
           </button>
         </div>
 
@@ -229,6 +219,11 @@ export default function ShortlistedCandidates({
           ))}
         </div>
       </div>
+      <TalentListModal
+        isOpen={isOpen}
+        onClose={onClose}
+        // buttonText={buttonText}
+      />
     </div>
   );
 }

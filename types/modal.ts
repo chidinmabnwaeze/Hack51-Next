@@ -8,7 +8,5 @@ export interface RejectModalProps {
 export interface LockedTalentModal {
   isOpen: boolean;
   onClose: () => void;
-  buttonText: string;
-//   onConfirm: (reason: string) => void;
-//   candidateName?: string;
+  buttonText?: string;
 }

@@ -2,14 +2,26 @@ import Header from "@/app/components/Header";
 import Sidebar from "@/app/components/Sidebar";
 
 const sidebarItems = [
-  { name: "Dashboard", icon: "/icons/dashboard.svg", path: "/admin/dashboard" },
+  {
+    name: "Dashboard",
+    icon: "LayoutDashboard",
+    path: "/admin/dashboard",
+  },
   {
     name: "Review",
-    icon: "/icons/shortlists.svg",
+    icon: "FileText",
     path: "/admin/review",
   },
-  { name: "Catalog", icon: "/icons/catalog.svg", path: "/admin/catalog" },
-  { name: "Settings", icon: "/icons/billing.svg", path: "/admin/settings" },
+  {
+    name: "Catalog",
+    icon: "BookOpen",
+    path: "/admin/catalog",
+  },
+  {
+    name: "Settings",
+    icon: "Settings",
+    path: "/admin/settings",
+  },
 ];
 
 export default function AdminLayout({
@@ -29,7 +41,7 @@ export default function AdminLayout({
           firstname="Admin"
           lastname="User"
           usermode="Admin"
-          avatar="/avatar.png"
+          avatar="/icons/avatardefault.webp"
         />
         <main className="ml-64 mt-24 p-6 bg-gray-50 min-h-screen">
           {children}

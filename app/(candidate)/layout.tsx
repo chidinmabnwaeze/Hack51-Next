@@ -4,20 +4,24 @@ import Sidebar from "@/app/components/Sidebar";
 const sidebarItems = [
   {
     name: "Dashboard",
-    icon: "/icons/dashboard.svg",
+    icon: "LayoutDashboard",
     path: "/candidate/dashboard",
   },
   {
     name: "Challenges",
-    icon: "/icons/requests.svg",
+    icon: "Zap",
     path: "/candidate/challenges",
   },
   {
     name: "Submissions",
-    icon: "/icons/shortlists.svg",
+    icon: "ClipboardList",
     path: "/candidate/submissions",
   },
-  { name: "Profile", icon: "/icons/billing.svg", path: "/candidate/profile" },
+  {
+    name: "Profile",
+    icon: "User",
+    path: "/candidate/profile",
+  },
 ];
 
 export default function CandidateLayout({
@@ -37,7 +41,7 @@ export default function CandidateLayout({
           firstname="Candidate"
           lastname="User"
           usermode="Candidate"
-          avatar="/avatar.png"
+          avatar="/icons/avatardefault.webp"
         />
         <main className="ml-64 mt-24 p-6 bg-gray-50 min-h-screen">
           {children}

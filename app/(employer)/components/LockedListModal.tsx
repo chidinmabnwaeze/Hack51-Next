@@ -5,19 +5,16 @@ import { LockedTalentModal } from "@/types/modal";
 export default function TalentListModal({
   isOpen,
   onClose,
-  buttonText,
 }: LockedTalentModal) {
-  const [reason, setReason] = useState("");
+  const handleConfirm = () => {};
 
-  const handleConfirm = ()=>{
-
-  }
+  if (!isOpen) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
       style={{
-        background: "rgba(240,30,90,0.08)",
+        background: "rgba(101,90,91, 0.10)",
         backdropFilter: "blur(3px)",
       }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
@@ -36,22 +33,20 @@ export default function TalentListModal({
           <LockKeyhole size={24} className="text-[#F01E5A]" />
         </div>
 
-        <h2 className="text-center text-[17px] font-bold mb-5">
-          Reason for rejecting submission
+        {/* Content */}
+        <h2 className="text-center text-xl font-bold text-gray-900 mb-2">
+          Access the full talent list
         </h2>
-
-        <textarea
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder="Reason for rejecting submission..."
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-[family-name:var(--font-dm-sans)] text-gray-800 bg-gray-50 resize-none h-28 outline-none focus:border-[#F01E5A] transition-colors placeholder:text-gray-400 italic"
-        />
+        <p className="text-center text-sm text-gray-600 mb-6">
+          Go beyond the Top N to view scores and feedback for every candidate
+          who completed the challenge.
+        </p>
 
         <button
           onClick={handleConfirm}
-          className="w-full mt-4 bg-[#F01E5A] hover:bg-[#c0144a] text-white py-3.5 rounded-xl text-sm font-bold transition-colors"
+          className="w-full bg-[#F01E5A] hover:bg-[#c0144a] text-white py-3.5 rounded-xl text-sm font-bold transition-colors"
         >
-          Pay to Unlock
+          Pay N240000 to Unlock
         </button>
       </div>
     </div>
