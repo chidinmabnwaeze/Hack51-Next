@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
 import { type HeaderProps } from "@/types/header";
+import logo from "@/logo.png";
+import avatar from "@/icons/avatardefault.webp"
 import { User } from "@/types/user";
 import { authService } from "@/lib/services/auth.service";
 import { useEffect, useState } from "react";
 
-export default function Header({ logo, avatar }: HeaderProps) {
+export default function Header({logo, avatar}: HeaderProps) {
   const [user, setUser] = useState<User>();
   useEffect(() => {
     const activeUser = authService.getCurrentUser();
