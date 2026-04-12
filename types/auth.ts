@@ -5,9 +5,9 @@ export interface RegisterProps {
   last_name: string;
   email: string;
   password: string;
-  timezone: string;
+  // timezone: string;
   avatar_url?: string;
-  role_name: string;
+  role: string;
 }
 
 export interface LoginProps {

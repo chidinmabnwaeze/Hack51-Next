@@ -31,7 +31,7 @@ export default function RegisterForm() {
     password: "",
     timezone: getLocalISOString(),
     avatar_url: "",
-    role_name: selectedRole,
+    role: selectedRole,
     confirmPassword: "",
   });
   const [error, setError] = useState("");
@@ -77,7 +77,7 @@ export default function RegisterForm() {
         email: formData.email,
         password: formData.password,
         timezone: formData.timezone,
-        role_name: selectedRole,
+        role: selectedRole,
       };
       console.log("REGISTRATION DATA", registrationData);
       await register(registrationData);
