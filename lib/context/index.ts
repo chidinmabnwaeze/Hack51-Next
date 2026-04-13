@@ -1,12 +1,15 @@
 import { create } from "zustand";
-import { LoginProps, RegisterProps } from "@/types/auth";
+import { LoginProps, RegisterProps, VerificationProps } from "@/types/auth";
 import { authService } from "../services/auth.service";
 import { ApiResponse } from "@/types/api";
 import { User } from "@/types/user";
 
 export const userAuth = create((set) => ({
   user: authService.getCurrentUser(),
-  isAuthenticated: authService.isAuthenticated(),
+  isAuthenticated: false,
+  isVerified: false,
+  // isAuthenticated: authService.isAuthenticated(),
+  // isVerified: authService.getCurrentUser()?.is_verified || false,
 
   login: async (data: LoginProps) => {
     try {
@@ -22,7 +25,17 @@ export const userAuth = create((set) => ({
   register: async (data: RegisterProps) => {
     try {
       const response = await authService.register(data);
-      set({ user: response.user, isAuthenticated: true });
+      set({ user: response.user, isAuthenticated: true, isVerified: true });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  verifyEmail: async (data: VerificationProps) => {
+    try {
+      const response = await authService.verifyEmail(data);
+      set({ isVerified: true });
       return response;
     } catch (error) {
       throw error;
@@ -41,6 +54,6 @@ export const userAuth = create((set) => ({
   //   },
 }));
 
-export const submission = create((set)=>({
-  
-}))
+// export const submission = create((set)=>({
+
+// }))

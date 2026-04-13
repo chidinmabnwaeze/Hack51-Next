@@ -29,9 +29,9 @@ export default function RegisterForm() {
     lastName: "",
     email: "",
     password: "",
-    timezone: getLocalISOString(),
-    avatar_url: "",
-    role_name: selectedRole,
+    // timezone: getLocalISOString(),
+    // avatar_url: "",
+    role: selectedRole,
     confirmPassword: "",
   });
   const [error, setError] = useState("");
@@ -76,15 +76,21 @@ export default function RegisterForm() {
         last_name: formData.lastName,
         email: formData.email,
         password: formData.password,
-        timezone: formData.timezone,
-        role_name: selectedRole,
+        // timezone: formData.timezone,
+        role: selectedRole,
       };
       console.log("REGISTRATION DATA", registrationData);
       await register(registrationData);
-      router.push("/auth/login");
-    } catch (err) {
+      router.push("/auth/verify");
+      // router.push("/auth/login");
+    } catch (err: any) {
       console.log("FULL ERROR", err);
-      setError(err instanceof Error ? err.message : "Registration failed");
+      console.log("BACKEND ERROR", err?.response?.data);
+      setError(
+        err?.response?.data?.message ||
+          err?.response?.data?.error ||
+          "Registration failed",
+      );
     } finally {
       setLoading(false);
     }
