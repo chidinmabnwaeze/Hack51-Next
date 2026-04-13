@@ -1,4 +1,4 @@
-import { LoginProps, RegisterProps } from "@/types/auth";
+import { LoginProps, RegisterProps, VerificationProps } from "@/types/auth";
 import api from "../api";
 import { ApiResponse } from "@/types/api";
 import { User, UserRole } from "@/types/user";
@@ -17,12 +17,17 @@ export const authService = {
   },
 
   register: async (data: RegisterProps) => {
-    const response: ApiResponse<any> = await api.post("/auth/signup", data);
+    const response: ApiResponse<any> = await api.post("/auth/register", data);
 
     if (response.access_token && response.refresh_token) {
       localStorage.setItem("access_token", response.access_token);
       localStorage.setItem("refresh_token", response.refresh_token);
     }
+    return response;
+  },
+
+  verifyEmail: async (data: VerificationProps) => {
+    const response = await api.post("/auth/verify-email", data);
     return response;
   },
 
@@ -55,6 +60,10 @@ export const authService = {
 
   isAuthenticated: () => {
     return !!localStorage.getItem("access_token");
+  },
+
+  isVerified: () => {
+    return;
   },
 
   getRoleRoute: (role: UserRole) => {

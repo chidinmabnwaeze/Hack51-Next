@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+
 
 export interface RegisterProps {
   first_name: string;
@@ -6,13 +6,18 @@ export interface RegisterProps {
   email: string;
   password: string;
   // timezone: string;
-  avatar_url?: string;
+  // avatar_url?: string;
   role: string;
 }
 
 export interface LoginProps {
   email: string;
   password: string;
+}
+
+export interface VerificationProps{
+  email: string;
+  otp: number;
 }
 
 export interface DashboardRoute {
