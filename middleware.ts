@@ -6,17 +6,20 @@ export function middleware(request: NextRequest) {
 
   // Get user from localStorage (stored as JSON string)
   // Note: In middleware, we check cookies instead since localStorage is client-only
-  const userCookie = request.cookies.get("user")?.value;
-  let user = null;
+  // const userCookie = request.cookies.get("user")?.value;
+  const token = request.cookies.get("access_token")?.value;
+  let user: { role?: UserRole } | null = null;
 
-  if (userCookie) {
+  if (token) {
     try {
-      user = JSON.parse(userCookie);
+      // Decode JWT token (extract payload)
+      const parts = token.split(".");
+      if (parts.length === 3) {
+        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString());
+        user = { role: payload.role };
+      }
     } catch {
-      // Invalid cookie, clear it
-      const response = NextResponse.next();
-      response.cookies.delete("user");
-      return response;
+      // Invalid token, will redirect to login below
     }
   }
 
@@ -26,13 +29,16 @@ export function middleware(request: NextRequest) {
   }
 
   // If user is not authenticated and trying to access protected routes
-  if (!user) {
-    // Redirect to login
+  // if (!user) {
+  //   // Redirect to login
+  //   return NextResponse.redirect(new URL("/auth/login", request.url));
+  // }
+  if (!token) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   // Role-based route protection
-  const role: UserRole = user.role;
+  const role: UserRole | undefined = user?.role;
 
   // Employer routes
   if (
@@ -50,7 +56,7 @@ export function middleware(request: NextRequest) {
 
   // Admin routes
   if (pathname.startsWith("/admin")) {
-    if (role !== "admin_lead") {
+    if (role !== "system_admin") {
       return NextResponse.redirect(new URL("/auth/login", request.url));
     }
   }

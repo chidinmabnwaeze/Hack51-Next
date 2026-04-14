@@ -6,22 +6,25 @@ import { User, UserRole } from "@/types/user";
 export const authService = {
   login: async (data: LoginProps) => {
     const res: ApiResponse<any> = await api.post("/auth/login", data);
-
-    if (!res.access_token || !res.refresh_token) {
+    const tokens = res.data;
+    if (!tokens.access_token || !tokens.refresh_token) {
       throw new Error("Invalid login res: missing tokens");
     }
 
-    localStorage.setItem("access_token", res.access_token);
-    localStorage.setItem("refresh_token", res.refresh_token);
+    localStorage.setItem("access_token", tokens.access_token);
+    localStorage.setItem("refresh_token", tokens.refresh_token);
+
+    document.cookie = `access_token=${tokens.access_token}; path=/`;
+    document.cookie = `refresh_token=${tokens.refresh_token}; path=/`;
     return await authService.getProfile(); // Fetches and stores user profile after login
   },
 
   register: async (data: RegisterProps) => {
     const response: ApiResponse<any> = await api.post("/auth/register", data);
-
-    if (response.access_token && response.refresh_token) {
-      localStorage.setItem("access_token", response.access_token);
-      localStorage.setItem("refresh_token", response.refresh_token);
+    const tokens = response.data;
+    if (tokens.access_token && tokens.refresh_token) {
+      localStorage.setItem("access_token", tokens.access_token);
+      localStorage.setItem("refresh_token", tokens.refresh_token);
     }
     return response;
   },
@@ -49,7 +52,7 @@ export const authService = {
       document.cookie = `user=${encodeURIComponent(JSON.stringify(response))}; path=/`;
     }
 
-    return { user: response };
+    return { user: response.data };
   },
 
   getCurrentUser: () => {
@@ -68,7 +71,7 @@ export const authService = {
 
   getRoleRoute: (role: UserRole) => {
     const roleRoutes: Record<UserRole, string> = {
-      admin_lead: "/admin/dashboard",
+      system_admin: "/admin/dashboard",
       employer: "/dashboard",
       candidate: "/candidate/dashboard",
     };

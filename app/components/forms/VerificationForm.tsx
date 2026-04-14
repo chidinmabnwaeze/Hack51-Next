@@ -41,7 +41,7 @@ export default function Verification() {
       const otpCode = otp.join("");
       console.log("Verifying OTP:", otpCode);
       await verifyEmail({
-        // email: (userAuth.getCurrentUser().user as any).email ,
+        email: new URLSearchParams(window.location.search).get("email") || "",
         otp: otpCode,
       });
     } catch (err) {
@@ -53,7 +53,8 @@ export default function Verification() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen m-auto w-full max-w-md px-6 border border-[#FF0046] rounded-lg shadow-md">
+    <section className="h-screen flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center m-auto w-full max-w-md p-6 border border-[#FF0046] rounded-lg shadow-md">
       <Image
         src={MailImg}
         alt="Email"
@@ -106,5 +107,6 @@ export default function Verification() {
         </button>
       </div> */}
     </div>
+    </section>
   );
 }

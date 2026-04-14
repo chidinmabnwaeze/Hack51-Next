@@ -81,7 +81,7 @@ export default function RegisterForm() {
       };
       console.log("REGISTRATION DATA", registrationData);
       await register(registrationData);
-      router.push("/auth/verify-email");
+      router.push(`/auth/verify-email?email=${formData.email}`);
       // router.push("/auth/login");
     } catch (err: any) {
       console.log("FULL ERROR", err);

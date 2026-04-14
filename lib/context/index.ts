@@ -6,9 +6,9 @@ import { User } from "@/types/user";
 
 export const userAuth = create((set) => ({
   user: authService.getCurrentUser(),
-  isAuthenticated: false,
+  // isAuthenticated: false,
   isVerified: false,
-  // isAuthenticated: authService.isAuthenticated(),
+  isAuthenticated: authService.isAuthenticated(),
   // isVerified: authService.getCurrentUser()?.is_verified || false,
 
   login: async (data: LoginProps) => {

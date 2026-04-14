@@ -51,7 +51,9 @@ export default function LoginForm() {
       const route = authService.getRoleRoute(data.user.role);
       console.log("USER ROLE", data.user.role);
       console.log("ROUTE", route);
+      console.log("Navigating to:", route);
       router.push(route);
+      console.log("Navigation triggered");
     } catch (err) {
       console.log("ERROR", err);
 
