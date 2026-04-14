@@ -35,10 +35,19 @@ export const userAuth = create((set) => ({
   verifyEmail: async (data: VerificationProps) => {
     try {
       const response = await authService.verifyEmail(data);
-      set({ isVerified: true });
+      set({ isVerified: false });
       return response;
     } catch (error) {
       throw error;
+    }
+  },
+
+  resendOtp: async (email: string) => {
+    try {
+      const response = await authService.resendOtp(email);
+      return response;
+    } catch (err) {
+      console.log(err);
     }
   },
 

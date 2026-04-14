@@ -76,11 +76,12 @@ export default function RegisterForm() {
         last_name: formData.lastName,
         email: formData.email,
         password: formData.password,
-        // timezone: formData.timezone,
         role: selectedRole,
       };
       console.log("REGISTRATION DATA", registrationData);
       await register(registrationData);
+
+      alert("Registration successful! Please verify your email.");
       router.push(`/auth/verify-email?email=${formData.email}`);
       // router.push("/auth/login");
     } catch (err: any) {

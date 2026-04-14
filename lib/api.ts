@@ -36,7 +36,12 @@ api.interceptors.response.use(
       error.message ||
       "Request failed";
     console.log("API Error response data:", data);
-    return Promise.reject(new Error(message));
+    const customError = new Error(message);
+
+    (customError as any).status = error.response?.status;
+    (customError as any).data = data;
+
+    return Promise.reject(customError);
   },
 );
 

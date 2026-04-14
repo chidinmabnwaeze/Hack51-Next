@@ -34,6 +34,11 @@ export const authService = {
     return response;
   },
 
+  resendOtp: async (email: string) => {
+    const response = await api.post("/auth/resend-otp", { email });
+    return response;
+  },
+
   logout: () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -48,8 +53,8 @@ export const authService = {
 
     // optionally store user
     if (response) {
-      localStorage.setItem("user", JSON.stringify(response));
-      document.cookie = `user=${encodeURIComponent(JSON.stringify(response))}; path=/`;
+      localStorage.setItem("user", JSON.stringify(response.data));
+      document.cookie = `user=${encodeURIComponent(JSON.stringify(response.data))}; path=/`;
     }
 
     return { user: response.data };
@@ -58,7 +63,7 @@ export const authService = {
   getCurrentUser: () => {
     const user = localStorage.getItem("user");
     console.log("CURRENT USER", user);
-    return user ? JSON.parse(user) : null;
+    return user ? JSON.parse(user).data : null;
   },
 
   isAuthenticated: () => {
@@ -66,7 +71,7 @@ export const authService = {
   },
 
   isVerified: () => {
-    return;
+    return !!localStorage.getItem("verified");
   },
 
   getRoleRoute: (role: UserRole) => {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { userAuth } from "@/lib/context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import MailImg from "@/public/email-with-at-sign-and-paper-airplane 1.png";
 
@@ -12,6 +12,7 @@ export default function Verification() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleChange = (value: string, index: number) => {
     if (!/^\d?$/.test(value)) return;
@@ -31,19 +32,19 @@ export default function Verification() {
     e.preventDefault();
     setLoading(true);
 
-    // if (otp.includes("")) {
-    //   setError( "Please enter the complete OTP");
-    //   setLoading(false);
-    //   return;
-    // }
-
     try {
       const otpCode = otp.join("");
+      if (otpCode.length !== 6) {
+        setError("Enter complete OTP");
+        return;
+      }
       console.log("Verifying OTP:", otpCode);
       await verifyEmail({
-        email: new URLSearchParams(window.location.search).get("email") || "",
+        email: searchParams.get("email") || "",
         otp: otpCode,
       });
+
+      router.push("/auth/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verification failed");
       console.log("Verification error:", err);
@@ -54,59 +55,63 @@ export default function Verification() {
 
   return (
     <section className="h-screen flex flex-col items-center justify-center">
-    <div className="flex flex-col items-center justify-center m-auto w-full max-w-md p-6 border border-[#FF0046] rounded-lg shadow-md">
-      <Image
-        src={MailImg}
-        alt="Email"
-        width={50}
-        height={50}
-        className="mb-6"
-      />
+      <div className="flex flex-col items-center justify-center m-auto w-full max-w-md p-6 border border-[#FF0046] rounded-lg shadow-md">
+        <Image
+          src={MailImg}
+          alt="Email"
+          width={50}
+          height={50}
+          className="mb-6"
+        />
 
-      <h1 className="text-4xl font-bold mb-4 text-[#FF0046]">
-        Email Verification
-      </h1>
-      <p className="text-lg text-gray-600 mb-6">
-        Check your inbox and write the six-digit code we sent in the space below
-      </p>
-      <p className="text-gray-600">
-        If you haven't received the email, please check your spam folder or{" "}
-        <a href="#" className="text-[#FF0046] font-medium hover:underline">
-          resend the verification email
-        </a>
-        .
-      </p>
+        <h1 className="text-4xl font-bold mb-4 text-[#FF0046]">
+          Email Verification
+        </h1>
+        <p className="text-lg text-gray-600 mb-6">
+          Check your inbox and write the six-digit code we sent in the space
+          below
+        </p>
+        <p className="text-gray-600">
+          If you haven't received the email, please check your spam folder or{" "}
+          <a href="#" className="text-[#FF0046] font-medium hover:underline">
+            resend the verification email
+          </a>
+          .
+        </p>
 
-      <form action="" className="flex justify-center mt-4">
-        {otp.map((digit, index) => (
-          <input
-            key={index}
-            id={`otp-${index}`}
-            type="text"
-            className="w-10 h-10 text-center border border-gray-300 rounded-md mx-1 focus:outline-none focus:ring-2 focus:ring-[#FF0046] focus:border-transparent"
-            maxLength={1}
-            value={digit}
-            onChange={(e) => handleChange(e.target.value, index)}
-          />
-        ))}
-      </form>
+        <form action="" className="flex justify-center mt-4">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              id={`otp-${index}`}
+              type="text"
+              className="w-10 h-10 text-center border border-gray-300 rounded-md mx-1 focus:outline-none focus:ring-2 focus:ring-[#FF0046] focus:border-transparent"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleChange(e.target.value, index)}
+            />
+          ))}
+        </form>
 
-      <div className="mt-6">
-        <button
-          className="px-4 py-2 bg-[#FF0046] text-white rounded-lg font-medium hover:bg-red-700"
-          onClick={handleVerify}
-          disabled={loading}
-        >
-          {loading ? "Verifying..." : "Verify Email"}
-        </button>
+        <div className="mt-6">
+          <button
+            className="px-4 py-2 bg-[#FF0046] text-white rounded-lg font-medium hover:bg-red-700"
+            onClick={handleVerify}
+            disabled={loading}
+          >
+            {loading ? "Verifying..." : "Verify Email"}
+          </button>
+        </div>
+        <div className="mt-4">
+          <button
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-400"
+            onClick={() => router.push("/auth/login")}
+          >
+         
+            Back to Login
+          </button>
+        </div>
       </div>
-      {/* <div className="mt-4">
-        <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-400">
-          {" "}
-          Back to Login
-        </button>
-      </div> */}
-    </div>
     </section>
   );
 }

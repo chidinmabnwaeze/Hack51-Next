@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Lock } from "lucide-react";
 import { UserRole } from "@/types/user";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,11 @@ export default function LoginForm() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  // useEffect(() => {
+  //   if (searchParams.get("verified")) {
+  //     setSuccess("Email verified successfully. You can now log in.");
+  //   }
+  // }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +34,6 @@ export default function LoginForm() {
     setLoading(true);
 
     if (!formData.email || !formData.password) {
-      
       setError("Please fill in all fields");
       setLoading(false);
       return;
@@ -51,13 +55,16 @@ export default function LoginForm() {
       const route = authService.getRoleRoute(data.user.role);
       console.log("USER ROLE", data.user.role);
       console.log("ROUTE", route);
-      console.log("Navigating to:", route);
       router.push(route);
-      console.log("Navigation triggered");
-    } catch (err) {
+    } catch (err: any) {
       console.log("ERROR", err);
 
-      setError(err instanceof Error ? err.message : "Login failed");
+      if (err.status === 403) {
+        router.push(`/auth/verify-email?email=${formData.email}`);
+        return;
+      }
+
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
