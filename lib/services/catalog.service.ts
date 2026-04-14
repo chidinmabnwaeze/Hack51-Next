@@ -3,24 +3,24 @@ import api from "../api";
 
 export const catalogService = {
   createRole: async (data: RoleCreationPayload) => {
-    const response = await api.post("/catalog/roles", data);
+    const response = await api.post("/admin/catalog/roles", data);
     console.log("CREATE ROLE RESPONSE", response.data);
     return response.data;
   },
 
   getRoles: async (params: Record<string, any> = {}) => {
-    const response = await api.get("catalog/roles", { params });
+    const response = await api.get("/admin/catalog/roles", { params });
     console.log("GET ROLE RESPONSE", response);
     return response;
   },
 
   getRoleById: async (role_id: string) => {
-    const response = await api.get(`/catalog/roles/${role_id}`);
+    const response = await api.get(`/admin/catalog/roles/${role_id}`);
     return response;
   },
 
   updateRole: async (role_id: string, data: RoleCreationPayload) =>{
-    const response = await api.patch(`/catalog/roles/${role_id}`, data);
+    const response = await api.patch(`/admin/catalog/roles/${role_id}`, data);
     return response;
   }
 };

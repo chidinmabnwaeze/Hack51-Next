@@ -15,6 +15,7 @@ type Role = {
 export default function RoleCreation({ params }: any) {
   const [roles, setRoles] = useState<Role[]>([]);
   //   const {id} = params
+  
 
   const handleCreate = () => {
     setRoles([...roles, { id: Date.now(), name: "", isEditing: true }]);

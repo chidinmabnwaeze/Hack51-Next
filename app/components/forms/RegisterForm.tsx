@@ -83,7 +83,6 @@ export default function RegisterForm() {
 
       alert("Registration successful! Please verify your email.");
       router.push(`/auth/verify-email?email=${formData.email}`);
-      // router.push("/auth/login");
     } catch (err: any) {
       console.log("FULL ERROR", err);
       console.log("BACKEND ERROR", err?.response?.data);
