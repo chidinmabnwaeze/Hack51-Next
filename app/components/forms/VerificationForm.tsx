@@ -3,15 +3,18 @@
 import { useState } from "react";
 import { userAuth } from "@/lib/context";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import MailImg from "@/public/email-with-at-sign-and-paper-airplane 1.png";
 
 export default function Verification() {
-  const verifyEmail = userAuth((state: any) => state.veifyEmail);
+  const verifyEmail = userAuth((state: any) => state.verifyEmail);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleChange = (value: number, index: number) => {
-    if (isNaN(value)) return;
+  const handleChange = (value: string, index: number) => {
+    if (!/^\d?$/.test(value)) return;
 
     const newOtp = [...otp];
     newOtp[index] = value;
@@ -24,26 +27,46 @@ export default function Verification() {
     }
   };
 
-  const handleVerify = (e: React.FormEvent) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    try{
+
+    // if (otp.includes("")) {
+    //   setError( "Please enter the complete OTP");
+    //   setLoading(false);
+    //   return;
+    // }
+
+    try {
       const otpCode = otp.join("");
       console.log("Verifying OTP:", otpCode);
-      verifyEmail({ otp: otpCode });
-
-    }catch(err){
+      await verifyEmail({
+        // email: (userAuth.getCurrentUser().user as any).email ,
+        otp: otpCode,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Verification failed");
       console.log("Verification error:", err);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold mb-4">Email Verification</h1>
+    <div className="flex flex-col items-center justify-center h-screen m-auto w-full max-w-md px-6 border border-[#FF0046] rounded-lg shadow-md">
+      <Image
+        src={MailImg}
+        alt="Email"
+        width={50}
+        height={50}
+        className="mb-6"
+      />
+
+      <h1 className="text-4xl font-bold mb-4 text-[#FF0046]">
+        Email Verification
+      </h1>
       <p className="text-lg text-gray-600 mb-6">
-        Please check your email for a verification link.
+        Check your inbox and write the six-digit code we sent in the space below
       </p>
       <p className="text-gray-600">
         If you haven't received the email, please check your spam folder or{" "}
@@ -62,7 +85,7 @@ export default function Verification() {
             className="w-10 h-10 text-center border border-gray-300 rounded-md mx-1 focus:outline-none focus:ring-2 focus:ring-[#FF0046] focus:border-transparent"
             maxLength={1}
             value={digit}
-            onChange={(e) => handleChange(Number(e.target.value[0]), index)}
+            onChange={(e) => handleChange(e.target.value, index)}
           />
         ))}
       </form>
@@ -73,15 +96,15 @@ export default function Verification() {
           onClick={handleVerify}
           disabled={loading}
         >
-          {loading ? "Verifying..." : "Verify Otp"}
+          {loading ? "Verifying..." : "Verify Email"}
         </button>
       </div>
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-400">
           {" "}
           Back to Login
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
