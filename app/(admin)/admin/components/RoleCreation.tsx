@@ -1,10 +1,11 @@
 "use client";
 
 import { PlusCircle, Pencil, Trash2, Check, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReviewTable from "./ReviewTable";
 import { useRouter } from "next/navigation";
 import { catalogService } from "@/lib/services/catalog.service";
+import { RoleCreationPayload } from "@/types/catalog";
 
 type Role = {
   id: number;
@@ -14,54 +15,94 @@ type Role = {
 
 export default function RoleCreation({ params }: any) {
   const [roles, setRoles] = useState<Role[]>([]);
-  //   const {id} = params
-  
+  const [roleName, setRoleName] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleCreate = () => {
-    setRoles([...roles, { id: Date.now(), name: "", isEditing: true }]);
+  useEffect(() => {
+    const fetchRoles = async () => {
+      setLoading(true);
+      try {
+        const response = await catalogService.getRoles();
+        console.log("FETCH ROLES", response);
+        setRoles(response.data);
+        setLoading(false);
+      } catch (err: any) {
+        console.error(
+          "ERROR FETCHING ROLES",
+          err.response?.data || err.message,
+        );
+        setLoading(false);
+      }
+    };
+    fetchRoles();
+  }, []);
+
+  const createRoleButton = () => {
+    setRoles((prev) => [
+      { id: Date.now(), name: "", isEditing: true },
+      ...prev,
+    ]);
   };
 
-  const handleChange = (id: number, value: string) => {
-    setRoles((prev) =>
-      prev.map((role) => (role.id === id ? { ...role, name: value } : role)),
-    );
-  };
+  const handleCreate = async () => {
+    if (!roleName.trim()) return;
 
-  const handleSave = async (id: number) => {
- 
-    try{
-
-
-    }catch(err){
-      console.log("ERROR CREATING ROLE", err);
+    try {
+      const createRole = await catalogService.createRole({
+        name: roleName,
+      });
+      const createdRole = createRole.data;
+      console.log("CREATE ROLE", createRole);
+      setRoles((prev) => [
+        ...prev,
+        { id: createdRole.id, name: createdRole, isEditing: false },
+      ]);
+      setRoleName("");
+    } catch (err: any) {
+      console.error("ERROR CREATING ROLE", err.response?.data || err.message);
     }
-
-
-
-
-
-
-
-
-    setRoles((prev) =>
-      prev.map((role) =>
-        role.id === id && role.name.trim()
-          ? { ...role, isEditing: false }
-          : role,
-      ),
-    );
   };
 
-  const handleEdit = (id: number) => {
-    setRoles((prev) =>
-      prev.map((role) =>
-        role.id === id ? { ...role, isEditing: true } : role,
-      ),
-    );
+  // const handleChange = (id: number, value: string) => {
+  //   setRoles((prev) =>
+  //     prev.map((role) => (role.id === id ? { ...role, name: value } : role)),
+  //   );
+  // };
+
+  // const handleSave = async (id: number) => {
+  //   setRoles((prev) =>
+  //     prev.map((role) =>
+  //       role.id === id && role.trim()
+  //         ? { ...role, isEditing: false }
+  //         : role,
+  //     ),
+  //   );
+  // };
+
+  const handleEdit = async (id: number) => {
+    try {
+      const editRole = await catalogService.updateRole(id.toString(), {
+        name: roles.find((role) => role.id === id)?.name || "",
+      });
+      console.log("EDIT ROLE", editRole);
+      setRoles((prev) =>
+        prev.map((role) =>
+          role.id === id ? { ...role, name: roleName } : role,
+        ),
+      );
+    } catch (err: any) {
+      console.error("ERROR EDITING ROLE", err.response?.data || err.message);
+    }
   };
 
-  const handleDelete = (id: number) => {
-    setRoles((prev) => prev.filter((role) => role.id !== id));
+  const handleDelete = async (id: number) => {
+    try {
+      const deleteRole = await catalogService.deleteRole(id.toString());
+      setRoles((prev) => prev.filter((role) => role.id !== id));
+      console.log("DELETE ROLE", deleteRole);
+    } catch (err: any) {
+      console.log(err.message);
+    }
   };
 
   const router = useRouter();
@@ -72,7 +113,7 @@ export default function RoleCreation({ params }: any) {
         <h2 className="text-xl font-semibold text-gray-800">Roles Created</h2>
 
         <button
-          onClick={handleCreate}
+          onClick={createRoleButton}
           className="flex items-center gap-2 bg-red-500 hover:bg-red-600 transition text-white px-4 py-2 rounded-lg"
         >
           Create new role
@@ -81,69 +122,80 @@ export default function RoleCreation({ params }: any) {
       </div>
 
       {/* Roles */}
-      <div className="mt-4">
-        {roles.map((role) => (
-          <div
-            key={role.id}
-            className="group flex items-center justify-between py-3 border-b last:border-none"
-          >
-            {/* LEFT SIDE */}
+      {loading ? (
+        <p className="text-gray-500 mt-4">Loading roles...</p>
+      ) : (
+        <div className="mt-4">
+          {roles.map((role) => (
             <div
-              className="flex items-center gap-3 w-full"
-              onClick={() => router.push(`/admin/catalog/skills`)}
-              // onClick={()=>router.push(`catalog/${id}/skills`)}
+              key={role.id}
+              className="group flex items-center justify-between py-3 border-b border-b-gray-200 last:border-none"
             >
-              {/* Arrow */}
-              <ChevronRight className="text-gray-400" size={18} />
-
-              {/* Content */}
-              {role.isEditing ? (
-                <input
-                  type="text"
-                  value={role.name}
-                  autoFocus
-                  placeholder="Type role name..."
-                  onChange={(e) => handleChange(role.id, e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSave(role.id);
-                  }}
-                  className="w-full bg-red-50 border border-red-200 px-3 py-2 rounded-md outline-none focus:ring-2 focus:ring-red-200"
-                />
-              ) : (
-                <p className="text-gray-800">{role.name || "Untitled Role"}</p>
-              )}
-            </div>
-
-            {/* RIGHT SIDE (ACTIONS) */}
-            <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition">
-              {role.isEditing ? (
-                <Check
+              {/* LEFT SIDE */}
+              <div
+                className="flex items-center gap-3 w-full "
+                // onClick={() => router.push(`/admin/catalog/skills`)}
+              >
+                {/* Arrow */}
+                <ChevronRight
+                  className="text-gray-400 cursor-pointer"
                   size={18}
-                  className="cursor-pointer text-green-600 hover:scale-110 transition"
-                  onClick={() => handleSave(role.id)}
+                  onClick={() =>
+                    router.push(`/admin/catalog/${role.id}/skills`)
+                  }
                 />
-              ) : (
-                <Pencil
+
+                {/* Content */}
+                {role.isEditing ? (
+                  <input
+                    type="text"
+                    value={roleName}
+                    autoFocus
+                    placeholder="Type role name..."
+                    onChange={(e) => setRoleName(e.target.value)}
+                    className="w-full bg-red-50 border border-red-200 px-3 py-2 rounded-md outline-none focus:ring-2 focus:ring-red-200"
+                  />
+                ) : (
+                  <p className="text-gray-800">
+                    {role.name || "Untitled Role"}
+                  </p>
+                )}
+              </div>
+
+              {/* RIGHT SIDE (ACTIONS) */}
+              <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition">
+                {role.isEditing ? (
+                  <Check
+                    size={18}
+                    className="cursor-pointer text-green-600 hover:scale-110 transition"
+                    onClick={handleCreate}
+                  />
+                ) : (
+                  <Pencil
+                    size={18}
+                    className="cursor-pointer text-gray-500 hover:text-black transition"
+                    onClick={() => handleEdit(role.id)}
+                  />
+                )}
+
+                <Trash2
                   size={18}
-                  className="cursor-pointer text-gray-500 hover:text-black transition"
-                  onClick={() => handleEdit(role.id)}
+                  className="cursor-pointer text-gray-400 hover:text-red-500 transition"
+                  onClick={() => handleDelete(role.id)}
                 />
-              )}
-
-              <Trash2
-                size={18}
-                className="cursor-pointer text-gray-400 hover:text-red-500 transition"
-                onClick={() => handleDelete(role.id)}
-              />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
 
-        {/* Empty State */}
-        {roles.length === 0 && (
-          <p className="text-gray-400 text-sm mt-4">No roles created yet.</p>
-        )}
-      </div>
+          {/* Empty State */}
+          {roles.length === 0 && (
+            <p className="text-gray-400 text-sm mt-4">No roles created yet.</p>
+          )}
+        </div>
+      )}
+      {/* <div>
+         <button onClick={() => router.push(`/admin/catalog/${role.id}/skills`)}>Save</button>
+      </div> */}
     </div>
   );
 }

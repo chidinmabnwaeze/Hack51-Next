@@ -1,11 +1,13 @@
 export interface RoleCreationPayload {
-  title: string;
-  level: string;
-  competencies: string;
-  name: string;
-  description: string;
-  skill_levels: "entry-level" | "mid-level" | "senior";
-  capabilities: [string];
+  name?: string;
+  description?: string;
+  skill_levels?: "entry-level" | "mid-level" | "senior";
+  capabilities?: [
+    {
+      title: string;
+      summary: string;
+    }
+  ];
 }
 
 export interface ChallengeCreationPayload {

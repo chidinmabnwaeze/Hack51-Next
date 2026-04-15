@@ -14,13 +14,18 @@ export const catalogService = {
     return response;
   },
 
-  getRoleById: async (role_id: string) => {
-    const response = await api.get(`/admin/catalog/roles/${role_id}`);
+  getRoleById: async (id: string) => {
+    const response = await api.get(`/admin/catalog/roles/${id}`);
     return response;
   },
 
-  updateRole: async (role_id: string, data: RoleCreationPayload) =>{
-    const response = await api.patch(`/admin/catalog/roles/${role_id}`, data);
+  updateRole: async (id: string, data: RoleCreationPayload) =>{
+    const response = await api.patch(`/admin/catalog/roles/${id}`, data);
+    return response;
+  },
+
+  deleteRole: async (id: string) => {
+    const response = await api.delete(`/admin/catalog/roles/${id}`);
     return response;
   }
 };
