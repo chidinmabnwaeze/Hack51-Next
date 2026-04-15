@@ -13,7 +13,7 @@ type Role = {
   isEditing: boolean;
 };
 
-export default function RoleCreation({ params }: any) {
+export default function RoleCreation() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [roleName, setRoleName] = useState("");
   const [loading, setLoading] = useState(false);

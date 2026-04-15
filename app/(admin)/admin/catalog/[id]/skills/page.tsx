@@ -2,12 +2,29 @@
 import { useParams } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { catalogService } from "@/lib/services/catalog.service";
 
 export default function SkillLevel({ params }: any) {
-  const levels = ["Entry Level", "Intermediate Level", "Senior Level", "Lead"];
+  const levels = ["entry-level", "mid-level", "senior"];
 
   const { id } = params;
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchLevels = async () => {
+      try {
+        const response = await catalogService.updateRole(id, {
+          skill_levels: levels,
+        });
+        console.log("UPDATE ROLE RESPONSE", response);
+      } catch (err: any) {
+        console.log("ERROR FETCHING SKILL LEVELS", err.message);
+      }
+    };
+    fetchLevels();
+  }, []);
+
   return (
     <section>
       <span
@@ -28,9 +45,10 @@ export default function SkillLevel({ params }: any) {
           <h2 className="border-b border-b-gray-300 text-xl">
             Skill levels for role
           </h2>
-          <button className="px-5 py-2.5 bg-[#F01E5A] hover:bg-[#c0144a] text-white text-sm font-semibold rounded-lg transition-colors"
-          onClick={()=>router.push(`/admin/catalog/rolecapabilities`)}>
-            
+          <button
+            className="px-5 py-2.5 bg-[#F01E5A] hover:bg-[#c0144a] text-white text-sm font-semibold rounded-lg transition-colors"
+            onClick={() => router.push(`/admin/catalog/rolecapabilities`)}
+          >
             Save & Continue
           </button>
         </div>
