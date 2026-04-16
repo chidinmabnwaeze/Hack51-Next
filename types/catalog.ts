@@ -1,16 +1,13 @@
 export type SkillLevel = "entry-level" | "mid-level" | "senior";
 
-
 export interface RoleCreationPayload {
   name?: string;
   description?: string;
-  skill_levels?: SkillLevel;
-  capabilities?: [
-    {
-      title: string;
-      summary: string;
-    }
-  ];
+  skill_levels?: SkillLevel[];
+  capabilities?: {
+    title: string;
+    summary: string;
+  }[];
 }
 
 export interface ChallengeCreationPayload {

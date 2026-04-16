@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import ReviewTable from "./ReviewTable";
 import { useRouter } from "next/navigation";
 import { catalogService } from "@/lib/services/catalog.service";
-import { RoleCreationPayload } from "@/types/catalog";
 
 type Role = {
   id: number;
@@ -55,7 +54,7 @@ export default function RoleCreation() {
       console.log("CREATE ROLE", createRole);
       setRoles((prev) => [
         ...prev,
-        { id: createdRole.id, name: createdRole, isEditing: false },
+        { id: createdRole.id, name: createdRole.name, isEditing: false },
       ]);
       setRoleName("");
     } catch (err: any) {

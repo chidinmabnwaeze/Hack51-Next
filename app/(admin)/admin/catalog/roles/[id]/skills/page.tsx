@@ -25,7 +25,7 @@ export default function SkillLevel() {
     try {
       setLoading(true);
       await catalogService.updateRole(id, {
-        skill_levels: selectedLevel,
+        skill_levels: [selectedLevel],
       });
       console.log("Selected Level", selectedLevel);
       router.push(`/admin/catalog/roles/${id}/rolecapabilities`);
