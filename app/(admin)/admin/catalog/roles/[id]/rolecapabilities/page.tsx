@@ -4,8 +4,6 @@ import { ArrowLeftIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { catalogService } from "@/lib/services/catalog.service";
 
-const details = [{ title: "Role Title" }, { title: "Role Level" }];
-
 export default function RoleDetails() {
   const router = useRouter();
   const params = useParams();
