@@ -1,5 +1,5 @@
 import React from "react";
-import RoleCreation from "../components/RoleCreation";
+import RoleCreation from "../../components/RoleCreation";
 
 const page = () => {
   return (

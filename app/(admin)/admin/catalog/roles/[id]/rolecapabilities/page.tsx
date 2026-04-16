@@ -1,15 +1,40 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { catalogService } from "@/lib/services/catalog.service";
 
 const details = [{ title: "Role Title" }, { title: "Role Level" }];
 
 export default function RoleDetails() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+
+  const [roleDetails, setRoleDetails] = useState({
+    name: "",
+    skill_levels: "",
+  });
+
+  useEffect(() => {
+    const fetchRoleDetails = async () => {
+      try {
+        const response = await catalogService.getRoles();
+        setRoleDetails({
+          name: response.data.name,
+          skill_levels: response.data.skill_levels,
+        });
+      } catch (err: any) {
+        console.log("ERROR FETCHING ROLE DETAILS", err.message);
+      }
+    };
+    fetchRoleDetails();
+  }, []);
+
   return (
     <section>
       <span
-        onClick={() => router.push("/admin/catalog")}
+        onClick={() => router.push("/admin/catalog/roles")}
         className="cursor-pointer hover:text-red-700 my-5 text-sm text-gray-500"
       >
         <ArrowLeftIcon className="inline-block mr-1" />
@@ -34,18 +59,16 @@ export default function RoleDetails() {
           </button>
         </div>
 
-        {details.map((detail, index) => (
-          <div className="flex items-center" key={index}>
-            <label className="block mt-4 mb-2 font-semibold">
-              {detail.title}
-            </label>
-            <input
-              type="text"
-              className="block mt-4 m-4 p-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500"
-              // value={detail.value}
-            />
+        <div className="flex flex-col items-center">
+          <label className="block mt-4 mb-2 font-semibold">Role Title</label>
+          <div className="block mt-4 m-4 p-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500">
+            {roleDetails.name}
           </div>
-        ))}
+          <label className="block mt-4 mb-2 font-semibold">Role Level</label>
+          <div className="block mt-4 m-4 p-2 rounded border border-gray-300 focus:ring-1 focus:ring-blue-500">
+            {roleDetails.skill_levels}
+          </div>
+        </div>
 
         <div className="bg-white rounded-xl mt-12">
           <h2 className="border-b border-b-gray-300 text-xl">

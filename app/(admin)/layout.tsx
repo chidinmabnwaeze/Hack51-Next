@@ -15,7 +15,7 @@ const sidebarItems = [
   {
     name: "Catalog",
     icon: "BookOpen",
-    path: "/admin/catalog",
+    path: "/admin/catalog/roles",
   },
   {
     name: "Settings",

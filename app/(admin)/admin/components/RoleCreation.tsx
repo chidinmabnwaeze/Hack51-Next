@@ -141,7 +141,7 @@ export default function RoleCreation() {
                   className="text-gray-400 cursor-pointer"
                   size={18}
                   onClick={() =>
-                    router.push(`/admin/catalog/${role.id}/skills`)
+                    router.push(`/admin/catalog/roles/${role.id}/skills`)
                   }
                 />
 

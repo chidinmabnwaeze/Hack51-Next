@@ -20,7 +20,7 @@ export const catalogService = {
   },
 
   updateRole: async (id: string, data: RoleCreationPayload) =>{
-    const response = await api.patch(`/admin/catalog/roles/${id}`, data);
+    const response = await api.put(`/admin/catalog/roles/${id}`, data);
     return response;
   },
 
