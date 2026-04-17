@@ -2,18 +2,18 @@
 import Image from "next/image";
 import { type HeaderProps } from "@/types/header";
 import logo from "@/logo.png";
-import avatar from "@/icons/avatardefault.webp"
+import avatar from "@/icons/avatardefault.webp";
 import { User } from "@/types/user";
 import { authService } from "@/lib/services/auth.service";
 import { useEffect, useState } from "react";
 
-export default function Header({logo, avatar}: HeaderProps) {
+export default function Header({ logo, avatar }: HeaderProps) {
   const [user, setUser] = useState<User>();
   useEffect(() => {
     const activeUser = authService.getCurrentUser();
     setUser(activeUser);
   }, []);
- 
+
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow z-20 flex justify-between items-center px-6 py-3">
       {/* logo */}

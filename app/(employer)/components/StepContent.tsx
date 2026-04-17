@@ -44,6 +44,8 @@ export const stepConfig = [
   },
 ];
 
+
+
 export default function StepContent({ step }: { step: number }) {
   const normalized = Math.max(1, Math.min(stepConfig.length, step));
   return stepConfig[normalized - 1]?.component ?? null;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRequestStore } from "@/lib/context/useRequestStore";
 import { stepConfig } from "./StepContent";
 
 export default function StepIndicator({
@@ -7,6 +8,8 @@ export default function StepIndicator({
 }: {
   currentStep: number;
 }) {
+const {step} = useRequestStore();
+
   const getStatusStyles = (status: "completed" | "current" | "pending") => {
     switch (status) {
       case "completed":

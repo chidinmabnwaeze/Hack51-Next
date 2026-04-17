@@ -1,8 +1,8 @@
-import { ChallengeCreationPayload, ApprovedProps } from "@/types/catalog";
+import { CreateChallengeWithRubric } from "@/types/catalog";
 import api from "../api";
 
 export const challengeService = {
-  createChallenge: async (data: ChallengeCreationPayload) => {
+  createChallenge: async (data: CreateChallengeWithRubric) => {
     const response = await api.post("/admin/catalog/challenges", data);
     console.log("CREATE CHALLENGE RESPONSE", response.data);
     return response.data;
@@ -19,33 +19,14 @@ export const challengeService = {
     return response;
   },
 
- updateChallenge: async (id: string, data: ChallengeCreationPayload) => {
+ updateChallenge: async (id: string, data: CreateChallengeWithRubric) => {
     const response = await api.put(`/admin/catalog/challenges/${id}`, data);
     return response;
   },
 
   deleteChallenge: async (id: string) => {
-    const response = await api.delete(`/admin/catalog/challenge/templates/${id}`);
+    const response = await api.delete(`/admin/catalog/challenges/${id}`);
     return response;
   },
 
-  // approveChallenge: async (id: string, data: ApprovedProps) => {
-  //   const response = await api.post(`/admin/catalog/challenge-approved/${id}`, data);
-  //   return response;
-  // },
-
-  // getApprovedChallenges: async (params: Record<string, any> = {}) => {
-  //   const response = await api.get("/admin/catalog/challenge-approved", { params });
-  //   return response;
-  // },
-
-  // getPublicChallenges: async (params: Record<string, any> = {}) => {
-  //   const response = await api.get("/admin/catalog/challenges", { params });
-  //   return response;
-  // },
-
-  // getChallengeDetails: async (request_id: string) => {
-  //   const response = await api.get(`/admin/catalog/challenges/${request_id}`);
-  //   return response;
-  // },
-};
+  };

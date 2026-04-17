@@ -85,7 +85,7 @@ export default function RoleDetails() {
     try {
       const response = await catalogService.updateRole(id, { capabilities: filled });
       console.log("UPDATE ROLE CAPABILITIES", response);
-      // router.push(`/admin/catalog/roles/${id}/challenge`);
+      router.push(`/admin/catalog/challenges?catalog_role_id=${id}`);
     } catch (err: any) {
       console.error("ERROR UPDATING ROLE CAPABILITIES", err.response?.data || err.message);
     } finally {

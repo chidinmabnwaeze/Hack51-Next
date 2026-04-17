@@ -1,17 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import StepContent, { stepConfig } from "@/app/(employer)/components/StepContent";
 import StepIndicator from "@/app/(employer)/components/StepIndicator";
+import { useRequestStore } from "@/lib/context/useRequestStore";
 import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {
   const router = useRouter();
-  const [step, setStep] = useState(1);
-
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => prev - 1);
+  const { step, nextStep, prevStep } = useRequestStore();
 
   return (
     <div>

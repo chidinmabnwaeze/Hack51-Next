@@ -5,7 +5,6 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Get user from localStorage (stored as JSON string)
-  // Note: In middleware, we check cookies instead since localStorage is client-only
   // const userCookie = request.cookies.get("user")?.value;
   const token = request.cookies.get("access_token")?.value;
   let user: { role?: UserRole } | null = null;

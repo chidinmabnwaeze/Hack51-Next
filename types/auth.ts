@@ -1,5 +1,3 @@
-
-
 export interface RegisterProps {
   first_name: string;
   last_name: string;
@@ -13,7 +11,7 @@ export interface LoginProps {
   password: string;
 }
 
-export interface VerificationProps{
+export interface VerificationProps {
   email: string;
   otp: number;
 }

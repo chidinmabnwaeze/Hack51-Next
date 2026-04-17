@@ -37,6 +37,7 @@ api.interceptors.response.use(
 
         const newAccessToken = response.data.access_token;
         localStorage.setItem("access_token", newAccessToken);
+        document.cookie = `access_token=${newAccessToken}; path=/`;
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);

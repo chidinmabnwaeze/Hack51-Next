@@ -8,18 +8,19 @@ import {
 import { useRouter } from "next/navigation";
 import ChallengeCardInput from "../../components/ChallengeCardInput";
 import { ArrowLeftIcon, PlusCircle, X } from "lucide-react";
+import { CreateChallengeWithRubric } from "@/types/catalog";
 
-export type Challenge = {
-  id: number;
-  title: string;
-  desc: string;
-  scenario: string;
-  req: string[];
-};
+// export type Challenge = {
+//   id: number;
+//   title: string;
+//   desc: string;
+//   scenario: string;
+//   req: string[];
+// };
 export default function ChallengeDetails() {
   const router = useRouter();
 
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [challenges, setChallenges] = useState<CreateChallengeWithRubric[]>([]);
   const [challenge, setChallenge] = useState({
     title: "",
     desc: "",
@@ -53,7 +54,7 @@ export default function ChallengeDetails() {
     e.preventDefault();
     if (!challenge.title.trim()) return;
 
-    const newChallenge: Challenge = {
+    const newChallenge: CreateChallengeWithRubric = {
       id: Date.now(),
       ...challenge,
     };
@@ -82,7 +83,7 @@ export default function ChallengeDetails() {
         <div className="flex justify-between items-center">
           <div>
             <span
-              onClick={() => router.push("/admin/catalog")}
+              onClick={() => router.push("/admin/catalog/roles")}
               className="cursor-pointer hover:text-red-700 my-5 text-sm text-gray-500"
             >
               <ArrowLeftIcon className="inline-block mr-1" />
@@ -115,7 +116,7 @@ export default function ChallengeDetails() {
             <section className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {challenges.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.catalog_role_id}
                   onClick={() =>
                     router.push(`/admin/catalog/challenge/${item.id}`)
                   }
