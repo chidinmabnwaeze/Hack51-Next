@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
 import SubmissionsList, { ActiveSubmissions } from "@/app/(admin)/admin/components/SubmissionsList";
+import { useEffect, useState } from "react";
+import { requestService } from "@/lib/services/request.service";
 
 // Mock data — replace with API fetch using requestId when backend is ready
 const MOCK_SUBMISSIONS: Record<string, ActiveSubmissions[]> = {
@@ -22,12 +24,31 @@ interface Props {
 export default function SubmissionsPage({ params }: Props) {
   const router = useRouter();
   const { requestId } = params;
+  const [submissions, setSubmissions]= useState([])
+  const [loading, setLoading] = useState(false);
 
   // TODO: Replace with real API fetch: const submissions = await fetchSubmissions(requestId)
-  const submissions = MOCK_SUBMISSIONS[requestId] ?? MOCK_SUBMISSIONS.default;
+  // const submissions = MOCK_SUBMISSIONS[requestId] ?? MOCK_SUBMISSIONS.default;
+
+  useEffect(()=>{
+    const fetchSubmissions = async () => {
+      try{
+        setLoading(true);
+        const response = await requestService.getRequestById(requestId);
+        console.log("SUBMISSIONS", response);
+        setSubmissions(response.data);
+        setLoading(false);
+      }catch(error){
+        console.error("Error fetching submissions:", error);
+        setLoading(false);
+      }
+    }
+    fetchSubmissions();
+  },[])
 
   return (
     <div>
+      {loading && <p>Loading submissions...</p>}
       <span
         onClick={() => router.push("/admin/review")}
         className="cursor-pointer hover:text-red-700 my-5 text-sm text-gray-500"

@@ -3,7 +3,7 @@ import api from "../api";
 
 export const requestService = {
   getRequests: async (params: Record<string, any>) => {
-    const response = await api.get("/requests", { params });
+    const response = await api.get("/admin/review/requests", { params });
     console.log("REQUESTS", response);
 
     return response;
@@ -14,8 +14,12 @@ export const requestService = {
     return response;
   },
 
-  getRequestById: async (request_id: number) => {
-    const response = await api.get(`/requests/${request_id}`);
+  getRequestById: async (requestId: string) => {
+    const response = await api.get(`/admin/review/requests/${requestId}/submissions`);
     return response;
   },
+  getSubmissionById: async (id: string) => {
+    const response = await api.get(`/admin/review/submissions/${id}`);
+    return response;
+  }
 };
