@@ -1,24 +1,20 @@
 "use client";
 
 type Props = {
-  id?: number;
+  id: string;
+  title: string;
+  description?: string;
   isSelected?: boolean;
-  onSelect?: (id: number) => void;
+  onSelect?: (id: string) => void;
 };
 
 export default function ChallengeCard({
-  id = 0,
+  id,
+  title,
+  description = "",
   isSelected = false,
   onSelect,
 }: Props) {
-  const data = {
-    id,
-    title: `Senior Backend Engineer (#${id})`,
-    description:
-      "A brief description of the challenge goes here. It should be concise and informative.",
-    tests: ["Test A", "Test B", "Test C"],
-  };
-
   return (
     <div
       onClick={() => onSelect?.(id)}
@@ -32,21 +28,8 @@ export default function ChallengeCard({
             Selected
           </div>
         )}
-        <h2 className="text-xl font-bold mt-4">{data.title}</h2>
-        <p className="text-gray-600 mt-2">{data.description}</p>
-      </div>
-      <div className="gap-4 mt-4">
-        <h1>Tests for</h1>
-        <div className="flex flex-wrap">
-          {data.tests.map((t, i) => (
-            <span
-              className="m-2 bg-[#ff0046]/40 text-black text-sm p-1 px-4 rounded-full"
-              key={i}
-            >
-              {t}
-            </span>
-          ))}
-        </div>
+        <h2 className="text-xl font-bold mt-4">{title}</h2>
+        <p className="text-gray-600 mt-2">{description}</p>
       </div>
     </div>
   );

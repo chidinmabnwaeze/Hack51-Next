@@ -22,21 +22,21 @@ export interface EmployerRoles {
   is_active: boolean;
   created_at: string;
   updated_at: string;
-  catalog_skill_levels: string[];
+  catalog_skill_levels: { id: string; level: string }[];
   challenges: string[];
   capabilities?: Capability[];
 }
 
 export interface CreateChallengeWithRubric {
-  catalog_role_id: string;
-  title: string;
-  summary: string;
-  scenario: string;
-  deliverables: [string];
-  submission_format: string;
-  constraints_text: string;
-  submission_requirements: string;
-  rubric_criteria: {
+  catalog_role_id?: string;
+  title?: string;
+  summary?: string;
+  scenario?: string;
+  deliverables: string[];
+  submission_format?: string;
+  constraints_text?: string;
+  submission_requirements?: string;
+  rubric_criteria?: {
     title: string;
     description: string;
     weight: number;

@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusCircle, Pencil, Trash2, Check, ChevronRight } from "lucide-react";
+import { PlusCircle, Pencil, Trash2, Check, ChevronRight, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import ReviewTable from "./ReviewTable";
 import { useRouter } from "next/navigation";
@@ -47,11 +47,10 @@ export default function RoleCreation() {
     if (!roleName.trim()) return;
 
     try {
-      const createRole = await catalogService.createRole({
+      const createdRole = await catalogService.createRole({
         name: roleName,
       });
-      const createdRole = createRole.data;
-      console.log("CREATE ROLE", createRole);
+      console.log("CREATE ROLE", createdRole);
       setRoles((prev) => [
         ...prev,
         { id: createdRole.id, name: createdRole.name, isEditing: false },
@@ -176,6 +175,12 @@ export default function RoleCreation() {
                     onClick={() => handleEdit(role.id)}
                   />
                 )}
+
+                <Eye
+                  size={18}
+                  className="cursor-pointer text-gray-400 hover:text-blue-500 transition"
+                  onClick={() => router.push(`/admin/catalog/roles/${role.id}/view`)}
+                />
 
                 <Trash2
                   size={18}

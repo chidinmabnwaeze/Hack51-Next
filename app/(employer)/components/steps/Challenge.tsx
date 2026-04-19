@@ -1,35 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { employerService } from "@/lib/services/employer.service";
+import { Challenge as ChallengeType } from "@/types/employer";
+import { useRequestStore } from "@/lib/context/useRequestStore";
 import ChallengeCard from "../ChallengeCard";
 
 export default function Challenge() {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const router = useRouter();
-  const cardIds = [1, 2, 3, 4, 5, 6, 7, 8];
+  const [challenges, setChallenges] = useState<ChallengeType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { challenge, setChallenge, nextStep } = useRequestStore();
 
-  const handleSelect = (id: number) => {
-    setSelectedId((prev) => (prev === id ? null : id));
+  useEffect(() => {
+    const fetchChallenges = async () => {
+      setLoading(true);
+      try {
+        const response = await employerService.getChallenges();
+        setChallenges(response);
+      } catch (err: any) {
+        console.error("Error fetching challenges", err.message || err?.response?.data);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchChallenges();
+  }, []);
+
+  const handleSelect = (id: string) => {
+    const selected = challenges.find((c) => c.id === id);
+    if (!selected) return;
+    setChallenge({ id: selected.id, title: selected.title });
+    nextStep();
   };
 
-  const handleUse = () => {
-    if (selectedId !== null) {
-      router.push(`/shortlists?selectedChallengeId=${selectedId}`);
-    }
-  };
+  if (loading) return <div className="loader mx-auto my-24"></div>;
 
   return (
     <div className="mt-20">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Challenge Details</h1>
-      </div>
+      <h1 className="text-3xl font-bold">Challenge Details</h1>
       <section className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cardIds.map((id) => (
+        {challenges.map((c) => (
           <ChallengeCard
-            key={id}
-            id={id}
-            isSelected={selectedId === id}
+            key={c.id}
+            id={c.id}
+            title={c.title}
+            description={c.description}
+            isSelected={challenge?.id === c.id}
             onSelect={handleSelect}
           />
         ))}

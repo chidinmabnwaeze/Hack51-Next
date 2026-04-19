@@ -2,8 +2,10 @@
 import RequestTable from "../components/RequestTable";
 import type { ActiveRequest } from "../components/RequestTable";
 import ChallengeButton from "../components/ChallengeButton";
-import { requestService } from "@/lib/services/request.service";
+// import { requestService } from "@/lib/services/request.service";
+import { employerService } from "@/lib/services/employer.service";
 import { useEffect, useState } from "react";
+import { EmployerRequest } from "@/types/employer";
 
 // const activeRequests: ActiveRequest[] = [
 //   {
@@ -49,7 +51,7 @@ import { useEffect, useState } from "react";
 // ];
 
 export default function RequestsPage() {
-  const [requests, setRequests] = useState([]);
+  const [requests, setRequests] = useState<EmployerRequest[]>([]);
 
   const [activeTab, setActiveTab]= useState<"all"| "closed" | "drafts">('all')
 
@@ -58,18 +60,16 @@ export default function RequestsPage() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const data = await requestService.getRequests({
-          title: "",
-          page: 1,
-          limit: 10,
-          id: 0,
-          level: "",
-          competencies: [],
-          scope_description: "",
-          status: "shortlisted",
+        const data = await employerService.getRequests({
+         status: "published",
+    page?: 1,
+    limit?: 20,
+    drafts?: false,
+          
         });
         console.log("request_data", data);
-        return data;
+        setRequests(data);
+        
       } catch (error) {
         console.log("Error fetching requests", error);
         throw new Error("Failed to fetch requests");
@@ -122,7 +122,7 @@ export default function RequestsPage() {
       </div>
 
       <section className="mt-6 shadow bg-white p-6 rounded-2xl">
-        <RequestTable requests={[]} detailed />
+        <RequestTable requests={requests} detailed />
       </section>
 
       <div className="flex justify-end items-center mt-4 gap-2">

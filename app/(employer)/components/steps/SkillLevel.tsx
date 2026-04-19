@@ -1,50 +1,38 @@
-import { employerService } from "@/lib/services/employer.service";
-import { Role } from "@/types/employer";
-import { useEffect, useState } from "react";
+"use client";
+
 import { useRequestStore } from "@/lib/context/useRequestStore";
 
-// const levels = ["Entry Level", "Intermediate Level", "Senior Level", "Lead"]
-export interface Levels {
-  id: "";
-  role_level: "";
-}
 export default function SkillLevel() {
-  const [roleLevels, setRoleLevels] = useState([]);
-  const [selectedLevel, setSelected] = useState<string>("")
-    const { role_level, setRoleLevel, nextStep } = useRequestStore();
+  const { role, role_level, setRoleLevel, nextStep } = useRequestStore();
 
-  // useEffect(() => {
-  //   const fetchSkills = async () => {
-  //     try {
-  //       const response = await employerService.getRoles();
-  //       setRoleLevels(response);
-  //     } catch (err: any) {
-  //       console.log(err.message);
-  //     }
-  //   };
-  //   fetchSkills();
-  // }, []);
-
-  const handleSelect = (selected : string)=>{
-    setRoleLevel(selected);
+  const handleSelect = (item: { id: string; level: string }) => {
+    setRoleLevel(item);
     nextStep();
-  }
-
+  };
 
   return (
     <div className="bg-white p-8 rounded-xl shadow-md w-full mt-8 md:w-3/4 mx-auto">
       <h2 className="border-b border-b-gray-300 text-xl">
         Select skill level for the role
       </h2>
-      {roleLevels.map((level) => (
+      {!role?.catalog_skill_levels.length && (
+        <p className="mt-6 text-gray-500">No skill levels defined for this role.</p>
+      )}
+      {role?.catalog_skill_levels.map((item) => (
         <div
-          key={level}
-          className="p-4 mt-4 gap-4 cursor-pointer hover:bg-gray-100"
+          key={item.id}
+          className="p-4 mt-4 gap-4 cursor-pointer hover:bg-gray-100 flex items-center"
+          onClick={() => handleSelect(item)}
         >
-          <input type="checkbox" className="rounded-full" onClick={()=>handleSelect(level)}/>
-          <label htmlFor="role" className="ml-5">
-            {level}
-          </label>
+          <input
+            type="radio"
+            name="skill_level"
+            value={item.level}
+            checked={role_level?.id === item.id}
+            readOnly
+            className="rounded-full p-2"
+          />
+          <label className="ml-5 cursor-pointer capitalize">{item.level}</label>
         </div>
       ))}
     </div>

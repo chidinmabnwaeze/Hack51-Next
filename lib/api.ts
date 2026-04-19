@@ -52,21 +52,19 @@ api.interceptors.response.use(
         return Promise.reject(new Error(message));
       }
     }
-    // const data = error.response?.data;
-    // const message =
-    //   data?.message ||
-    //   data?.error ||
-    //   data?.detail ||
-    //   (typeof data === "string" ? data : null) ||
-    //   error.message ||
-    //   "Request failed";
-    // console.log("API Error response data:", data);
-    // const customError = new Error(message);
-
-    // (customError as any).status = error.response?.status;
-    // (customError as any).data = data;
-
-    // return Promise.reject(customError);
+    const data = error.response?.data;
+    const message =
+      data?.message ||
+      data?.error ||
+      data?.detail ||
+      (typeof data === "string" ? data : null) ||
+      error.message ||
+      "Request failed";
+    console.error("API Error:", error.response?.status, data);
+    const customError = new Error(message);
+    (customError as any).status = error.response?.status;
+    (customError as any).data = data;
+    return Promise.reject(customError);
   },
 );
 

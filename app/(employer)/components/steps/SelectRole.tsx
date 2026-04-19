@@ -48,7 +48,7 @@ export default function SelectRole() {
             name="role"
             value={r.id}
             checked={role?.id === r.id}
-            onChange={() => handleSelect(r)}
+            readOnly
             className="rounded-full p-2 checked:bg-red-700"
           />
           <label className="ml-3 cursor-pointer">{r.name}</label>
