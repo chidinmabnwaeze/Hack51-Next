@@ -1,5 +1,6 @@
 "use client";
 
+import { requestService } from "@/lib/services/request.service";
 import { Eye } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -56,6 +57,17 @@ export default function ReviewTable({
   ];
 
   const router = useRouter();
+
+  const handleReviewClick = async(id?: string) => {
+try{
+  const res = await requestService.getSubmissionsById(id!);
+  if(res){
+    router.push(`/admin/review/${id}/submissions`);
+  } else {
+    alert("Request not found");
+  }
+}
+  }
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white">
