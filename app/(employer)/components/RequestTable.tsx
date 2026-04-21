@@ -26,7 +26,7 @@ const daysLeft = (deadline: string) => {
 };
 
 export default function RequestTable({ requests, detailed = false }: RequestTableProps) {
-  const headers = ["Request Title", "Role Level", "Deadline", "Status", "Actions"];
+  const headers = ["Request Title", "Role Level", "Submissions", "Deadline", "Status", "Actions"];
 
   if (requests.length === 0) {
     return <p className="text-gray-500 text-sm py-4">No requests found.</p>;
@@ -56,6 +56,21 @@ export default function RequestTable({ requests, detailed = false }: RequestTabl
               <td className="py-3 px-4 text-sm capitalize text-gray-600">
                 {req.role_level?.replace(/-/g, " ") || "—"}
               </td>
+                {/* <td className="py-2 px-4">
+                {req.submissions.map((s, si) => (
+                  <div key={si} className="mb-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-[#FF0046] h-2 rounded-full"
+                        style={{ width: `${s.percentage}%` }}
+                      />
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {s.submitted}/{s.total}
+                    </p>
+                  </div>
+                ))}
+              </td> */}
               <td className="py-3 px-4 text-sm text-gray-600">
                 <span>{req.deadline ? new Date(req.deadline).toLocaleDateString() : "—"}</span>
                 <span className="ml-2 text-xs text-gray-400">({daysLeft(req.deadline)})</span>

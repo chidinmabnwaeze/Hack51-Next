@@ -5,7 +5,6 @@ export const reviewService = {
   getRequests: async (params: Record<string, any>) => {
     const response = await api.get("/admin/review/requests", { params });
     console.log("REQUESTS", response);
-
     return response;
   },
   getAllRequestSubmissions: async (requestId: string, params: Record<string, any>) => {

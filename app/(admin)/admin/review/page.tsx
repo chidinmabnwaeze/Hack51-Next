@@ -76,11 +76,6 @@ export default function RequestsPage() {
     fetchRequests();
   }, []);
 
-<<<<<<< HEAD
-=======
-  
-
->>>>>>> 237ca74a6f8989c87cea9bf94a62037205d7e805
   return (
     <div>
       <section className="flex justify-between items-center">
