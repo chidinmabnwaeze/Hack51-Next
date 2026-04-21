@@ -50,7 +50,7 @@ import {  reviewService } from "@/lib/services/review.service";
 
 export default function RequestsPage() {
   const router = useRouter();
-  const [requests, setRequests] = useState([]);
+  const [ requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"active requests" | "shortlists">(
     "active requests",
@@ -76,6 +76,11 @@ export default function RequestsPage() {
     fetchRequests();
   }, []);
 
+<<<<<<< HEAD
+=======
+  
+
+>>>>>>> 237ca74a6f8989c87cea9bf94a62037205d7e805
   return (
     <div>
       <section className="flex justify-between items-center">
@@ -128,6 +133,7 @@ export default function RequestsPage() {
       <section className="mt-6 shadow bg-white p-6 rounded-2xl">
         <ReviewTable requests={requests} detailed />
       </section>
+
 
       <div className="flex justify-end items-center mt-4 gap-2">
         <button className="px-4 py-2 border border-[#FF0046] rounded text-[#FF0046] hover:bg-gray-50">
