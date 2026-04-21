@@ -1,12 +1,9 @@
 "use client";
 
-import RequestTable from "@/app/(employer)/components/RequestTable";
-import type { ActiveRequest } from "@/app/(employer)/components/RequestTable";
-import ChallengeButton from "@/app/(employer)/components/ChallengeButton";
 import ReviewTable from "../components/ReviewTable";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { requestService } from "@/lib/services/request.service";
+import {  reviewService } from "@/lib/services/review.service";
 
 // const activeRequests: ActiveRequest[] = [
 //   {
@@ -51,31 +48,33 @@ import { requestService } from "@/lib/services/request.service";
 //   },
 // ];
 
-
-
 export default function RequestsPage() {
   const router = useRouter();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"active requests" | "shortlists">("active requests");
-  
+  const [activeTab, setActiveTab] = useState<"active requests" | "shortlists">(
+    "active requests",
+  );
+
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await requestService.getRequests({
+        const response = await reviewService.getRequests({
           status: ["published", "evaluating", "shortlisted"],
         });
         console.log("FETCHED REQUESTS", response);
-  
+
         const requestsData = response.data;
         setRequests(requestsData);
       } catch (err: any) {
-        console.log("ERROR FETCHING REQUESTS", err.response?.data || err.message);
+        console.log(
+          "ERROR FETCHING REQUESTS",
+          err.response?.data || err.message,
+        );
       }
     };
     fetchRequests();
   }, []);
-
 
   return (
     <div>
@@ -92,8 +91,10 @@ export default function RequestsPage() {
       {/* tabs */}
       <section className="mt-6 border-b border-gray-200">
         <div>
-          <button className="px-4 py-2 border-b-2 border-[#FF0046] text-[#FF0046] font-medium"
-          onClick={()=>setActiveTab("active requests")}>
+          <button
+            className="px-4 py-2 border-b-2 border-[#FF0046] text-[#FF0046] font-medium"
+            onClick={() => setActiveTab("active requests")}
+          >
             Active Requests
           </button>
           <button

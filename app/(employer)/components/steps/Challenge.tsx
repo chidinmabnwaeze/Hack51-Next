@@ -2,29 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { employerService } from "@/lib/services/employer.service";
-import { Challenge as ChallengeType } from "@/types/employer";
 import { useRequestStore } from "@/lib/context/useRequestStore";
 import ChallengeCard from "../ChallengeCard";
 
 export default function Challenge() {
-  const [challenges, setChallenges] = useState<ChallengeType[]>([]);
+  const [challenges, setChallenges] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const { challenge, setChallenge, nextStep } = useRequestStore();
+  const { role, challenge, setChallenge, nextStep } = useRequestStore();
 
   useEffect(() => {
-    const fetchChallenges = async () => {
-      setLoading(true);
-      try {
-        const response = await employerService.getChallenges();
-        setChallenges(response);
-      } catch (err: any) {
-        console.error("Error fetching challenges", err.message || err?.response?.data);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchChallenges();
-  }, []);
+    if (!role?.id) return;
+    setLoading(true);
+    employerService.getChallenges()
+      .then((all: any[]) => {
+        // Filter to challenges belonging to the selected role
+        const filtered = all.filter(
+          (c) =>
+            c.catalog_roles?.id === role.id ||
+            c.catalog_role_id === role.id
+        );
+        setChallenges(filtered);
+      })
+      .catch((err: any) => console.error("Error fetching challenges", err.message))
+      .finally(() => setLoading(false));
+  }, [role?.id]);
 
   const handleSelect = (id: string) => {
     const selected = challenges.find((c) => c.id === id);
@@ -33,23 +34,29 @@ export default function Challenge() {
     nextStep();
   };
 
-  if (loading) return <div className="loader mx-auto my-24"></div>;
+  if (loading) return <div className="loader mx-auto my-24" />;
 
   return (
-    <div className="mt-20">
-      <h1 className="text-3xl font-bold">Challenge Details</h1>
-      <section className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {challenges.map((c) => (
-          <ChallengeCard
-            key={c.id}
-            id={c.id}
-            title={c.title}
-            description={c.description}
-            isSelected={challenge?.id === c.id}
-            onSelect={handleSelect}
-          />
-        ))}
-      </section>
+    <div className="mt-8">
+      <h1 className="text-2xl font-bold">Challenge Details</h1>
+      <p className="text-gray-500 text-sm mt-1">Select the challenge for this role</p>
+
+      {challenges.length === 0 ? (
+        <p className="text-gray-500 text-sm mt-8">No challenges found for this role.</p>
+      ) : (
+        <section className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {challenges.map((c) => (
+            <ChallengeCard
+              key={c.id}
+              id={c.id}
+              title={c.title}
+              description={c.summary ?? c.description}
+              isSelected={challenge?.id === c.id}
+              onSelect={handleSelect}
+            />
+          ))}
+        </section>
+      )}
     </div>
   );
 }

@@ -20,7 +20,7 @@ export interface EmployerRequest {
 export interface CreateRequestPayload {
   title: string;
   role_type: string;
-  role_level: string;
+  role_level?: string;
   challenge_id: string;
   challenge_cap: number;
   shortlist_size: number;

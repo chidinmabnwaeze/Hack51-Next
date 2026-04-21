@@ -15,19 +15,7 @@ export const stepConfig = [
   { id: 2, label: "Job Description", component: <SkillLevel /> },
   { id: 3, label: "Role Details", component: <RoleDetails /> },
   { id: 4, label: "Challenge Setup", component: <Challenge /> },
-  {
-    id: 5,
-    label: "Challenge Editor",
-    component: (
-      <ChallengeEditor
-        deliverables={[]}
-        scenario=""
-        title=""
-        rules=""
-        submission_requirements=""
-      />
-    ),
-  },
+  { id: 5, label: "Challenge Editor", component: <ChallengeEditor /> },
   { id: 6, label: "Rubric Editor", component: <RubricEditor /> },
   { id: 7, label: "Request Preview", component: <RequestPreview /> },
   { id: 8, label: "Checkout", component: <Checkout /> },

@@ -3,8 +3,6 @@ import { FileSpreadsheet } from "lucide-react";
 import Image from "next/image";
 import EvaluationBarChart from "./EvaluationBarChart";
 import RequestPieChart from "./RequestPieChart";
-import RequestTable from "@/app/(employer)/components/RequestTable";
-import { ActiveRequest } from "@/app/(employer)/components/RequestTable";
 import CustomActiveShapePieChart from "./RequestPieChart";
 
 export default function DashboardClient() {
@@ -32,33 +30,6 @@ export default function DashboardClient() {
       value: 5,
       icon: FileSpreadsheet,
       info: "Completed Hiring Cycles",
-    },
-  ];
-
-  const activeRequests: ActiveRequest[] = [
-    {
-      id: "REQ-2401-09",
-      title: "Senior Product Designer",
-      role: "Product Designer (L3)",
-      submissions: [{ submitted: 13, total: 21, percentage: 62 }],
-      days_left: 12,
-      status: "Open for submissions",
-    },
-    {
-      id: "REQ-2401-12",
-      title: "Backend Engineer (Go/Rust)",
-      role: "Backend Engineer (L4)",
-      submissions: [{ submitted: 21, total: 21, percentage: 100 }],
-      days_left: 2,
-      status: "Evaluation in progress",
-    },
-    {
-      id: "REQ-2401-15",
-      title: "Marketing Lead (Growth)",
-      role: "Marketing Lead (L4)",
-      submissions: [{ submitted: 50, total: 50, percentage: 100 }],
-      days_left: 0,
-      status: "Shortlist ready",
     },
   ];
 
@@ -102,8 +73,7 @@ export default function DashboardClient() {
 
       <div className="bg-white p-6 rounded-lg shadow mt-6">
         <h2 className="text-xl font-bold mb-4">Recent Requests</h2>
-
-        <RequestTable requests={activeRequests} detailed />
+        <p className="text-gray-500 text-sm py-4">No recent requests.</p>
       </div>
     </div>
   );

@@ -10,28 +10,41 @@ import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {
   const router = useRouter();
-  const { step, nextStep, prevStep, role, role_level, challenge, challenge_cap, shortlist_size, deadline } = useRequestStore();
+  const { step, nextStep, prevStep, reset, role, role_level, challenge, challenge_cap, shortlist_size, deadline } = useRequestStore();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    if (!role || !role_level || !challenge) return;
+    if (!role || !challenge) {
+      setError("Please select a role and challenge before submitting.");
+      return;
+    }
+    const hasSkillLevels = (role.catalog_skill_levels?.length ?? 0) > 0;
+    if (hasSkillLevels && !role_level) {
+      setError("Please select a skill level before submitting.");
+      return;
+    }
+    if (!deadline) {
+      setError("Please set a challenge deadline in the Request Preview step.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
-      await employerService.createRequest({
+      const payload: Parameters<typeof employerService.createRequest>[0] = {
         title: role.name,
         role_type: role.id,
-        role_level: role_level.level,
         challenge_id: challenge.id,
         challenge_cap,
         shortlist_size,
-        deadline,
-      });
+        deadline: new Date(deadline).toISOString(),
+      };
+      if (role_level?.level) payload.role_level = role_level.level;
+      await employerService.createRequest(payload);
       nextStep();
     } catch (err: any) {
-      setError(err?.response?.data?.message ?? "Failed to create request. Please try again.");
-      console.log("Error creating request:", err);
+      setError(err?.message ?? "Failed to create request. Please try again.");
+      console.error("Error creating request:", err);
     } finally {
       setSubmitting(false);
     }
@@ -101,7 +114,7 @@ export default function NewRequestPage() {
 
         {step === stepConfig.length && (
           <button
-            onClick={() => router.push("/requests")}
+            onClick={() => { reset(); router.push("/requests"); }}
             className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
           >
             Go to Requests

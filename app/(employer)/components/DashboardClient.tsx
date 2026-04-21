@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import RequestTable from "./RequestTable";
-import type { ActiveRequest } from "./RequestTable";
 import ChallengeButton from "./ChallengeButton";
 
 interface DashboardProps {
@@ -45,21 +43,6 @@ export default function DashboardClient({
       value: 5,
       status: "Success",
       info: "Completed Hiring Cycles",
-    },
-  ];
-
-  const activeRequests: ActiveRequest[] = [
-    {
-      title: "Software Engineer",
-      submissions: [{ submitted: 30, total: 100, percentage: 30 }],
-      days_left: 15,
-      status: "Open",
-    },
-    {
-      title: "Product Manager",
-      submissions: [{ submitted: 25, total: 50, percentage: 50 }],
-      days_left: 10,
-      status: "Open",
     },
   ];
 
@@ -131,7 +114,7 @@ export default function DashboardClient({
             </Link>
           </div>
         </div>
-        <RequestTable requests={activeRequests} />
+        <p className="text-gray-500 text-sm py-4">No active requests. <a href="/requests" className="text-[#FF0046] hover:underline">View all requests</a></p>
       </section>
 
       <section className="bg-white p-8 shadow mt-8 rounded-2xl">

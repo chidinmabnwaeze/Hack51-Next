@@ -17,6 +17,7 @@ export default function RoleCapabilities() {
   const id = params.id as string;
 
   const [roleDetails, setRoleDetails] = useState({ name: "", skill_levels: "" });
+  const [savedSkillLevels, setSavedSkillLevels] = useState<string[]>([]);
   const [capabilities, setCapabilities] = useState<Capability[]>([{ title: "", summary: "" }]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -33,6 +34,7 @@ export default function RoleCapabilities() {
         .join(", ");
 
       setRoleDetails({ name: role?.name ?? "", skill_levels: skillLevel });
+      setSavedSkillLevels(rawLevels.map((item: any) => (typeof item === "string" ? item : item?.level ?? "")));
 
       const existingCaps: any[] = role?.catalog_capabilities ?? role?.capabilities ?? [];
       if (existingCaps.length) {
@@ -74,7 +76,7 @@ export default function RoleCapabilities() {
     }
     setSaving(true);
     try {
-      await catalogService.updateRole(id, { capabilities: filled });
+      await catalogService.updateRole(id, { name: roleDetails.name, skill_levels: savedSkillLevels as any, capabilities: filled });
       router.push(`/admin/catalog/challenges/?catalog_role_id=${id}`);
     } catch (err: any) {
       console.error("ERROR UPDATING CAPABILITIES", err.message);

@@ -7,9 +7,10 @@ import { catalogService } from "@/lib/services/catalog.service";
 
 export default function SkillLevelPage() {
   const levels: SkillLevel[] = ["entry-level", "mid-level", "senior"];
-  const [selectedLevel, setSelectedLevel] = useState<SkillLevel | null>(null);
+  const [selectedLevels, setSelectedLevels] = useState<SkillLevel[]>([]);
   const [roleName, setRoleName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const params = useParams();
   const id = params.id as string;
@@ -19,26 +20,33 @@ export default function SkillLevelPage() {
     catalogService.getRoleById(id).then((res) => {
       const role = res?.data ?? res;
       setRoleName(role?.name ?? "");
-      // Pre-select existing skill level if already saved
-      const existing = role?.catalog_skill_levels?.[0];
-      if (existing) {
-        const level = typeof existing === "string" ? existing : existing?.level;
-        if (levels.includes(level as SkillLevel)) setSelectedLevel(level as SkillLevel);
-      }
+      const existing: SkillLevel[] = (role?.catalog_skill_levels ?? [])
+        .map((s: any) => (typeof s === "string" ? s : s?.level))
+        .filter((l: string) => levels.includes(l as SkillLevel));
+      if (existing.length) setSelectedLevels(existing);
     }).catch(() => {});
   }, [id]);
 
+  const toggle = (level: SkillLevel) => {
+    setSelectedLevels((prev) =>
+      prev.includes(level) ? prev.filter((l) => l !== level) : [...prev, level]
+    );
+  };
+
   const handleSave = async () => {
-    if (!selectedLevel) {
-      alert("Please select a skill level before continuing.");
+    if (!selectedLevels.length) {
+      setError("Please select at least one skill level before continuing.");
       return;
     }
     try {
       setLoading(true);
-      await catalogService.updateRole(id, { skill_levels: [selectedLevel] });
+      setError(null);
+      const res = await catalogService.updateRole(id, { name: roleName, skill_levels: selectedLevels });
+      console.log("SKILL LEVEL SAVE RESPONSE", res);
       router.push(`/admin/catalog/roles/${id}/rolecapabilities`);
     } catch (err: any) {
-      console.error("ERROR SAVING SKILL LEVEL", err.message);
+      setError(err?.message ?? "Failed to save skill levels. Please try again.");
+      console.error("ERROR SAVING SKILL LEVEL", err);
     } finally {
       setLoading(false);
     }
@@ -61,7 +69,7 @@ export default function SkillLevelPage() {
 
       <div className="bg-white p-8 rounded-xl shadow-md w-full mt-8 md:w-3/4 mx-auto">
         <div className="flex justify-between items-center border-b border-gray-200 pb-4">
-          <h2 className="text-xl font-semibold">Skill level for role</h2>
+          <h2 className="text-xl font-semibold">Skill levels for role</h2>
           <button
             className="px-5 py-2.5 bg-[#F01E5A] hover:bg-[#c0144a] disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors"
             onClick={handleSave}
@@ -71,21 +79,22 @@ export default function SkillLevelPage() {
           </button>
         </div>
 
+        {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+
         <div className="mt-4">
           {levels.map((level) => (
             <div
               key={level}
               className={`flex items-center gap-4 p-4 mt-2 rounded-lg cursor-pointer border transition-colors ${
-                selectedLevel === level
+                selectedLevels.includes(level)
                   ? "border-[#FF0046] bg-red-50"
                   : "border-transparent hover:bg-gray-50"
               }`}
-              onClick={() => setSelectedLevel(level)}
+              onClick={() => toggle(level)}
             >
               <input
-                type="radio"
-                name="skill-level"
-                checked={selectedLevel === level}
+                type="checkbox"
+                checked={selectedLevels.includes(level)}
                 readOnly
                 className="accent-[#FF0046]"
               />

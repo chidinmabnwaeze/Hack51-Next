@@ -1,7 +1,7 @@
 // import { RequestProps } from "@/types/requests";
 import api from "../api";
 
-export const requestService = {
+export const reviewService = {
   getRequests: async (params: Record<string, any>) => {
     const response = await api.get("/admin/review/requests", { params });
     console.log("REQUESTS", response);

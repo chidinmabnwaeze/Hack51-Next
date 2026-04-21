@@ -56,6 +56,8 @@ export default function ReviewTable({
   ];
 
   const router = useRouter();
+
+  
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white">

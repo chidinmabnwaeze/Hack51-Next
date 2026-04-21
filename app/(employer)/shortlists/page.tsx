@@ -1,5 +1,3 @@
-import RequestTable from "../components/RequestTable";
-import type { ActiveRequest } from "../components/RequestTable";
 import type { Shortlists } from "../components/ShortlistTable";
 import ChallengeButton from "../components/ChallengeButton";
 import ShortlistTable from "../components/ShortlistTable";
