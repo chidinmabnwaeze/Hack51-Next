@@ -1,7 +1,9 @@
 "use client";
 
 import { EmployerRequest } from "@/types/employer";
+import { employerService } from "@/lib/services/employer.service";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface RequestTableProps {
   requests: EmployerRequest[];
@@ -28,8 +30,22 @@ const daysLeft = (deadline: string) => {
 
 export default function RequestTable({ requests, detailed = false }: RequestTableProps) {
   const headers = ["Request Title", "Role Level", "Submissions", "Deadline", "Status", "Actions"];
+  const router = useRouter();
+  const [publishing, setPublishing] = useState<string | null>(null);
 
-  const router = useRouter()
+  const handlePublish = async (id: string) => {
+    setPublishing(id);
+    try {
+      await employerService.publishRequest(id);
+      router.refresh();
+    } catch (err: any) {
+      console.error("Failed to publish request:", err.message);
+      alert(err.message ?? "Failed to publish request.");
+    } finally {
+      setPublishing(null);
+    }
+  };
+
   if (requests.length === 0) {
     return <p className="text-gray-500 text-sm py-4">No requests found.</p>;
   }
@@ -83,12 +99,18 @@ export default function RequestTable({ requests, detailed = false }: RequestTabl
                 </span>
               </td>
               <td className="py-3 px-4 flex gap-2">
-                <button onClick={()=>router.push(`/requests/${req.id}`)} className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded">
+                <button onClick={() => router.push(`/requests/${req.id}`)} className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded">
                   View
                 </button>
-                {/* <button className="text-sm text-red-500 hover:text-red-700">
-                  Close
-                </button> */}
+                {req.status === "draft" && (
+                  <button
+                    onClick={() => handlePublish(req.id!)}
+                    disabled={publishing === req.id}
+                    className="text-sm text-white bg-[#FF0046] hover:bg-red-700 disabled:opacity-60 px-3 py-1 rounded"
+                  >
+                    {publishing === req.id ? "Publishing..." : "Publish"}
+                  </button>
+                )}
               </td>
             </tr>
           ))}

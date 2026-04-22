@@ -56,25 +56,6 @@ export default function RequestsPage() {
     "active requests",
   );
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await reviewService.getRequests({
-          status: ["published", "evaluating", "shortlisted"],
-        });
-        console.log("FETCHED REQUESTS", response);
-
-        const requestsData = response.data;
-        setRequests(requestsData);
-      } catch (err: any) {
-        console.log(
-          "ERROR FETCHING REQUESTS",
-          err.response?.data || err.message,
-        );
-      }
-    };
-    fetchRequests();
-  }, []);
 
   return (
     <div>
@@ -126,7 +107,7 @@ export default function RequestsPage() {
       </div>
 
       <section className="mt-6 shadow bg-white p-6 rounded-2xl">
-        <ReviewTable requests={requests} detailed />
+        <ReviewTable/>
       </section>
 
 

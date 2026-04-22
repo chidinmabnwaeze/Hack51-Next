@@ -11,42 +11,66 @@ import { ArrowLeftIcon } from "lucide-react";
 export default function NewRequestPage() {
   const router = useRouter();
   const { step, nextStep, prevStep, reset, role, role_level, challenge, challenge_cap, shortlist_size, deadline } = useRequestStore();
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState<"draft" | "publish" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async () => {
+  const validate = () => {
     if (!role || !challenge) {
       setError("Please select a role and challenge before submitting.");
-      return;
+      return false;
     }
     const hasSkillLevels = (role.catalog_skill_levels?.length ?? 0) > 0;
     if (hasSkillLevels && !role_level) {
       setError("Please select a skill level before submitting.");
-      return;
+      return false;
     }
     if (!deadline) {
       setError("Please set a challenge deadline in the Request Preview step.");
-      return;
+      return false;
     }
-    setSubmitting(true);
+    return true;
+  };
+
+  const buildPayload = () => ({
+    title: role!.name,
+    role_type: role!.id,
+    challenge_id: challenge!.id,
+    challenge_cap,
+    shortlist_size,
+    deadline: new Date(deadline!).toISOString(),
+    ...(role_level?.level ? { role_level: role_level.level } : {}),
+  } as Parameters<typeof employerService.createRequest>[0]);
+
+  const handleSaveAsDraft = async () => {
+    if (!validate()) return;
+    setSubmitting("draft");
     setError(null);
     try {
-      const payload: Parameters<typeof employerService.createRequest>[0] = {
-        title: role.name,
-        role_type: role.id,
-        challenge_id: challenge.id,
-        challenge_cap,
-        shortlist_size,
-        deadline: new Date(deadline).toISOString(),
-      };
-      if (role_level?.level) payload.role_level = role_level.level;
-      await employerService.createRequest(payload);
+      await employerService.createRequest(buildPayload());
       nextStep();
     } catch (err: any) {
-      setError(err?.message ?? "Failed to create request. Please try again.");
-      console.error("Error creating request:", err);
+      setError(err?.message ?? "Failed to save draft. Please try again.");
     } finally {
-      setSubmitting(false);
+      setSubmitting(null);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!validate()) return;
+    setSubmitting("publish");
+    setError(null);
+    try {
+      const created = await employerService.createRequest(buildPayload());
+      if (!created.challenge_id) {
+        setError("Challenge was not saved. Please go back and re-select a challenge.");
+        return;
+      }
+      await employerService.publishRequest(created.id);
+      nextStep();
+    } catch (err: any) {
+      setError(err?.message ?? "Failed to publish request. Please try again.");
+    } finally {
+      setSubmitting(null);
     }
   };
 
@@ -103,13 +127,22 @@ export default function NewRequestPage() {
         )}
 
         {step === stepConfig.length - 1 && (
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="bg-[#FF0046] hover:bg-red-700 disabled:opacity-60 text-white font-bold py-2 px-4 rounded-lg ml-4"
-          >
-            {submitting ? "Submitting..." : "Submit"}
-          </button>
+          <>
+            <button
+              onClick={handleSaveAsDraft}
+              disabled={submitting !== null}
+              className="border border-gray-300 hover:bg-gray-50 disabled:opacity-60 text-gray-700 font-bold py-2 px-4 rounded-lg ml-4"
+            >
+              {submitting === "draft" ? "Saving..." : "Save as Draft"}
+            </button>
+            <button
+              onClick={handlePublish}
+              disabled={submitting !== null}
+              className="bg-[#FF0046] hover:bg-red-700 disabled:opacity-60 text-white font-bold py-2 px-4 rounded-lg ml-4"
+            >
+              {submitting === "publish" ? "Publishing..." : "Publish"}
+            </button>
+          </>
         )}
 
         {step === stepConfig.length && (

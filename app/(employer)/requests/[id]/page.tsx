@@ -2,21 +2,40 @@
 
 import { EmployerRequest } from "@/types/employer";
 import { useRouter, useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { employerService } from "@/lib/services/employer.service";
 // import { useParams, useNavigate } from "react-router-dom";
 
-interface RequestTableProps {
-  requests: EmployerRequest[];
-  detailed?: boolean;
-}
+// interface RequestTableProps {
+//   requests: EmployerRequest[];
+//   detailed?: boolean;
+// }
 
-const RequestDetails = ({ requests }: RequestTableProps) => {
-  const { id } = useParams();
- const router = useRouter();
+const RequestDetails = () => {
+  const params = useParams();
+  const id = params.id as string;
+  const router = useRouter();
 
+  const [request, setRequest] = useState<EmployerRequest | null>(null);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
-  // // 🔥 Replace with API later
+  useEffect(() => {
+    if (id) {
+      employerService
+        .getRequestById(id)
+        .then(setRequest)
+        .catch(console.error)
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
+
+  if (loading) return <div>Loading...</div>;
+  if (!request) return <div>Request not found</div>;
+
+  const requests = [request];
+
+  // //  Replace with API later
   // const request = {
   //   title: "Senior Product Designer",
   //   id: "Req-2043-05",
@@ -39,13 +58,10 @@ const RequestDetails = ({ requests }: RequestTableProps) => {
   //   ],
   // };
 
-
-
-
   const handleCloseRequest = () => {
     console.log("Request closed");
     setShowModal(false);
-      router.push("/requests");
+    router.push("/requests");
   };
 
   return (
@@ -76,7 +92,6 @@ const RequestDetails = ({ requests }: RequestTableProps) => {
           </p>
         </div>
       ))}
-      
 
       {/* OVERVIEW */}
       <div className="bg-white rounded-xl p-5 shadow mb-6">
@@ -85,18 +100,18 @@ const RequestDetails = ({ requests }: RequestTableProps) => {
         <div className="grid grid-cols-3 gap-4">
           {requests.map((item, index) => (
             <>
-            <div key={index} className="bg-gray-100 p-4 rounded-lg">
-              <p className="text-xs text-gray-500">Submission Cap</p>
-              <h3 className="text-lg font-semibold">{item.challenge_cap}</h3>
-            </div>
-            <div key={index} className="bg-gray-100 p-4 rounded-lg">
-              <p className="text-xs text-gray-500">Accepted Submissions</p>
-              <h3 className="text-lg font-semibold">{item.challenge_cap}</h3>
-            </div>
-            <div key={index} className="bg-gray-100 p-4 rounded-lg">
-              <p className="text-xs text-gray-500">Shortlist size</p>
-              <h3 className="text-lg font-semibold">{item.shortlist_size}</h3>
-            </div>
+              <div key={index} className="bg-gray-100 p-4 rounded-lg">
+                <p className="text-xs text-gray-500">Submission Cap</p>
+                <h3 className="text-lg font-semibold">{item.challenge_cap}</h3>
+              </div>
+              <div key={index} className="bg-gray-100 p-4 rounded-lg">
+                <p className="text-xs text-gray-500">Accepted Submissions</p>
+                <h3 className="text-lg font-semibold">{item.challenge_cap}</h3>
+              </div>
+              <div key={index} className="bg-gray-100 p-4 rounded-lg">
+                <p className="text-xs text-gray-500">Shortlist size</p>
+                <h3 className="text-lg font-semibold">{item.shortlist_size}</h3>
+              </div>
             </>
           ))}
         </div>
@@ -130,9 +145,7 @@ const RequestDetails = ({ requests }: RequestTableProps) => {
                   step.shortlist_size ? "bg-green-500" : "bg-gray-300"
                 }`}
               />
-              <p className="text-xs text-gray-600 text-center">
-                Shortlist
-              </p>
+              <p className="text-xs text-gray-600 text-center">Shortlist</p>
             </div>
           ))}
         </div>

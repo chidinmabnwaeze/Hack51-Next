@@ -15,7 +15,7 @@ interface RequestState {
 
   setRole: (role: EmployerRoles) => void;
   setRoleLevel: (level: { id: string; level: string }) => void;
-  setChallenge: (challenge: { id: string; title: string }) => void;
+  setChallenge: (challenge: { id: string; title: string } | null) => void;
   setChallengeCap: (cap: number) => void;
   setShortlistSize: (size: number) => void;
   setDeadline: (date: string) => void;

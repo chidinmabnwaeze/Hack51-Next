@@ -15,13 +15,17 @@ export default function Challenge() {
     setLoading(true);
     employerService.getChallenges()
       .then((all: any[]) => {
-        // Filter to challenges belonging to the selected role
         const filtered = all.filter(
           (c) =>
             c.catalog_roles?.id === role.id ||
             c.catalog_role_id === role.id
         );
         setChallenges(filtered);
+        // clear stale challenge if it doesn't belong to this role's filtered list
+        if (challenge && !filtered.some((c) => c.id === challenge.id)) {
+          console.log("challenge id:" ,challenge.id)
+          setChallenge(null);
+        }
       })
       .catch((err: any) => console.error("Error fetching challenges", err.message))
       .finally(() => setLoading(false));
