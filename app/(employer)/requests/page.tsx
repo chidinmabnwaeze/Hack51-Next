@@ -28,9 +28,11 @@ export default function RequestsPage() {
     fetchRequests();
   }, []);
 
+
   const filtered = requests.filter((r) => {
     if (activeTab === "drafts") return r.status === "draft";
-    if (activeTab === "closed") return r.status === "shortlisted" || r.status === "evaluating";
+    if (activeTab === "closed")
+      return r.status === "shortlisted" || r.status === "evaluating";
     return true;
   });
 

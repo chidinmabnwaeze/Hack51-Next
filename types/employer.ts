@@ -1,7 +1,12 @@
 export type RequestStatus =
-  | "draft" | "published" | "evaluating" | "shortlisted" | "closed" | "cancelled";
+  | "draft"
+  | "published"
+  | "evaluating"
+  | "shortlisted"
+  | "closed"
+  | "cancelled";
 
-  export interface RubricCriterion {
+export interface RubricCriterion {
   id?: string;
   title: string;
   description?: string | null;
@@ -14,22 +19,17 @@ export interface EmployerRequest {
   title: string;
   role_type: string;
   role_level: string;
-  challenge_id: string;
+  status: RequestStatus;
   challenge_cap: number;
   shortlist_size: number;
   deadline: string;
-  status: RequestStatus;
-  created_at: string;
-
-  admin_fee: number;
   deposit_amount: number;
+  admin_fee: number;
   final_charge: number | null;
-  custom_rubric: RubricCriterion[] | null;
-  snapshot_challenge: Challenge | null;
-  snapshot_rubric: RubricCriterion[] | null;
   published_at: string | null;
-  closed_at: string | null;
+  created_at: string;
   updated_at: string;
+  challenges: Challenge;
 }
 
 export interface CreateRequestPayload {

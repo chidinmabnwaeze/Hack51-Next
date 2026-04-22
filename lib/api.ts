@@ -1,9 +1,12 @@
 import { config } from "./../middleware";
 import { ApiResponse } from "@/types/api";
 import axios from "axios";
+import { authService } from "./services/auth.service";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  withCredentials: true,
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -23,48 +26,26 @@ api.interceptors.response.use(
 
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const err = error.response;
+
+    if (err?.status === 401) {
       originalRequest._retry = true;
       try {
-        const refreshToken = localStorage.getItem("refresh_token");
-
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`,
-          {
-            refresh_token: refreshToken,
-          },
-        );
-
-        const newAccessToken = response.data.access_token;
-        localStorage.setItem("access_token", newAccessToken);
-        document.cookie = `access_token=${newAccessToken}; path=/`;
-
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        await authService.refreshToken();
+        const accessToken = localStorage.getItem("access_token");
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        console.log("Token refresh failed", refreshError);
-        localStorage.removeItem("access_token");
-        window.location.href = "/auth/login";
-
-        const message = error.response?.data?.message || "Request failed";
-        console.log("API Error response data:", message);
-
-        return Promise.reject(new Error(message));
+        authService.logout();
+        const message = err?.data?.message || "Request failed";
+        
+        return Promise.reject(new Error("Session expired. "));
       }
     }
-    const data = error.response?.data;
-    const message =
-      data?.message ||
-      data?.error ||
-      data?.detail ||
-      (typeof data === "string" ? data : null) ||
-      error.message ||
-      "Request failed";
-    console.error("API Error:", error.response?.status, data);
-    const customError = new Error(message);
-    (customError as any).status = error.response?.status;
-    (customError as any).data = data;
-    return Promise.reject(customError);
+
+    console.log("ERROR", err.data.message);
+
+    return Promise.reject(err.data.message);
   },
 );
 

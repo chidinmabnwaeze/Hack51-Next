@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import StepContent, { stepConfig } from "@/app/(employer)/components/StepContent";
+import StepContent, {
+  stepConfig,
+} from "@/app/(employer)/components/StepContent";
 import StepIndicator from "@/app/(employer)/components/StepIndicator";
 import { useRequestStore } from "@/lib/context/useRequestStore";
 import { employerService } from "@/lib/services/employer.service";
@@ -10,8 +12,21 @@ import { ArrowLeftIcon } from "lucide-react";
 
 export default function NewRequestPage() {
   const router = useRouter();
-  const { step, nextStep, prevStep, reset, role, role_level, challenge, challenge_cap, shortlist_size, deadline } = useRequestStore();
-  const [submitting, setSubmitting] = useState<"draft" | "publish" | null>(null);
+  const {
+    step,
+    nextStep,
+    prevStep,
+    reset,
+    role,
+    role_level,
+    challenge,
+    challenge_cap,
+    shortlist_size,
+    deadline,
+  } = useRequestStore();
+  const [submitting, setSubmitting] = useState<"draft" | "publish" | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
 
   const validate = () => {
@@ -31,44 +46,27 @@ export default function NewRequestPage() {
     return true;
   };
 
-  const buildPayload = () => ({
-    title: role!.name,
-    role_type: role!.id,
-    challenge_id: challenge!.id,
-    challenge_cap,
-    shortlist_size,
-    deadline: new Date(deadline!).toISOString(),
-    ...(role_level?.level ? { role_level: role_level.level } : {}),
-  } as Parameters<typeof employerService.createRequest>[0]);
-
   const handleSaveAsDraft = async () => {
     if (!validate()) return;
     setSubmitting("draft");
     setError(null);
+
     try {
-      await employerService.createRequest(buildPayload());
+      const buildPayload = {
+        title: role!.name,
+        role_type: role!.id,
+        challenge_id: challenge!.id,
+        challenge_cap,
+        shortlist_size,
+        deadline: new Date(deadline!).toISOString(),
+        ...(role_level?.level ? { role_level: role_level.level } : {}),
+      };
+
+      console.log("SUBMIT", buildPayload);
+      await employerService.createRequest(buildPayload);
       nextStep();
     } catch (err: any) {
       setError(err?.message ?? "Failed to save draft. Please try again.");
-    } finally {
-      setSubmitting(null);
-    }
-  };
-
-  const handlePublish = async () => {
-    if (!validate()) return;
-    setSubmitting("publish");
-    setError(null);
-    try {
-      const created = await employerService.createRequest(buildPayload());
-      if (!created.challenge_id) {
-        setError("Challenge was not saved. Please go back and re-select a challenge.");
-        return;
-      }
-      await employerService.publishRequest(created.id);
-      nextStep();
-    } catch (err: any) {
-      setError(err?.message ?? "Failed to publish request. Please try again.");
     } finally {
       setSubmitting(null);
     }
@@ -87,7 +85,8 @@ export default function NewRequestPage() {
         <div>
           <h1 className="text-2xl font-bold mb-4">New Request</h1>
           <p className="text-gray-600 mb-6">
-            Create a new hiring request to find the best candidates for your team.
+            Create a new hiring request to find the best candidates for your
+            team.
           </p>
         </div>
         <div>
@@ -103,9 +102,7 @@ export default function NewRequestPage() {
       <StepIndicator currentStep={step} />
       <StepContent step={step} />
 
-      {error && (
-        <p className="text-red-600 text-sm mt-4 text-right">{error}</p>
-      )}
+      {error && <p className="text-red-600 text-sm mt-4 text-right">{error}</p>}
 
       <div className="flex justify-end mt-6">
         {step > 1 && step < stepConfig.length && (
@@ -135,19 +132,15 @@ export default function NewRequestPage() {
             >
               {submitting === "draft" ? "Saving..." : "Save as Draft"}
             </button>
-            <button
-              onClick={handlePublish}
-              disabled={submitting !== null}
-              className="bg-[#FF0046] hover:bg-red-700 disabled:opacity-60 text-white font-bold py-2 px-4 rounded-lg ml-4"
-            >
-              {submitting === "publish" ? "Publishing..." : "Publish"}
-            </button>
           </>
         )}
 
         {step === stepConfig.length && (
           <button
-            onClick={() => { reset(); router.push("/requests"); }}
+            onClick={() => {
+              reset();
+              router.push("/requests");
+            }}
             className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
           >
             Go to Requests

@@ -21,12 +21,8 @@ export const authService = {
 
   register: async (data: RegisterProps) => {
     const response: ApiResponse<any> = await api.post("/auth/register", data);
-    const tokens = response.data;
-    if (tokens.access_token && tokens.refresh_token) {
-      localStorage.setItem("access_token", tokens.access_token);
-      localStorage.setItem("refresh_token", tokens.refresh_token);
-    }
-    return response;
+
+    return response.data;
   },
 
   verifyEmail: async (data: VerificationProps) => {
@@ -68,6 +64,24 @@ export const authService = {
     const user = localStorage.getItem("user");
     console.log("CURRENT USER", user);
     return user ? JSON.parse(user).data : null;
+  },
+
+  refreshToken: async () => {
+    const refreshToken = localStorage.getItem("refresh_token");
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+
+    const base_url = process.env.NEXT_PUBLIC_BASE_URL;
+
+    const response = await api.post(`${base_url}/auth/refresh`, {
+      refresh_token: refreshToken,
+    });
+
+    const accessToken = response.data.access_token;
+    const newNefreshToken = response.data.refresh_token;
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", newNefreshToken);
   },
 
   isAuthenticated: () => {

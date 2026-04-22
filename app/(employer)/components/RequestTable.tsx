@@ -22,14 +22,24 @@ const badgeClasses = (status: string) => {
 const daysLeft = (deadline: string) => {
   if (!deadline) return "—";
   const diff = Math.ceil(
-    (new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+    (new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
   );
   if (diff < 0) return "Expired";
   return `${diff}d`;
 };
 
-export default function RequestTable({ requests, detailed = false }: RequestTableProps) {
-  const headers = ["Request Title", "Role Level", "Submissions", "Deadline", "Status", "Actions"];
+export default function RequestTable({
+  requests,
+  detailed = false,
+}: RequestTableProps) {
+  const headers = [
+    "Request Title",
+    "Role Level",
+    "Submissions",
+    "Deadline",
+    "Status",
+    "Actions",
+  ];
   const router = useRouter();
   const [publishing, setPublishing] = useState<string | null>(null);
 
@@ -46,6 +56,15 @@ export default function RequestTable({ requests, detailed = false }: RequestTabl
     }
   };
 
+  // const handlePublishRequest = async (id: string) => {
+  //   try {
+  //     const res = await employerService.publishRequest(id);
+  //     console.log("REQUEST RES", res);
+  //   } catch (error) {
+  //     console.error("Error publishing request:", error);
+  //   }
+  // };
+
   if (requests.length === 0) {
     return <p className="text-gray-500 text-sm py-4">No requests found.</p>;
   }
@@ -56,7 +75,10 @@ export default function RequestTable({ requests, detailed = false }: RequestTabl
         <thead>
           <tr className="bg-gray-50">
             {headers.map((h) => (
-              <th key={h} className="py-2 px-4 border-b border-gray-100 text-left text-sm font-semibold text-gray-600">
+              <th
+                key={h}
+                className="py-2 px-4 border-b border-gray-100 text-left text-sm font-semibold text-gray-600"
+              >
                 {h}
               </th>
             ))}
@@ -64,17 +86,22 @@ export default function RequestTable({ requests, detailed = false }: RequestTabl
         </thead>
         <tbody>
           {requests.map((req) => (
-            <tr key={req.id} className="border-b border-gray-100 hover:bg-gray-50">
+            <tr
+              key={req.id}
+              className="border-b border-gray-100 hover:bg-gray-50"
+            >
               <td className="py-3 px-4">
                 <span className="font-semibold text-sm">{req.title}</span>
                 {detailed && req.id && (
-                  <p className="text-xs text-gray-400 mt-0.5">ID: {req.id.slice(0, 8)}…</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    ID: {req.id.slice(0, 8)}…
+                  </p>
                 )}
               </td>
               <td className="py-3 px-4 text-sm capitalize text-gray-600">
                 {req.role_level?.replace(/-/g, " ") || "—"}
               </td>
-                {/* <td className="py-2 px-4">
+              {/* <td className="py-2 px-4">
                 {req.submissions.map((s, si) => (
                   <div key={si} className="mb-2">
                     <div className="w-full bg-gray-200 rounded-full h-2">
@@ -90,16 +117,27 @@ export default function RequestTable({ requests, detailed = false }: RequestTabl
                 ))}
               </td> */}
               <td className="py-3 px-4 text-sm text-gray-600">
-                <span>{req.deadline ? new Date(req.deadline).toLocaleDateString() : "—"}</span>
-                <span className="ml-2 text-xs text-gray-400">({daysLeft(req.deadline)})</span>
+                <span>
+                  {req.deadline
+                    ? new Date(req.deadline).toLocaleDateString()
+                    : "—"}
+                </span>
+                <span className="ml-2 text-xs text-gray-400">
+                  ({daysLeft(req.deadline)})
+                </span>
               </td>
               <td className="py-3 px-4">
-                <span className={`px-2 py-1 rounded text-xs font-bold capitalize ${badgeClasses(req.status)}`}>
+                <span
+                  className={`px-2 py-1 rounded text-xs font-bold capitalize ${badgeClasses(req.status)}`}
+                >
                   {req.status}
                 </span>
               </td>
               <td className="py-3 px-4 flex gap-2">
-                <button onClick={() => router.push(`/requests/${req.id}`)} className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded">
+                <button
+                  onClick={() => router.push(`/requests/${req.id}`)}
+                  className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded"
+                >
                   View
                 </button>
                 {req.status === "draft" && (
