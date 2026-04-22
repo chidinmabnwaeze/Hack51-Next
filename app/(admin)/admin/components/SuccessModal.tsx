@@ -52,7 +52,7 @@ export default function SuccessModal({
         <p>Role can now be accessed by employers</p>
 
         <button
-          onClick={()=>router.push("/admin/catalog")}
+          onClick={()=>router.push("/admin/catalog/roles/[id]/view")}
           className="w-full mt-4 bg-[#F01E5A] hover:bg-[#c0144a] text-white py-3.5 rounded-xl text-sm font-bold transition-colors"
         >
           Back to Catalog

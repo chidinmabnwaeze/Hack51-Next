@@ -15,7 +15,7 @@ export const employerService = {
   // =========================
   getRoles: async (): Promise<EmployerRoles[]> => {
     const res = await api.get("/employer/catalog/roles");
-    return res.data;
+    return res.data.approved;
   },
 
   getRoleById: async (id: string): Promise<EmployerRoles> => {
@@ -25,7 +25,7 @@ export const employerService = {
 
   getChallenges: async (): Promise<Challenge[]> => {
     const res = await api.get("/employer/catalog/challenges");
-    return res.data;
+    return res.data.approved;
   },
 
   getChallengeById: async (id: string): Promise<Challenge> => {

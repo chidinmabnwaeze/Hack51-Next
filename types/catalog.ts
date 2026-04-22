@@ -20,11 +20,13 @@ export interface EmployerRoles {
   name: string;
   description: string;
   is_active: boolean;
+  status: "approved"| "pending" | "rejected";
+  proposed_by: null;
   created_at: string;
   updated_at: string;
   catalog_skill_levels: { id: string; level: string }[];
   challenges: string[];
-  capabilities?: Capability[];
+  catalog_capabilities?: Capability[];
 }
 
 export interface CreateChallengeWithRubric {

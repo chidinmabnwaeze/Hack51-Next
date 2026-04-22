@@ -1,6 +1,7 @@
 "use client";
 
 import { EmployerRequest } from "@/types/employer";
+import { useRouter } from "next/navigation";
 
 interface RequestTableProps {
   requests: EmployerRequest[];
@@ -28,6 +29,7 @@ const daysLeft = (deadline: string) => {
 export default function RequestTable({ requests, detailed = false }: RequestTableProps) {
   const headers = ["Request Title", "Role Level", "Submissions", "Deadline", "Status", "Actions"];
 
+  const router = useRouter()
   if (requests.length === 0) {
     return <p className="text-gray-500 text-sm py-4">No requests found.</p>;
   }
@@ -81,12 +83,12 @@ export default function RequestTable({ requests, detailed = false }: RequestTabl
                 </span>
               </td>
               <td className="py-3 px-4 flex gap-2">
-                <button className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded">
+                <button onClick={()=>router.push(`/requests/${req.id}`)} className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded">
                   View
                 </button>
-                <button className="text-sm text-red-500 hover:text-red-700">
+                {/* <button className="text-sm text-red-500 hover:text-red-700">
                   Close
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}
