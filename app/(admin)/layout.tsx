@@ -18,9 +18,9 @@ const sidebarItems = [
     path: "/admin/catalog/roles",
   },
   {
-    name: "Settings",
-    icon: "Settings",
-    path: "/admin/settings",
+    name: "Wallet",
+    icon: "Wallet",
+    path: "/admin/wallet",
   },
 ];
 
