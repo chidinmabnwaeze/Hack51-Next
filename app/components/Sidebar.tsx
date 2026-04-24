@@ -14,6 +14,7 @@ import {
   ClipboardList,
   User,
   LayoutDashboard,
+  Wallet,
 } from "lucide-react";
 
 type SidebarProps = {
@@ -21,7 +22,10 @@ type SidebarProps = {
   items: { name: string; icon?: string; path: string }[];
 };
 
-const iconMap: Record<string, React.ComponentType<{ size: number; className?: string }>> = {
+const iconMap: Record<
+  string,
+  React.ComponentType<{ size: number; className?: string }>
+> = {
   FileText,
   ListCheck,
   CreditCard,
@@ -31,6 +35,7 @@ const iconMap: Record<string, React.ComponentType<{ size: number; className?: st
   ClipboardList,
   User,
   LayoutDashboard,
+  Wallet,
 };
 
 export default function Sidebar({ title, items }: SidebarProps) {
@@ -43,7 +48,8 @@ export default function Sidebar({ title, items }: SidebarProps) {
         {items.map((item, index) => {
           const isActive = pathname === item.path;
           const isSvgPath = item.icon?.startsWith("/");
-          const IconComponent = !isSvgPath && item.icon ? iconMap[item.icon] : null;
+          const IconComponent =
+            !isSvgPath && item.icon ? iconMap[item.icon] : null;
 
           return (
             <Link
