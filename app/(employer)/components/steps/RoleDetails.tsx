@@ -8,8 +8,8 @@ export default function RoleDetails() {
   if (!role) return null;
 
   const skillLevels = role.catalog_skill_levels ?? [];
-  const capabilities = (role as any).catalog_capabilities ?? role.capabilities ?? [];
-
+  const capabilities = (role as any).catalog_capabilities ?? [];
+//  const capabilities = (role as any).catalog_capabilities ?? role.capabilities ?? [];
   return (
     <div className="bg-white p-8 rounded-xl shadow-md w-full mt-10 md:w-3/4 mx-auto">
       <h2 className="border-b border-b-gray-300 text-xl pb-3">Role Details</h2>
