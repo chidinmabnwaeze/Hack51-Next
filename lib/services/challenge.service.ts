@@ -29,4 +29,18 @@ export const challengeService = {
     return response;
   },
 
-  };
+  // ========================
+    // CANDIDATES
+  // ========================
+getCandidateChallenges:async()=>{
+    const response = await api.get("/candidate/challenges");
+    return response;
+  },
+getCandidateChallengeDetails:async(id:string)=>{
+    const response = await api.get(`/candidate/challenges/${id}`);
+    return response;
+  }
+}
+
+ 
+

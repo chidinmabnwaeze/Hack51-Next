@@ -21,12 +21,13 @@ export const authService = {
 
   register: async (data: RegisterProps) => {
     const response: ApiResponse<any> = await api.post("/auth/register", data);
-
+console.log("REGISTER RESPONSE", response);
     return response.data;
   },
 
   verifyEmail: async (data: VerificationProps) => {
     const response = await api.post("/auth/verify-email", data);
+    console.log("VERIFY RESPONSE", response);
     return response;
   },
 

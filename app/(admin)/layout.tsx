@@ -38,8 +38,8 @@ export default function AdminLayout({
       <div className="flex-1">
         <Header
           logo="/logo.png"
-          firstname="Admin"
-          lastname="User"
+          first_name="Admin"
+          last_name="User"
           usermode="Admin"
           avatar="/icons/avatardefault.webp"
         />

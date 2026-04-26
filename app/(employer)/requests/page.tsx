@@ -18,6 +18,8 @@ export default function RequestsPage() {
       setLoading(true);
       try {
         const data = await employerService.getRequests({ page: 1, limit: 50 });
+        console.log("ALL",data);
+        
         setRequests(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching requests", error);

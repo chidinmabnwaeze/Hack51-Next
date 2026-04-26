@@ -123,9 +123,10 @@ export default function RoleCapabilities() {
             <div className="mt-4">
               <p className="font-semibold text-sm">Role Level</p>
               <p className="text-gray-700 mt-1 capitalize">
-                {roleDetails.skill_levels
+                {/* {roleDetails.skill_levels
                   ? roleDetails.skill_levels.replace(/-/g, " ")
-                  : "—"}
+                  : "—"} */}
+                  {savedSkillLevels.length > 0 ? savedSkillLevels.join(", ") : "—"}
               </p>
             </div>
           </div>

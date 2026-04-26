@@ -60,9 +60,10 @@ export const employerService = {
 
   updateRequest: async (
     id: string,
-    payload: UpdateRequestPayload,
+    payload: Partial<EmployerRequest>,
   ): Promise<EmployerRequest> => {
-    const res = await api.patch(`/employer/requests/${id}`, payload);
+    const res = await api.patch(`/employer/requests/${id}`, { payload });
+    console.log("PATCH", res.data);
     return res.data;
   },
 
@@ -70,8 +71,12 @@ export const employerService = {
     await api.delete(`/employer/requests/${id}`);
   },
 
-  publishRequest: async (id: string): Promise<void> => {
-    await api.post(`/employer/requests/${id}/publish`);
+  publishRequest: async (id: string, challenge_id: string): Promise<void> => {
+    const r = await api.post(`/employer/requests/${id}/publish`, {
+      challenge_id,
+    });
+
+    console.log("RX", r);
   },
 
   // =========================

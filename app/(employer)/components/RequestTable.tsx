@@ -43,10 +43,12 @@ export default function RequestTable({
   const router = useRouter();
   const [publishing, setPublishing] = useState<string | null>(null);
 
-  const handlePublish = async (id: string) => {
-    setPublishing(id);
+  const handlePublish = async (request_id: string, challenge_id: string) => {
+    setPublishing(request_id);
     try {
-      await employerService.publishRequest(id);
+      console.log("Publish ID", request_id);
+      await employerService.publishRequest(request_id, challenge_id);
+      console.log("Publish ID", request_id);
       router.refresh();
     } catch (err: any) {
       console.error("Failed to publish request:", err.message);
@@ -142,7 +144,7 @@ export default function RequestTable({
                 </button>
                 {req.status === "draft" && (
                   <button
-                    onClick={() => handlePublish(req.id!)}
+                    onClick={() => handlePublish(req.id!, req.challenges.id)}
                     disabled={publishing === req.id}
                     className="text-sm text-white bg-[#FF0046] hover:bg-red-700 disabled:opacity-60 px-3 py-1 rounded"
                   >

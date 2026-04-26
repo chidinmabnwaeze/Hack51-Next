@@ -78,9 +78,7 @@ export default function RegisterForm() {
         password: formData.password,
         role: selectedRole,
       };
-      console.log("REGISTRATION DATA", registrationData);
       await register(registrationData);
-
       alert("Registration successful! Please verify your email.");
       router.push(`/auth/verify-email?email=${formData.email}`);
     } catch (err: any) {
