@@ -1,3 +1,5 @@
+import { CreateChallengeWithRubric } from "./catalog"
+
 export type RequestStatus =
   | "draft"
   | "published"
@@ -20,6 +22,7 @@ export interface EmployerRequest {
   role_type: string;
   role_level: string;
   status: RequestStatus;
+  challenge_id?: string;
   challenge_cap: number;
   shortlist_size: number;
   deadline: string;
@@ -29,7 +32,7 @@ export interface EmployerRequest {
   published_at: string | null;
   created_at: string;
   updated_at: string;
-  challenges: Challenge;
+  challenges: CreateChallengeWithRubric;
 }
 
 export interface CreateRequestPayload {
@@ -57,11 +60,11 @@ export interface UpdateRequestPayload {
 //   name: string;
 // }
 
-export interface Challenge {
-  id: string;
-  title: string;
-  description?: string;
-}
+// export interface Challenge {
+//   id: string;
+//   title: string;
+//   description?: string;
+// }
 
 export interface Shortlist {
   id: string;

@@ -34,8 +34,11 @@ export default function ChallengeDetailPage() {
         >
           <ArrowLeft size={14} /> Back to Find challenges
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Product Designer</h1>
-        <p className="text-sm text-gray-400 mt-0.5">mid-level</p>
+        <h1 className="text-2xl font-bold text-gray-900">{challenge?.title}</h1>
+        <p className="text-sm text-gray-400 mt-0.5">
+          {challenge?.role_level}
+   
+          </p>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 mt-4">
@@ -67,10 +70,8 @@ export default function ChallengeDetailPage() {
           <p className="text-sm font-semibold text-gray-500 mb-2">Scenario</p>
           <div className="border border-gray-200 rounded-lg p-4">
             <p className="text-sm text-gray-600 italic">
-              "Define a 6-month roadmap for a high-growth fintech startup
-              transitioning from local payments to cross-border remittances.
-              Consider resource constraints, compliance, and market penetration
-              strategies."
+             
+              {challenge?.challenges?.scenario}
             </p>
           </div>
         </div>
@@ -87,19 +88,15 @@ export default function ChallengeDetailPage() {
               </h3>
             </div>
             <ul className="space-y-2">
-              {[
-                "RoadMap Document(PDF)",
-                "Feature Prioritization Matrix",
-                "Implementation Timeline",
-              ].map((d) => (
+              {challenge?.challenges?.deliverables.map((deliver) => (
                 <li
-                  key={d}
+                  key={deliver}
                   className="flex items-center gap-2 text-sm text-gray-700"
                 >
                   <span className="w-2.5 h-2.5 rounded-full bg-[#FF1F5A] flex-shrink-0" />
-                  {d}
+                  {challenge?.challenges?.deliverables}
                 </li>
-              ))}
+               ))}
             </ul>
           </div>
 
@@ -118,8 +115,7 @@ export default function ChallengeDetailPage() {
                   Submission Format
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Upload a single zip file containing all required documents, or
-                  provide a link to a secure google Drive folder with viewer.
+                {challenge?.challenges?.submission_format}
                 </p>
               </div>
               <div>
@@ -127,8 +123,7 @@ export default function ChallengeDetailPage() {
                   Constraints
                 </p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Use the MoSCoW method. Max 10 pages. Do not include external
-                  links or info in the artifact.
+                {challenge?.challenges?.submission_requirements}
                 </p>
               </div>
             </div>
@@ -141,8 +136,7 @@ export default function ChallengeDetailPage() {
             Tooling Requirements
           </h3>
           <p className="text-sm text-[#FF1F5A]">
-            Restrictions on AI usage if used place citations / references to the
-            model or agent used.
+           {challenge?.challenges?.constraints_text}
           </p>
         </div>
       </div>

@@ -1,8 +1,6 @@
-// seb --it's old-- dont use
-// export interface SubmissionListProps {
-//   id: number;
-//   request_id: number;
-//   title: string;
-//   status: "draft" | "pending evaluation" | "rejected" | "shortlisted";
-//   submitted_at: string;
-// }
+export interface CandidateSubmission {
+  artifact_urls: string[];
+  artifact_type: string | "link";
+  submission_statement: string;
+  integrity_declared: boolean;
+}

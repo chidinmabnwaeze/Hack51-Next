@@ -5,13 +5,6 @@ import { useEffect, useState } from "react";
 import { challengeService } from "@/lib/services/challenge.service";
 import { EmployerRequest } from "@/types/employer";
 
-const dummyChallenges = Array.from({ length: 7 }, (_, i) => ({
-  id: i + 1,
-  company: "nonamecompany",
-  title: "Product Designer",
-  role_level: "Mid-Level",
-  deadline: 12,
-}));
 
 export default function FindChallengesPage() {
   const [challenges, setChallenges] = useState<EmployerRequest[]>([]);
@@ -25,15 +18,7 @@ export default function FindChallengesPage() {
     fetchChallenges();
   }, []);
 
-  const handleShow = ()=>{
-    if(challenges.length === 0){
-      // use dummyChallenges instead
-      setChallenges(dummyChallenges as any);
-    }
-  }
-
-  const renderedChallenges = challenges.length > 0 ? challenges : dummyChallenges;
-  const renderedId = challenges.length > 0 ? challenges[0].id : dummyChallenges[0].id;
+  
 
   return (
     <>
@@ -68,7 +53,7 @@ export default function FindChallengesPage() {
 
         {/* Grid */}
         <div className="grid grid-cols-3 gap-4">
-          {renderedChallenges.map((c) => (
+          {challenges.map((c) => (
             <div
               key={c.id}
               className="border border-gray-200 rounded-xl p-4 hover:border-[#FF1F5A] hover:shadow-sm transition-all group"
@@ -78,7 +63,7 @@ export default function FindChallengesPage() {
                   <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center">
                     <span className="text-white text-[9px] font-bold">N</span>
                   </div>
-                  {/* <span className="text-xs text-gray-500">{c.company}</span> */}
+                  <span className="text-xs text-gray-500">{c?.company}</span>
                 </div>
                 <div className="flex items-center gap-1 bg-red-50 text-[#FF1F5A] text-[10px] font-medium px-2 py-0.5 rounded-full">
                   <Clock size={10} />
@@ -90,7 +75,7 @@ export default function FindChallengesPage() {
               <p className="text-xs text-gray-500 mb-4">Level: {c.role_level}</p>
 
               <div className="flex justify-end">
-                <Link href={`/candidate/challenges/${c.id ? c.id : dummyChallenges[0].id}`} >
+                <Link href={`/candidate/challenges/${c.id}`} >
                   <span className="text-[#FF1F5A] text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                     Details →
                   </span>

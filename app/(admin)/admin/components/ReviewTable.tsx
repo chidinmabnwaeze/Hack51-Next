@@ -82,7 +82,7 @@ export default function ReviewTable() {
 
   const handleReviewClick = async (id?: string) => {
     try {
-      const res = await reviewService.getSubmissionsById(id!);
+      const res = await reviewService.getSubmissionsById(id);
       if (res) {
         router.push(`/admin/review/${id}/submissions`);
       } else {
@@ -165,9 +165,7 @@ export default function ReviewTable() {
               </td>
               <td className="py-2 px-4 flex gap-2">
                 <button
-                  onClick={() => {
-                    router.push(`/admin/review/${request.id}/submissions`);
-                  }}
+                  onClick={handleReviewClick}
                   className=" flex gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
                 >
                   <Eye />
