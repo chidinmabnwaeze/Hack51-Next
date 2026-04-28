@@ -58,19 +58,19 @@ export default function SubmissionTable() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    try {
-      const fetchSubmissions = async () => {
+    const fetchSubmissions = async () => {
+      setLoading(true);
+      try {
         const response = await submissionService.getCandidateSubmissions();
         setSubmissions(response.data);
         setLoading(false);
-      };
-      fetchSubmissions();
-    } catch (err: any) {
-      toast.error("Failed to fetch submissions:", err.message);
-    } finally {
-      setLoading(false);
-    }
+      } catch (err: any) {
+        toast.error("Failed to fetch submissions:", err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSubmissions();
   }, []);
 
   if (loading) return <div>Loading...</div>;

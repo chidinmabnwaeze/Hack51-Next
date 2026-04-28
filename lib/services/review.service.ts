@@ -12,7 +12,7 @@ export const reviewService = {
     console.log("ALL REQUEST SUBMISSIONS", response);
     return response;
   },
-  getSubmissionsById: async (id: string) => {
+  getSubmissionsById: async (id: string ) => {
     const response = await api.get(`/admin/review/submissions/${id}`);
     console.log("SUBMISSION BY ID", response);
     return response;

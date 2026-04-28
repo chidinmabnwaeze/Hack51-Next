@@ -6,31 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { EmployerRequest } from "@/types/employer";
 import { useEffect, useState } from "react";
-
-// export interface Submission {
-//   submitted: number;
-//   total: number;
-//   percentage: number;
-// }
-
-// export interface ActiveRequest {
-//   id?: string;
-//   role?: string;
-//   title: string;
-//   submissions: Submission[];
-//   days_left?: number | string;
-//   status: string;
-// }
-
-// interface RequestTableProps {
-//   requests: ActiveRequest[];
-//   detailed?: boolean;
-// }
+import { Stats } from "@/types/submissions";
 
 const badgeClasses = (status: string) => {
   const key = status.toLowerCase();
   switch (true) {
-    case key.includes("open"):
+    case key.includes("published"):
       return "bg-blue-100 text-blue-800";
     case key.includes("evaluation"):
     case key.includes("in progress"):
@@ -56,6 +37,10 @@ export default function ReviewTable() {
   ];
   const router = useRouter();
   const [requests, setRequests] = useState<EmployerRequest[]>([]);
+  const [submissions, setSubmissions] = useState<Record<string, any[]>>({});
+  const [submissionStats, setSubmissionStats] = useState<Record<string, Stats>>(
+    {},
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,9 +50,10 @@ export default function ReviewTable() {
         const response = await reviewService.getRequests({});
         console.log("FETCHED REQUESTS", response);
 
-        const requestsData = Array.isArray(response) ? response : (response as any).data ?? [];
+        const requestsData = Array.isArray(response)
+          ? response
+          : ((response as any).data ?? []);
         setRequests(requestsData);
-
       } catch (err: any) {
         console.log(
           "ERROR FETCHING REQUESTS",
@@ -77,12 +63,42 @@ export default function ReviewTable() {
         setLoading(false);
       }
     };
+
     fetchRequests();
   }, []);
 
-  const handleReviewClick = async (id?: string) => {
+  useEffect(() => {
+    const fetchSubmissionStats = async () => {
+      const results: Record<string, Stats> = {};
+
+      await Promise.all(
+        requests.map(async (req) => {
+          const response = await reviewService.getAllRequestSubmissions(
+            req.id,
+            {},
+          );
+          results[req.id] = response.data.stats;
+        }),
+      );
+      setSubmissionStats(results);
+    };
+    if (requests.length > 0) {
+      fetchSubmissionStats();
+    }
+  }, [requests]);
+
+  //calculate percentage
+  const getPercentage = (submitted: number, total: number) => {
+    if (!total) return 0;
+    return (submitted / total) * 100;
+  };
+
+  const handleReviewClick = async (id: string) => {
     try {
       const res = await reviewService.getSubmissionsById(id);
+
+      const submissionRecord = res.data;
+      console.log(submissionRecord);
       if (res) {
         router.push(`/admin/review/${id}/submissions`);
       } else {
@@ -111,51 +127,56 @@ export default function ReviewTable() {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={5} className="py-8 text-center text-gray-500">Loading requests...</td>
+              <td colSpan={5} className="py-8 text-center text-gray-500">
+                Loading requests...
+              </td>
             </tr>
           )}
           {!loading && requests.length === 0 && (
             <tr>
-              <td colSpan={5} className="py-8 text-center text-gray-500">No requests found.</td>
+              <td colSpan={5} className="py-8 text-center text-gray-500">
+                No requests found.
+              </td>
             </tr>
           )}
           {requests.map((request, idx) => (
-            <tr className="border-b border-gray-100" key={idx}>
-              <td className="py-2 px-4">
+            <tr className="border-b border-gray-100 " key={idx}>
+              <td className="py-4 px-4">
                 <div className="flex flex-col">
                   <span className="font-semibold">{request.title}</span>
-                  {/* {detailed && ( */}
-                    <>
-                      {request.id && (
-                        <small className="text-gray-500">
-                          ID: {request.id}
-                        </small>
-                      )}
-                      {request.title && (
-                        <small className="text-gray-500">{request.title}</small>
-                      )}
-                    </>
-                  {/* )} */}
+                  <>
+                    {request.id && (
+                      <small className="text-gray-500">ID: {request.id}</small>
+                    )}
+                  </>
                 </div>
               </td>
 
-              {/* <td className="py-2 px-4">
-                {request.submissions.map((s, si) => (
-                  <div key={si} className="mb-2">
+              <td className="py-2 px-4">
+                {submissionStats[request.id] ? (
+                  <div className="mb-2">
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className="bg-[#FF0046] h-2 rounded-full"
-                        style={{ width: `${s.percentage}%` }}
+                        style={{
+                          width: `${getPercentage(
+                            submissionStats[request.id].submitted,
+                            submissionStats[request.id].total,
+                          )}%`,
+                        }}
                       />
                     </div>
                     <p className="text-sm text-gray-600 mt-1">
-                      {s.submitted}/{s.total}
+                      {submissionStats[request.id].submitted}/
+                      {submissionStats[request.id].total}
                     </p>
                   </div>
-                ))}
-              </td> */}
+                ) : (
+                  <span className="text-gray-400">Loading...</span>
+                )}
+              </td>
 
-              <td className="py-2 px-4">{request.deadline?? "-"}</td>
+              <td className="py-2 px-4">{request.deadline ?? "-"}</td>
               <td className="py-2 px-4">
                 <span
                   className={`px-2 py-1 rounded text-xs font-bold ${badgeClasses(request.status)}`}
@@ -163,10 +184,10 @@ export default function ReviewTable() {
                   {request.status}
                 </span>
               </td>
-              <td className="py-2 px-4 flex gap-2">
+              <td className="py-2 px-4 flex items-center gap-2">
                 <button
-                  onClick={handleReviewClick}
-                  className=" flex gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
+                  onClick={() => handleReviewClick(request.id)}
+                  className=" flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
                 >
                   <Eye />
                   Review

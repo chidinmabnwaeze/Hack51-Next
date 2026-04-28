@@ -20,15 +20,7 @@ export interface SubmissionListProps {
   submitted_at: string;
   updated_at: string;
   job_requests: JobRequests;
-  // {
-  //   id: string;
-  //   title: string;
-  //   deadline: string;
-  //   role_type: string;
-  //   role_level: senior,
-  //   workspaces: {
-  //     company_name: string| null;
-  //   }
+ 
 }
 
 export interface JobRequests extends EmployerRequest {
@@ -36,3 +28,11 @@ export interface JobRequests extends EmployerRequest {
     company_name: string | null;
   };
 }
+
+export type Stats = {
+  submitted: number;
+  total: number;
+  shortlisted: number;
+  rejected: number;
+  under_review: number;
+};
