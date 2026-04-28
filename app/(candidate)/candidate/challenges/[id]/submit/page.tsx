@@ -6,16 +6,15 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmployerRequest } from "@/types/employer";
 import { challengeService } from "@/lib/services/challenge.service";
-import { submissionService } from "@/lib/services/submission.service";
 import { CandidateSubmission } from "@/types/submissions";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function SubmitPage() {
   const router = useRouter();
   const [challenge, setChallenge] = useState<EmployerRequest | null>(null);
   const [submitData, setSubmitData] = useState<CandidateSubmission>({
     artifact_urls: [],
-    artifact_type: "",
+    artifact_type: "link",
     submission_statement: "",
     integrity_declared: false,
   });
@@ -36,29 +35,40 @@ export default function SubmitPage() {
     fetchChallengeById();
   }, [id]);
 
-  const handleSubmit = async () => {
-    if (!submitData.artifact_urls || !submitData.integrity_declared) {
-      toast("Artifact Url is required");
+  const handleContinue = async (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.preventDefault();
+
+    if (!submitData.artifact_urls[0]) {
+      toast.error("Artifact URL is required to continue.");
+      return;
     }
 
-    try {
-      const submitPayload = {
-        artifact_urls: submitData.artifact_urls,
-        artifact_type: submitData.artifact_type,
-        submission_statement: submitData.submission_statement,
-        integrity_declared: submitData.integrity_declared,
-      };
-
-      await submissionService.submitArtifact(id, submitPayload);
-      setSubmitData(submitData);
-    } catch (err) {
-      console.error("Failed to fetch challenge details:", err);
-    }
+    router.push(
+      `/candidate/challenges/${id}/review?artifact_url=${encodeURIComponent(
+        submitData.artifact_urls[0],
+      )}&statement=${encodeURIComponent(submitData.submission_statement)}`,
+    );
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setSubmitData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "artifact_url") {
+      setSubmitData((prev) => ({
+        ...prev,
+        artifact_urls: value ? [value] : [],
+      }));
+      return;
+    }
+
+    setSubmitData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -75,38 +85,35 @@ export default function SubmitPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 mt-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">
-            Submission Manifest
-          </h2>
-          <button
-            onClick={() => router.push(`/candidates/challenges/${id}/review`)}
-            className="bg-[#FF1F5A] hover:bg-[#e01550] text-white font-semibold px-8 py-2.5 rounded-lg text-sm transition-colors"
-          >
-            Continue
-          </button>
-        </div>
+        <form onSubmit={handleContinue}>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900">
+              Submission Manifest
+            </h2>
+            <button
+              type="submit"
+              className="bg-[#FF1F5A] hover:bg-[#e01550] text-white font-semibold px-8 py-2.5 rounded-lg text-sm transition-colors"
+            >
+              Continue
+            </button>
+          </div>
 
-        {/* Submission Statement */}
-        <form action={handleSubmit}>
           <div className="mb-8">
             <h3 className="font-semibold text-gray-900 text-sm mb-1">
               Submission Statement
             </h3>
             <p className="text-sm text-gray-500 mb-3">
-              A brief summary of how the candidate went about solving the
-              challenge.
+              A brief summary of how you solved the challenge.
             </p>
             <textarea
               name="submission_statement"
               placeholder="Type something..."
-              className="w-full border border-gray-200 rounded-lg p-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#FF1F5A] resize-none transition-colors min-h-[140px]"
+              className="w-full border border-gray-200 rounded-lg p-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#FF1F5A] resize-none transition-colors min-h-35"
               value={submitData.submission_statement}
               onChange={handleChange}
             />
           </div>
 
-          {/* Artifact Upload */}
           <div>
             <h3 className="font-semibold text-gray-900 text-sm mb-1">
               Artifact Upload
@@ -120,8 +127,11 @@ export default function SubmitPage() {
                 <div className="relative">
                   <input
                     type="text"
+                    name="artifact_url"
                     placeholder="Provide a public link"
                     className="w-full border border-gray-200 rounded-lg px-4 py-3 pr-10 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#FF1F5A] transition-colors"
+                    value={submitData.artifact_urls[0] ?? ""}
+                    onChange={handleChange}
                   />
                   <Link2
                     size={15}
@@ -130,7 +140,7 @@ export default function SubmitPage() {
                 </div>
                 <div className="relative">
                   <input
-                    type="text"
+                    type="file"
                     placeholder="Upload files (PDF) or Google Drive link"
                     className="w-full border border-gray-200 rounded-lg px-4 py-3 pr-10 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#FF1F5A] transition-colors cursor-pointer"
                     readOnly

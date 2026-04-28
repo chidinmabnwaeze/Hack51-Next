@@ -1,9 +1,12 @@
 "use client";
-import AppLayout from "@/components/layout/AppLayout";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { EmployerRequest } from "@/types/employer";
+import { toast } from "react-toastify";
+import { challengeService } from "@/lib/services/challenge.service";
+import { submissionService } from "@/lib/services/submission.service";
 
 const declarations = [
   {
@@ -29,21 +32,23 @@ const declarations = [
 function SuccessModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-red-50/80 backdrop-blur-sm" />
-      <div className="relative bg-white rounded-2xl border border-[#FF1F5A] shadow-xl p-10 w-[420px] flex flex-col items-center text-center">
+      <div className="absolute inset-0 bg-white-50/80 backdrop-blur-sm" />
+      <div className="relative bg-white rounded-2xl border border-[#FF1F5A] shadow-xl p-10 w-full max-w-md flex flex-col items-center text-center">
         <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-4">
           <CheckCircle2 size={32} className="text-green-600" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Submission Successful</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">
+          Submission Successful
+        </h2>
         <p className="text-sm text-gray-500 mb-6">
-          Track your submission status in the submissions dashboard
+          Track your submission status in the submissions dashboard.
         </p>
-        <Link href="/challenges">
+        <Link href="/candidate/submissions">
           <button
             onClick={onClose}
             className="w-full bg-[#FF1F5A] hover:bg-[#e01550] text-white font-semibold py-3 px-8 rounded-lg text-sm transition-colors"
           >
-            Back to Find Challenges
+            Go to Submissions
           </button>
         </Link>
       </div>
@@ -51,60 +56,144 @@ function SuccessModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function ReviewPage({ params }: { params: { id: string } }) {
-  const router = useRouter();
+export default function ReviewPage() {
+  const searchParams = useSearchParams();
   const [checks, setChecks] = useState<Record<string, boolean>>({
     original: true,
     compliance: true,
     evaluation: false,
   });
+  const [challenge, setChallenge] = useState<EmployerRequest | null>(null);
+  const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const toggle = (id: string) => setChecks((prev) => ({ ...prev, [id]: !prev[id] }));
+  const params = useParams();
+  const id = params.id as string;
+
+  const artifactUrl = searchParams.get("artifact_url") || "";
+  const statement = searchParams.get("statement") || "";
+
+  const toggle = (id: string) =>
+    setChecks((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  useEffect(() => {
+    const fetchChallengeById = async () => {
+      setLoading(true);
+      try {
+        const response =
+          await challengeService.getCandidateChallengeDetails(id);
+        setChallenge(response.data);
+      } catch (err) {
+        toast.error("Failed to fetch challenge details.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChallengeById();
+  }, [id]);
+
+  const handleConfirmSubmission = async () => {
+    if (!artifactUrl) {
+      toast.error(
+        "Artifact URL is required. Please go back and provide your link.",
+      );
+      return;
+    }
+
+    if (!checks.original || !checks.compliance || !checks.evaluation) {
+      toast.error("Please agree to all declarations before submitting.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await submissionService.submitArtifact(id, {
+        artifact_urls: [artifactUrl],
+        artifact_type: "link",
+        submission_statement: statement,
+        integrity_declared:
+          checks.original && checks.compliance && checks.evaluation,
+      });
+      setShowSuccess(true);
+    } catch (err: any) {
+      toast.error(
+        typeof err === "string" ? err : "Failed to submit your challenge.",
+      );
+      console.error("Submit error", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <AppLayout>
+    <>
       {showSuccess && <SuccessModal onClose={() => setShowSuccess(false)} />}
 
       <div className="mb-2">
-        <Link href={`/challenges/${params.id}/submit`} className="text-sm text-gray-500 flex items-center gap-1 hover:text-[#FF1F5A] transition-colors mb-3">
+        <Link
+          href={`/candidate/challenges/${id}/submit`}
+          className="text-sm text-gray-500 flex items-center gap-1 hover:text-[#FF1F5A] transition-colors mb-3"
+        >
           <ArrowLeft size={14} /> Back to submission manifest
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">Product Designer</h1>
-        <p className="text-sm text-gray-400 mt-0.5">mid-level</p>
+        <h1 className="text-2xl font-bold text-gray-900">{challenge?.title}</h1>
+        <p className="text-sm text-gray-400 mt-0.5">{challenge?.role_level}</p>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 mt-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Submission Review</h2>
           <button
-            onClick={() => setShowSuccess(true)}
-            className="bg-[#FF1F5A] hover:bg-[#e01550] text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors"
+            onClick={handleConfirmSubmission}
+            disabled={loading}
+            className="bg-[#FF1F5A] hover:bg-[#e01550] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold px-6 py-2.5 rounded-lg text-sm transition-colors"
           >
-            Confirm Submission
+            {loading ? "Submitting..." : "Confirm Submission"}
           </button>
         </div>
 
-        {/* Summary */}
         <div className="mb-6">
-          <h3 className="font-semibold text-gray-900 text-base mb-0.5">Senior Product designer</h3>
-          <p className="text-sm text-gray-400 mb-4">ReqID: 2330-765</p>
+          <h3 className="font-semibold text-gray-900 text-base mb-0.5">
+            {challenge?.role_level ?? "Candidate submission"}
+          </h3>
+          <p className="text-sm text-gray-400 mb-4">
+            Request ID: {challenge?.id || id}
+          </p>
 
-          <h4 className="font-semibold text-gray-800 text-sm mb-2">Summary & artifacts</h4>
+          <h4 className="font-semibold text-gray-800 text-sm mb-2">
+            Summary & artifacts
+          </h4>
           <div className="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
-            <p className="text-sm text-gray-400 italic">
-              "AI was used as a supplemental tool for brainstorming and technical formatting. The core analysis and final revisions remain my own original work."
+            <p className="text-sm text-gray-600">
+              {statement || "No submission summary provided."}
             </p>
           </div>
 
+          <div className="border border-gray-200 rounded-lg p-4 mb-4">
+            <p className="text-sm font-semibold text-gray-800 mb-2">
+              Artifact link
+            </p>
+            <a
+              href={artifactUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-[#FF1F5A] break-all"
+            >
+              {artifactUrl || "No link provided."}
+            </a>
+          </div>
+
           <div className="inline-flex items-center gap-2 border border-[#FF1F5A] bg-red-50 text-[#FF1F5A] text-xs font-medium px-3 py-1.5 rounded-full">
-            <CheckCircle2 size={13} /> Artifact link(s) provided:
+            <CheckCircle2 size={13} /> Artifact link(s) provided
           </div>
         </div>
 
-        {/* Integrity Declarations */}
         <div>
-          <h3 className="font-bold text-gray-900 text-base mb-4">Integrity Declarations (Mandatory)</h3>
+          <h3 className="font-bold text-gray-900 text-base mb-4">
+            Integrity Declarations (Mandatory)
+          </h3>
           <div className="space-y-3">
             {declarations.map((d) => (
               <div
@@ -112,17 +201,33 @@ export default function ReviewPage({ params }: { params: { id: string } }) {
                 className="border border-gray-200 rounded-lg p-4 flex items-start gap-3 cursor-pointer hover:border-gray-300 transition-colors"
                 onClick={() => toggle(d.id)}
               >
-                <div className={`w-5 h-5 rounded flex-shrink-0 mt-0.5 flex items-center justify-center border-2 transition-colors ${
-                  checks[d.id] ? "bg-[#FF1F5A] border-[#FF1F5A]" : "border-gray-300 bg-white"
-                }`}>
+                <div
+                  className={`w-5 h-5 rounded shrink-0 mt-0.5 flex items-center justify-center border-2 transition-colors ${
+                    checks[d.id]
+                      ? "bg-[#FF1F5A] border-[#FF1F5A]"
+                      : "border-gray-300 bg-white"
+                  }`}
+                >
                   {checks[d.id] && (
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                      <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      className="w-3 h-3 text-white"
+                      fill="none"
+                      viewBox="0 0 12 12"
+                    >
+                      <path
+                        d="M2 6l3 3 5-5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   )}
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-800 text-sm mb-0.5">{d.label}</p>
+                  <p className="font-semibold text-gray-800 text-sm mb-0.5">
+                    {d.label}
+                  </p>
                   <p className="text-sm text-gray-500">{d.text}</p>
                 </div>
               </div>
@@ -130,6 +235,6 @@ export default function ReviewPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </>
   );
 }

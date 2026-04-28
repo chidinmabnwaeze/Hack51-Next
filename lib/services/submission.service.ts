@@ -1,7 +1,7 @@
 import { EmployerRequest } from "@/types/employer";
 import { ApiResponse } from "@/types/api";
 import api from "../api";
-import { CandidateSubmission } from "@/types/submissions";
+import { CandidateSubmission , SubmissionListProps } from "@/types/submissions";
 
 export const submissionService = {
   candidateSubmissions: async (data: SubmissionListProps) => {
@@ -12,6 +12,10 @@ export const submissionService = {
       },
     });
     return res;
+  },
+  getCandidateSubmissionById: async (id: string) => {
+    const res = await api.get(`candidate/submissions/${id}`);
+    return res.data;
   },
   submitArtifact: async (
     id: string,
