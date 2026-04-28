@@ -4,7 +4,7 @@ import api from "../api";
 import { CandidateSubmission , SubmissionListProps } from "@/types/submissions";
 
 export const submissionService = {
-  candidateSubmissions: async (data: SubmissionListProps) => {
+  getCandidateSubmissions: async () => {
     const res: ApiResponse<any> = await api.get("candidate/submissions", {
       params: {
         page: 1,

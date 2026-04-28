@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { challengeService } from "@/lib/services/challenge.service";
 import { EmployerRequest } from "@/types/employer";
 
-
 export default function FindChallengesPage() {
   const [challenges, setChallenges] = useState<EmployerRequest[]>([]);
 
@@ -17,8 +16,6 @@ export default function FindChallengesPage() {
 
     fetchChallenges();
   }, []);
-
-  
 
   return (
     <>
@@ -71,11 +68,15 @@ export default function FindChallengesPage() {
                 </div>
               </div>
 
-              <h3 className="font-bold text-gray-900 text-sm mb-1">{c.title}</h3>
-              <p className="text-xs text-gray-500 mb-4">Level: {c.role_level}</p>
+              <h3 className="font-bold text-gray-900 text-sm mb-1">
+                {c.title}
+              </h3>
+              <p className="text-xs text-gray-500 mb-4">
+                Level: {c.role_level}
+              </p>
 
               <div className="flex justify-end">
-                <Link href={`/candidate/challenges/${c.id}`} >
+                <Link href={`/candidate/challenges/${c.id}`}>
                   <span className="text-[#FF1F5A] text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                     Details →
                   </span>
