@@ -37,7 +37,7 @@ export default function ReviewTable() {
   ];
   const router = useRouter();
   const [requests, setRequests] = useState<EmployerRequest[]>([]);
-  const [submissions, setSubmissions] = useState<Record<string, any[]>>({});
+  // const [submissions, setSubmissions] = useState<Record<string, any[]>>({});
   const [submissionStats, setSubmissionStats] = useState<Record<string, Stats>>(
     {},
   );
@@ -55,10 +55,7 @@ export default function ReviewTable() {
           : ((response as any).data ?? []);
         setRequests(requestsData);
       } catch (err: any) {
-        console.log(
-          "ERROR FETCHING REQUESTS",
-          err.response?.data || err.message,
-        );
+        console.log("ERROR FETCHING REQUESTS",err);
       } finally {
         setLoading(false);
       }

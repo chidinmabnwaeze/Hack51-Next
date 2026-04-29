@@ -5,48 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {  reviewService } from "@/lib/services/review.service";
 
-// const activeRequests: ActiveRequest[] = [
-//   {
-//     id: "REQ-2401-09",
-//     title: "Senior Product Designer",
-//     role: "Product Designer (L3)",
-//     submissions: [{ submitted: 13, total: 21, percentage: 62 }],
-//     days_left: 12,
-//     status: "Open for submissions",
-//   },
-//   {
-//     id: "REQ-2401-12",
-//     title: "Backend Engineer (Go/Rust)",
-//     role: "Backend Engineer (L4)",
-//     submissions: [{ submitted: 21, total: 21, percentage: 100 }],
-//     days_left: 2,
-//     status: "Evaluation in progress",
-//   },
-//   {
-//     id: "REQ-2401-15",
-//     title: "Marketing Lead (Growth)",
-//     role: "Marketing Lead (L4)",
-//     submissions: [{ submitted: 50, total: 50, percentage: 100 }],
-//     days_left: 0,
-//     status: "Shortlist ready",
-//   },
-//   {
-//     id: "REQ-2402-01",
-//     title: "Q2 Junior Frontend Intake",
-//     role: "Frontend Engineer (L1)",
-//     submissions: [{ submitted: 0, total: 30, percentage: 0 }],
-//     days_left: "-",
-//     status: "Draft",
-//   },
-//   {
-//     id: "REQ-2312-05",
-//     title: "Staff Data Scientist",
-//     role: "Data Scientist (L5)",
-//     submissions: [{ submitted: 15, total: 15, percentage: 100 }],
-//     days_left: "-",
-//     status: "Closed",
-//   },
-// ];
 
 export default function RequestsPage() {
   const router = useRouter();
