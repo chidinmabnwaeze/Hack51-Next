@@ -19,8 +19,14 @@ export interface SubmissionListProps {
   resubmit_count: number;
   submitted_at: string;
   updated_at: string;
-  job_requests: JobRequests;
- 
+   users: {
+    id: string;
+    email: string;
+    last_name: string;
+    avatar_url: string | null;
+    first_name: string;
+  };
+  // job_requests: JobRequests;
 }
 
 export interface JobRequests extends EmployerRequest {
@@ -36,3 +42,91 @@ export type Stats = {
   rejected: number;
   under_review: number;
 };
+
+export interface SubmissionFullDetail {
+  id: string;
+  status: "submitted";
+  artifact_urls: string[];
+  artifact_type: string;
+  submission_statement: string;
+  integrity_declared: boolean;
+  triage_decision: string | null;
+  triage_reason: string | null;
+  triaged_at: string | null;
+  reviewer_notes: string | null;
+  total_score: number | null;
+  scored_at: string | null;
+  resubmit_count: number;
+  submitted_at: string;
+  created_at: string;
+  updated_at: string;
+  users: {
+    id: string;
+    email: string;
+    last_name: string;
+    avatar_url: string | null;
+    first_name: string;
+  };
+  job_requests: {
+    id: string;
+    title: string;
+    deadline: string;
+    role_type: string;
+    challenge_cap: number;
+    shortlist_size: number;
+    snapshot_rubric: [
+      {
+        id: string;
+        title: string;
+        weight: number;
+        sort_order: number;
+        description: string;
+      },
+    ];
+    snapshot_challenge: {
+      id: string;
+      title: string;
+      summary: string;
+      scenario: string;
+      deliverables: string[];
+      rubric_criteria: [
+        {
+          id: string;
+          title: string;
+          weight: number;
+          sort_order: number;
+          description: string;
+        },
+      ];
+      constraints_text: string;
+      submission_format: string;
+    };
+  };
+  submission_scores: number[];
+}
+
+// export Scoring{
+//   {
+//   "scores": [
+//     {
+//       "criterion_id": "uuid",
+//       "criterion_title": "Code Quality",
+//       "weight": 30,
+//       "score_percent": 85
+//     },
+//     {
+//       "criterion_id": "uuid2",
+//       "criterion_title": "Code Technicality",
+//       "weight": 30,
+//       "score_percent": 90
+//     },
+//     {
+//       "criterion_id": "uuid3",
+//       "criterion_title": "Code Functionality",
+//       "weight": 40,
+//       "score_percent": 80
+//     }
+//   ],
+//   "reviewer_notes": "Strong technical proficiency."
+// }
+// }

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { EmployerRequest } from "@/types/employer";
 import { useEffect, useState } from "react";
 import { Stats } from "@/types/submissions";
+import { toast } from "react-toastify";
 
 const badgeClasses = (status: string) => {
   const key = status.toLowerCase();
@@ -90,16 +91,16 @@ export default function ReviewTable() {
     return (submitted / total) * 100;
   };
 
-  const handleReviewClick = async (id: string) => {
+  const handleReviewClick = async (requestId: string) => {
     try {
-      const res = await reviewService.getSubmissionsById(id);
+      const res = await reviewService.getAllRequestSubmissions(requestId, {});
 
       const submissionRecord = res.data;
       console.log(submissionRecord);
       if (res) {
-        router.push(`/admin/review/${id}/submissions`);
+        router.push(`/admin/review/${requestId}/submissions/`);
       } else {
-        alert("Request not found");
+        toast("Request not found");
       }
     } catch (err: any) {
       console.error("ERROR FETCHING SUBMISSIONS", err.message);

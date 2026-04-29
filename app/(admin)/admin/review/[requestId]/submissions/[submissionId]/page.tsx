@@ -1,47 +1,47 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
-import EvaluationDetail, { EvaluationDetailProps } from "@/app/(admin)/admin/components/EvaluationDetail";
+import EvaluationDetail from "@/app/(admin)/admin/components/EvaluationDetail";
 
-type SubmissionData = Omit<EvaluationDetailProps, "onBack" | "onSubmitToShortlist">;
+// type SubmissionData = Omit<EvaluationDetailProps, "onBack" | "onSubmitToShortlist">;
 
 // Mock data — replace with API fetch using submissionId when backend is ready
-const MOCK_SUBMISSIONS: Record<string, SubmissionData> = {
-  default: {
-    submissionId: "SUB-001",
-    candidateName: "Martha Ikemjika",
-    scenario:
-      "Define a 6-month roadmap for a high-growth fintech startup transitioning from local payments to cross-border remittances. Consider resource constraints, compliance, and market penetration strategies.",
-    submissionStatement:
-      "AI was used as a supplemental tool for brainstorming and technical formatting. The core analysis and final revisions remain my own original work.",
-    deliverables: [
-      { label: "RoadMap Document (PDF)", submitted: false },
-      { label: "Feature Prioritization Matrix", submitted: true },
-      { label: "Implementation Timeline", submitted: true },
-    ],
-    rubricItems: [
-      { name: "Code Quality",       weight: 30, description: "Code quality, design patterns and efficiency", judgeNote: "They should properly format the code." },
-      { name: "Code technicality",  weight: 30, description: "Code quality, design patterns and efficiency", judgeNote: "They should properly format the code." },
-      { name: "Code functionality", weight: 40, description: "Code quality, design patterns and efficiency", judgeNote: "They should properly format the code." },
-    ],
-    scores: { "Code Quality": 30, "Code technicality": 40, "Code functionality": 80 },
-    totalScore: 85,
-    adminNote:
-      "The candidate demonstrated strong technical proficiency and a clear understanding of the project requirements.",
-  },
-};
+// const MOCK_SUBMISSIONS: Record<string, SubmissionData> = {
+//   default: {
+//     submissionId: "SUB-001",
+//     candidateName: "Martha Ikemjika",
+//     scenario:
+//       "Define a 6-month roadmap for a high-growth fintech startup transitioning from local payments to cross-border remittances. Consider resource constraints, compliance, and market penetration strategies.",
+//     submissionStatement:
+//       "AI was used as a supplemental tool for brainstorming and technical formatting. The core analysis and final revisions remain my own original work.",
+//     deliverables: [
+//       { label: "RoadMap Document (PDF)", submitted: false },
+//       { label: "Feature Prioritization Matrix", submitted: true },
+//       { label: "Implementation Timeline", submitted: true },
+//     ],
+//     rubricItems: [
+//       { name: "Code Quality",       weight: 30, description: "Code quality, design patterns and efficiency", judgeNote: "They should properly format the code." },
+//       { name: "Code technicality",  weight: 30, description: "Code quality, design patterns and efficiency", judgeNote: "They should properly format the code." },
+//       { name: "Code functionality", weight: 40, description: "Code quality, design patterns and efficiency", judgeNote: "They should properly format the code." },
+//     ],
+//     scores: { "Code Quality": 30, "Code technicality": 40, "Code functionality": 80 },
+//     totalScore: 85,
+//     adminNote:
+//       "The candidate demonstrated strong technical proficiency and a clear understanding of the project requirements.",
+//   },
+// };
 
-interface Props {
-  params: { requestId: string; submissionId: string };
-}
+// interface Props {
+//   params: { requestId: string; submissionId: string };
+// }
 
-export default function EvaluationPage({ params }: Props) {
+export default function EvaluationPage() {
   const router = useRouter();
-  const { requestId, submissionId } = params;
-
-  // TODO: Replace with real API fetch: const data = await fetchSubmission(submissionId)
-  const data = MOCK_SUBMISSIONS[submissionId] ?? { ...MOCK_SUBMISSIONS.default, submissionId };
+  // const { requestId, submissionId } = params;
+    const params = useParams();
+    const requestId = params.requestId as string;
+     const submissionId = params.submissionId as string;
 
   return (
     <div>
@@ -61,9 +61,10 @@ export default function EvaluationPage({ params }: Props) {
         </div>
       </section>
       <EvaluationDetail
-        {...data}
-        onBack={() => router.push(`/admin/review/${requestId}/submissions`)}
-        onSubmitToShortlist={() => router.push("/admin/shortlists")}
+        // {...data}
+        id ={ submissionId}
+        // onBack={() => router.push(`/admin/review/${requestId}/submissions`)}
+        // onSubmitToShortlist={() => router.push("/admin/shortlists")}
       />
     </div>
   );

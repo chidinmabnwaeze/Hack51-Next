@@ -8,8 +8,6 @@ import {  reviewService } from "@/lib/services/review.service";
 
 export default function RequestsPage() {
   const router = useRouter();
-  const [ requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"active requests" | "shortlists">(
     "active requests",
   );

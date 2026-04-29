@@ -7,16 +7,6 @@ import { submissionService } from "@/lib/services/submission.service";
 import SubmissionTable from "../component.tsx/SubmissionTable";
 import { toast } from "react-toastify";
 
-// const submissions = [
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "pending" },
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "rejected" },
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "pending" },
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "pending" },
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "pending" },
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "pending" },
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "shortlisted" },
-//   { role: "Backend Engineer(Rust)", id: "SUB-123RE-43", date: "2024-04-07", status: "shortlisted" },
-// ];
 
 function StatusBadge({ status }: { status: string }) {
   if (status === "rejected") {
