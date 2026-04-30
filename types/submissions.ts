@@ -45,7 +45,7 @@ export type Stats = {
 
 export interface SubmissionFullDetail {
   id: string;
-  status: "submitted";
+  status: "submitted" | "under_review";
   artifact_urls: string[];
   artifact_type: string;
   submission_statement: string;

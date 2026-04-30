@@ -11,13 +11,15 @@ import { Scoring } from "@/types/score";
 export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   const [rejectOpen, setRejectOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"link" | "document">("link");
-  const [scores, setScores] = useState<Scoring[]>([]);
+  const [scores, setScores] = useState<Record<string, number>>({});
   const [scoreOption, setScoreOption] = useState({
     criterion_id: "",
     criterion_title: "",
     weight: 0,
     score_percent: 0,
+    reviewer_note: "",
   });
+  const [reviewNote, setReviewNote] = useState("");
   const [submissionDetail, setSubmissionDetail] =
     useState<SubmissionFullDetail | null>(null);
 
@@ -39,22 +41,63 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     fetchSubmissionDetail(id);
   }, []);
 
-  const scoreSubmission = async (id: string, data: Scoring) => {
-    try {
-      const scoreData: Scoring = scoreOption.weight;
-      const response = await reviewService.scoreSubmission(id, scoreData);
-      setScores(response.data);
-    } catch (err) {
-      console.log("Error scoring with rubric :", err);
-    }
+  //admin scores the candidates' submission
+  // const scoreSubmission = async (id: string, data: Scoring) => {
+  //   try {
+  //     const scoreData: Scoring = {
+  //       scores: [
+  //         {
+  //           criterion_id: scoreOption.criterion_id,
+  //           criterion_title: scoreOption.criterion_title,
+  //           weight: scoreOption.weight,
+  //           score_percent: scoreOption.score_percent,
+  //         },
+  //       ],
+  //       reviewer_notes: reviewNote,
+  //     };
+
+  //     const response = await reviewService.scoreSubmission(id, scoreData);
+  //     setScores(response.data);
+  //     setReviewNote(reviewNote);
+  //   } catch (err) {
+  //     console.log("Error scoring with rubric :", err);
+  //   }
+  // };
+
+  const buildScorePayload = () => {
+    if (!submissionDetail) return null;
+
+    return {
+      scores:
+        submissionDetail.job_requests.snapshot_challenge.rubric_criteria.map(
+          (item) => ({
+            criterion_id: item.id,
+            criterion_title: item.title,
+            weight: item.weight,
+            score_percent: scores[item.id] ?? 0,
+          }),
+        ),
+      reviewer_notes: reviewNote,
+    };
   };
 
-  // if(activeTab === "link"){
-  //   return submissionDetail?.artifact_urls
-  // }
-  // if (activeTab === "document") {
-  //   return submissionDetail?.artifact_type;
-  // }
+  const handleSubmitScores = async () => {
+    if (!submissionDetail) return;
+
+    try {
+      const payload = buildScorePayload();
+      if (!payload) return;
+
+      const response = await reviewService.scoreSubmission(
+        submissionDetail.id,
+        payload,
+      );
+
+      console.log("Scored successfully", response);
+    } catch (err) {
+      console.error("Error scoring:", err);
+    }
+  };
 
   return (
     <>
@@ -115,7 +158,21 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                     <Link2 size={14} className="text-gray-400" />
                     <span className="text-[#F01E5A] underline">
                       Link submitted by candidate :
-                      <p>{submissionDetail.artifact_urls}</p>
+                      {activeTab === "link" && (
+                        <div>
+                          {submissionDetail.artifact_urls.map((url, i) => (
+                            <a
+                              key={i}
+                              href={url}
+                              target="_blank"
+                              className="text-blue-600 underline block"
+                            >
+                              {url}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                      {/* <p>{submissionDetail.artifact_urls}</p> */}
                     </span>
                   </button>
                   <button
@@ -126,6 +183,9 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                   >
                     <Download size={14} className="text-gray-400" />
                     Document submitted by candidate
+                    {activeTab === "document" && (
+                      <p>{submissionDetail.artifact_type}</p>
+                    )}
                   </button>
                 </div>
 
@@ -177,18 +237,20 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                         </span>
                         <div className="relative border-l border-gray-200 bg-gray-50">
                           <select
-                            value={scores[item.weight] ?? 0}
+                            value={scores[item.id] ?? 0}
                             onChange={(e) =>
                               setScores((prev) => ({
                                 ...prev,
-                                [item.title]: Number(e.target.value),
+                                [item.id]: Number(e.target.value),
                               }))
                             }
                             className="appearance-none px-4 py-3 pr-8 text-sm font-semibold bg-transparent outline-none cursor-pointer min-w-20"
                           >
-                            <option value={scoreOption.weight}>
-                              {scoreOption.score_percent}%
-                            </option>
+                            {[0, 20, 40, 60, 80, 100].map((val) => (
+                              <option key={val} value={val}>
+                                {val}%
+                              </option>
+                            ))}
                           </select>
                           <ChevronDown
                             size={12}
@@ -203,10 +265,12 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                 <p className="text-sm font-semibold mt-5 mb-2">
                   Admin review Note
                 </p>
-                <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-600 italic leading-relaxed">
-                  "{submissionDetail.reviewer_notes}"
-                </div>
-
+                <textarea
+                  value={reviewNote}
+                  onChange={(e) => setReviewNote(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-600"
+                  placeholder="Write review notes..."
+                />
                 <div className="mt-5">
                   <p className="text-sm font-bold mb-1">Total Score</p>
                   <span className="text-4xl font-bold text-[#F01E5A]">
@@ -217,6 +281,12 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                   </span>
                 </div>
               </div>
+              <button
+                onClick={handleSubmitScores}
+                className="mt-4 px-5 py-2 bg-[#FF0046] text-white rounded-lg"
+              >
+                Submit Score
+              </button>
             </div>
 
             {/* RIGHT PANEL */}
