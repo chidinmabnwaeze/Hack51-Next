@@ -105,28 +105,3 @@ export interface SubmissionFullDetail {
   submission_scores: number[];
 }
 
-// export Scoring{
-//   {
-//   "scores": [
-//     {
-//       "criterion_id": "uuid",
-//       "criterion_title": "Code Quality",
-//       "weight": 30,
-//       "score_percent": 85
-//     },
-//     {
-//       "criterion_id": "uuid2",
-//       "criterion_title": "Code Technicality",
-//       "weight": 30,
-//       "score_percent": 90
-//     },
-//     {
-//       "criterion_id": "uuid3",
-//       "criterion_title": "Code Functionality",
-//       "weight": 40,
-//       "score_percent": 80
-//     }
-//   ],
-//   "reviewer_notes": "Strong technical proficiency."
-// }
-// }

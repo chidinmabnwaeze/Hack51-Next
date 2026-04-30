@@ -1,4 +1,3 @@
-// import { RequestProps } from "@/types/requests";
 import api from "../api";
 
 export const reviewService = {

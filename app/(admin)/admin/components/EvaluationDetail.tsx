@@ -6,11 +6,18 @@ import RejectModal from "./RejectModal";
 import { useRouter } from "next/navigation";
 import { reviewService } from "@/lib/services/review.service";
 import { SubmissionFullDetail } from "@/types/submissions";
+import { Scoring } from "@/types/score";
 
 export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   const [rejectOpen, setRejectOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"link" | "document">("link");
-  // const [scores, setScores] = useState(initialScores);
+  const [scores, setScores] = useState<Scoring[]>([]);
+  const [scoreOption, setScoreOption] = useState({
+    criterion_id: "",
+    criterion_title: "",
+    weight: 0,
+    score_percent: 0,
+  });
   const [submissionDetail, setSubmissionDetail] =
     useState<SubmissionFullDetail | null>(null);
 
@@ -32,7 +39,15 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     fetchSubmissionDetail(id);
   }, []);
 
-  
+  const scoreSubmission = async (id: string, data: Scoring) => {
+    try {
+      const scoreData: Scoring = scoreOption.weight;
+      const response = await reviewService.scoreSubmission(id, scoreData);
+      setScores(response.data);
+    } catch (err) {
+      console.log("Error scoring with rubric :", err);
+    }
+  };
 
   // if(activeTab === "link"){
   //   return submissionDetail?.artifact_urls
@@ -160,7 +175,7 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                         <span className="flex-1 px-4 py-3 text-sm font-medium bg-white">
                           {item.title}
                         </span>
-                        {/* <div className="relative border-l border-gray-200 bg-gray-50">
+                        <div className="relative border-l border-gray-200 bg-gray-50">
                           <select
                             value={scores[item.weight] ?? 0}
                             onChange={(e) =>
@@ -171,17 +186,15 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                             }
                             className="appearance-none px-4 py-3 pr-8 text-sm font-semibold bg-transparent outline-none cursor-pointer min-w-20"
                           >
-                            {scoreOptions.map((v) => (
-                              <option key={v} value={v}>
-                                {v}%
-                              </option>
-                            ))}
+                            <option value={scoreOption.weight}>
+                              {scoreOption.score_percent}%
+                            </option>
                           </select>
                           <ChevronDown
                             size={12}
                             className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
                           />
-                        </div> */}
+                        </div>
                       </div>
                     ),
                   )}
