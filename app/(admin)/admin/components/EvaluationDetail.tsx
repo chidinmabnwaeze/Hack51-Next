@@ -22,6 +22,8 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   const [reviewNote, setReviewNote] = useState("");
   const [submissionDetail, setSubmissionDetail] =
     useState<SubmissionFullDetail | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const router = useRouter();
   const handleReject = (reason: string) => {
@@ -33,13 +35,25 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     const fetchSubmissionDetail = async (id: string) => {
       try {
         const response = await reviewService.getSubmissionsById(id);
-        setSubmissionDetail(response.data);
+        const data = response.data;
+        setSubmissionDetail(data);
+        //store reviewer notes
+        setReviewNote(data.reviewer_notes || "");
+
+        //store scores
+        const restoredScores: Record<string, number> = {};
+        if (Array.isArray(data.submission_scores)) {
+          data.submission_scores.forEach((score: any) => {
+            restoredScores[score.criterion_id] = score.score_percent;
+          });
+        }
+        setScores(restoredScores);
       } catch (err: any) {
         console.error("Error Fetching submission detail", err.message);
       }
     };
     fetchSubmissionDetail(id);
-  }, []);
+  }, [id]);
 
   //admin scores the candidates' submission
   // const scoreSubmission = async (id: string, data: Scoring) => {
@@ -81,10 +95,13 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     };
   };
 
+  // useEffect(() => {
   const handleSubmitScores = async () => {
     if (!submissionDetail) return;
-
     try {
+      // setSaving(true);
+      // setSaved(false);
+
       const payload = buildScorePayload();
       if (!payload) return;
 
@@ -94,10 +111,26 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
       );
 
       console.log("Scored successfully", response);
+      setSaved(true);
     } catch (err) {
       console.error("Error scoring:", err);
+    } finally {
+      setSaving(false);
     }
   };
+  // }, 800);
+  // return () => clearTimeout(timeout);
+  // }, [scores, reviewNote]);
+
+  // const totalScore = submissionDetail
+  // ? submissionDetail.job_requests.snapshot_challenge.rubric_criteria.reduce(
+  //     (acc, item) => {
+  //       const score = scores[item.id] ?? 0;
+  //       return acc + (score * item.weight) / 100;
+  //     },
+  //     0
+  //   )
+  // : 0;
 
   return (
     <>
@@ -275,18 +308,27 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                   <p className="text-sm font-bold mb-1">Total Score</p>
                   <span className="text-4xl font-bold text-[#F01E5A]">
                     {submissionDetail.total_score}
+                    {/* {totalScore} */}
                   </span>
                   <span className="text-2xl font-semibold text-gray-800">
                     /100
                   </span>
                 </div>
+                {/* <div className="text-sm">
+                {saving && <span className="text-gray-500">Saving...</span>}
+                {!saving && saved && (
+                  <span className="text-green-600">Saved</span>
+                )}
+              </div> */}
+                <button
+                  onClick={handleSubmitScores}
+                  disabled={saving}
+                  className="mt-6 px-5 py-2 bg-[#FF0046] text-white rounded-lg"
+                >
+                  {saving ? "Submitting..." : "Submit Score"}
+                  {/* Submit Score */}
+                </button>
               </div>
-              <button
-                onClick={handleSubmitScores}
-                className="mt-4 px-5 py-2 bg-[#FF0046] text-white rounded-lg"
-              >
-                Submit Score
-              </button>
             </div>
 
             {/* RIGHT PANEL */}
