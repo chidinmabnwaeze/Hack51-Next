@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SubmissionFullDetail } from "@/types/submissions";
 import { useRouter } from "next/navigation";
@@ -49,9 +49,18 @@ const maxSelection = useState<SubmissionFullDetail>({shortlist_size : jobRequest
     });
   };
 
-const handleConfirmTopN = async(requestId: string , n: string)=>{
+  useEffect(()=>{
+const fetchShortlistedCandidates = async()=>{
+  const response = await reviewService.getShortListedCandidates(requestId, {})
+  setAllCandidates(response.data)
+ 
+}
+  },[])
+
+const handleConfirmTopN = async(requestId: string , n: number)=>{
   try{
-const response = await reviewService.confirmTopNCandidates(requestId, {maxSelection})
+const response = await reviewService.confirmTopNCandidates(requestId, maxSelection[selected])
+return response.data
   }catch(err:any){
 console.log("Error Selecting Top N candidates")
   }
