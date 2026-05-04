@@ -26,7 +26,7 @@ export interface SubmissionListProps {
     avatar_url: string | null;
     first_name: string;
   };
-  // job_requests: JobRequests;
+  
 }
 
 export interface JobRequests extends EmployerRequest {
@@ -45,7 +45,7 @@ export type Stats = {
 
 export interface SubmissionFullDetail {
   id: string;
-  status: "submitted" | "under_review";
+  status: Stats;
   artifact_urls: string[];
   artifact_type: string;
   submission_statement: string;

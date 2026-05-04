@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Search, ChevronDown, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Search,
+  ChevronDown,
+  Eye,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { reviewService } from "@/lib/services/review.service";
 
 export type ShortlistStatus = "in_review" | "delivered";
 
@@ -16,7 +23,7 @@ export interface ShortlistRow {
 interface ShortlistsTableProps {
   data: ShortlistRow[];
   onReview: (id: string) => void;
-  onTabChange?: (tab:  "Shortlists" | "Top-N Candidates") => void;
+  onTabChange?: (tab: "Shortlists" | "Top-N Candidates") => void;
 }
 
 const StatusBadge = ({ status }: { status: ShortlistStatus }) => {
@@ -43,15 +50,31 @@ export default function ShortlistsTable({
 }: ShortlistsTableProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [shortLists, setShortlists] = useState([]);
+
+  useEffect(() => {
+    const fetchShortlists = async () => {
+      try {
+        const response = await reviewService.getShortlists();
+        return response.data;
+      } catch (err: any) {
+        console.log("Error fetching shortlists", err.message);
+      }
+    };
+    fetchShortlists();
+  }, []);
 
   const filtered = data.filter(
     (row) =>
       row.requestTitle.toLowerCase().includes(search.toLowerCase()) ||
-      row.requestId.toLowerCase().includes(search.toLowerCase())
+      row.requestId.toLowerCase().includes(search.toLowerCase()),
   );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
-  const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  const paginated = filtered.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE,
+  );
 
   return (
     <div>
@@ -67,12 +90,10 @@ export default function ShortlistsTable({
             onClick={() => onTabChange?.("Shortlists")}
             className="px-5 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent -mb-0.5 transition-colors hover:text-gray-700"
           >
-            Active Requests
+           Shortlists
           </button>
-          <button
-            className="px-5 py-3 text-sm font-semibold text-[#F01E5A] border-b-2 border-[#F01E5A] -mb-0.5"
-          >
-            Shortlists
+          <button className="px-5 py-3 text-sm font-semibold text-[#F01E5A] border-b-2 border-[#F01E5A] -mb-0.5">
+            Shortlists N
           </button>
         </div>
 
@@ -119,15 +140,23 @@ export default function ShortlistsTable({
             <tbody>
               {paginated.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-12 text-center text-sm text-gray-400">
+                  <td
+                    colSpan={4}
+                    className="py-12 text-center text-sm text-gray-400"
+                  >
                     No shortlists found
                   </td>
                 </tr>
               ) : (
                 paginated.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={row.id}
+                    className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+                  >
                     <td className="py-4 pr-4">
-                      <p className="text-sm font-semibold">{row.requestTitle}</p>
+                      <p className="text-sm font-semibold">
+                        {row.requestTitle}
+                      </p>
                       <p className="text-[11px] text-gray-400 font-mono mt-0.5">
                         ID: {row.requestId}
                       </p>
@@ -165,7 +194,10 @@ export default function ShortlistsTable({
             </button>
 
             <div className="flex items-center gap-1.5">
-              {Array.from({ length: Math.min(3, totalPages) }, (_, i) => i + 1).map((n) => (
+              {Array.from(
+                { length: Math.min(3, totalPages) },
+                (_, i) => i + 1,
+              ).map((n) => (
                 <button
                   key={n}
                   onClick={() => setPage(n)}

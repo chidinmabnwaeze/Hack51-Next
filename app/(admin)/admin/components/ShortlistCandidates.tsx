@@ -2,35 +2,43 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { SubmissionFullDetail } from "@/types/submissions";
+import { useRouter } from "next/navigation";
+import { reviewService } from "@/lib/services/review.service";
 
-export interface CandidateRow {
-  id: string;
-  submissionId: string;
-  candidateName: string;
-  dateEvaluated: string;
-  score: number;
-}
+// export interface CandidateRow {
+//   id: string;
+//   submissionId: string;
+//   candidateName: string;
+//   dateEvaluated: string;
+//   score: number;
+// }
 
-interface ShortlistCandidatesProps {
-  candidates: CandidateRow[];
-  targetCount: number;
-  onBack: () => void;
-  onDeliver: (selectedIds: string[]) => void;
-}
+// interface ShortlistCandidatesProps {
+//   candidates: CandidateRow[];
+//   targetCount: number;
+//   onBack: () => void;
+//   onDeliver: (selectedIds: string[]) => void;
+// }
 
 const ITEMS_PER_PAGE = 10;
 
-export default function ShortlistCandidates({
-  candidates,
-  targetCount,
-  onBack,
-  onDeliver,
-}: ShortlistCandidatesProps) {
+export default function ShortlistCandidates(
+  // {
+  // candidates,
+  // targetCount,
+  // onBack,
+  // onDeliver,
+// }: ShortlistCandidatesProps
+) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
+const [allCandidates, setAllCandidates]= useState<SubmissionFullDetail[]>([])
+const maxSelection = useState<SubmissionFullDetail>({shortlist_size : jobRequests.shortlist_size}:SubmissionFullDetail)
 
-  const totalPages = Math.max(1, Math.ceil(candidates.length / ITEMS_PER_PAGE));
-  const paginated = candidates.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(allCandidates.length / ITEMS_PER_PAGE));
+  const paginated = allCandidates.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  const router = useRouter()
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -41,7 +49,15 @@ export default function ShortlistCandidates({
     });
   };
 
-  const handleDeliver = () => {
+const handleConfirmTopN = async(requestId: string , n: string)=>{
+  try{
+const response = await reviewService.confirmTopNCandidates(requestId, {maxSelection})
+  }catch(err:any){
+console.log("Error Selecting Top N candidates")
+  }
+}
+
+  const handleDeliver = (id) => {
     onDeliver(Array.from(selected));
   };
 
@@ -49,7 +65,7 @@ export default function ShortlistCandidates({
     <div>
       {/* Back */}
       <button
-        onClick={onBack}
+        onClick={()=>router.push("/admin/shortlists")}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#F01E5A] transition-colors mb-4"
       >
         <ChevronLeft size={16} />
@@ -98,7 +114,7 @@ export default function ShortlistCandidates({
               </tr>
             </thead>
             <tbody>
-              {paginated.map((row) => (
+              {allCandidates.map((row) => (
                 <tr
                   key={row.id}
                   className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors"
@@ -114,14 +130,14 @@ export default function ShortlistCandidates({
                     />
                   </td>
                   <td className="py-4 pr-4 text-xs font-mono text-gray-600">
-                    {row.submissionId}
+                    {row.id}
                   </td>
-                  <td className="py-4 pr-4 text-sm">{row.candidateName}</td>
+                  <td className="py-4 pr-4 text-sm">{row.users.first_name} {row.users.last_name}</td>
                   <td className="py-4 pr-4 text-sm text-gray-500">
-                    {row.dateEvaluated}
+                    {row.scored_at}
                   </td>
                   <td className="py-4 text-sm font-bold text-[#F01E5A] font-mono">
-                    {row.score}
+                    {row.total_score}
                   </td>
                 </tr>
               ))}

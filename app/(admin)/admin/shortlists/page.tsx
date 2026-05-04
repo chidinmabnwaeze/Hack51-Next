@@ -70,35 +70,35 @@ export type View =
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
-export default function ReviewPage() {
+export default function Shortlists() {
     const router = useRouter()
-  const [view, setView] = useState<View>({ name: "shortlists" });
+  // const [view, setView] = useState<View>({ name: "shortlists" });
 
-  if (view.name === "evaluation") {
-    return (
-      <EvaluationDetail
-        {...MOCK_EVALUATION}
-        onBack={() => setView({ name: "shortlists" })}
-        onSubmitToShortlist={() => setView({ name: "candidates", requestId: view.requestId })}
-        // onSubmitToShortlist={()=> router.push('/admin/shortlistedcandidates')}
-      />
-    );
-  }
+  // if (view.name === "evaluation") {
+  //   return (
+  //     <EvaluationDetail
+  //       {...MOCK_EVALUATION}
+  //       onBack={() => setView({ name: "shortlists" })}
+  //       onSubmitToShortlist={() => setView({ name: "candidates", requestId: view.requestId })}
+  //       // onSubmitToShortlist={()=> router.push('/admin/shortlistedcandidates')}
+  //     />
+  //   );
+  // }
 
-  if (view.name === "candidates") {
-    return (
-      <ShortlistCandidates
-        candidates={MOCK_CANDIDATES}
-        targetCount={5}
-        onBack={() => setView({ name: "shortlists" })}
-        onDeliver={(ids) => {
-          // TODO: call your API to deliver shortlist
-          console.log("Delivering candidates:", ids);
-          setView({ name: "shortlists" });
-        }}
-      />
-    );
-  }
+  // if (view.name === "candidates") {
+  //   return (
+      // <ShortlistCandidates
+  //       candidates={MOCK_CANDIDATES}
+  //       targetCount={5}
+  //       onBack={() => setView({ name: "shortlists" })}
+  //       onDeliver={(ids) => {
+  //         // TODO: call your API to deliver shortlist
+  //         console.log("Delivering candidates:", ids);
+  //         setView({ name: "shortlists" });
+  //       }}
+  //     />
+  //   );
+  // }
 
   return (
     <ShortlistsTable
