@@ -55,8 +55,8 @@ export default function ShortlistsTable({
   useEffect(() => {
     const fetchShortlists = async () => {
       try {
-        const response = await reviewService.getShortlists();
-        return response.data;
+        const response = await reviewService.getShortlists({});
+        setShortlists(response.data);
       } catch (err: any) {
         console.log("Error fetching shortlists", err.message);
       }
@@ -90,7 +90,7 @@ export default function ShortlistsTable({
             onClick={() => onTabChange?.("Shortlists")}
             className="px-5 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent -mb-0.5 transition-colors hover:text-gray-700"
           >
-           Shortlists
+            Shortlists
           </button>
           <button className="px-5 py-3 text-sm font-semibold text-[#F01E5A] border-b-2 border-[#F01E5A] -mb-0.5">
             Shortlists N
