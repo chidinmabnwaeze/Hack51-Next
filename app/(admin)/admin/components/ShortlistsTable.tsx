@@ -16,7 +16,7 @@ export interface ShortlistRow {
 interface ShortlistsTableProps {
   data: ShortlistRow[];
   onReview: (id: string) => void;
-  onTabChange?: (tab: "active_requests" | "shortlists") => void;
+  onTabChange?: (tab:  "Shortlists" | "Top-N Candidates") => void;
 }
 
 const StatusBadge = ({ status }: { status: ShortlistStatus }) => {
@@ -55,16 +55,16 @@ export default function ShortlistsTable({
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Review</h1>
+      <h1 className="text-2xl font-bold">Shortlists</h1>
       <p className="text-sm text-gray-400 mt-0.5 mb-6">
-        Evaluate requests and shortlist candidates
+        List of shortlisted candidates
       </p>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {/* Tabs */}
         <div className="flex border-b-2 border-gray-200 px-6 pt-4">
           <button
-            onClick={() => onTabChange?.("active_requests")}
+            onClick={() => onTabChange?.("Shortlists")}
             className="px-5 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent -mb-0.5 transition-colors hover:text-gray-700"
           >
             Active Requests

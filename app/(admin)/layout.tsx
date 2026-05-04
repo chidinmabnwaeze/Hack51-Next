@@ -7,15 +7,20 @@ const sidebarItems = [
     icon: "LayoutDashboard",
     path: "/admin/dashboard",
   },
+    {
+    name: "Catalog",
+    icon: "BookOpen",
+    path: "/admin/catalog/roles",
+  },
   {
     name: "Review",
     icon: "FileText",
     path: "/admin/review",
   },
-  {
-    name: "Catalog",
-    icon: "BookOpen",
-    path: "/admin/catalog/roles",
+    {
+    name: "Shortlist",
+    icon: "ListCheck",
+    path: "/admin/shortlists",
   },
   {
     name: "Wallet",

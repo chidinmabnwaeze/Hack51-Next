@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { reviewService } from "@/lib/services/review.service";
 import { SubmissionFullDetail } from "@/types/submissions";
 import { Scoring } from "@/types/score";
+import { toast } from "react-toastify";
 
 export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   const [rejectOpen, setRejectOpen] = useState(false);
@@ -118,6 +119,15 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
       setSaving(false);
     }
   };
+
+  const handleSubmitToShortlist = ()=>{
+    if(!scores || !scoreOption){
+      toast("Score submission first before submitting")
+    } else{
+      toast("Submission Shortlisted")
+     router.push("/admin/shortlists")
+    }
+  }
   // }, 800);
   // return () => clearTimeout(timeout);
   // }, [scores, reviewNote]);
@@ -155,7 +165,7 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                 Reject submission
               </button>
               <button
-                onClick={() => router.push("/admin/shortlists")}
+                onClick={handleSubmitToShortlist}
                 className="px-5 py-2.5 border-2 border-[#F01E5A] text-gray-800 hover:bg-red-50 text-sm font-semibold rounded-lg transition-colors"
               >
                 Submit to shortlists
