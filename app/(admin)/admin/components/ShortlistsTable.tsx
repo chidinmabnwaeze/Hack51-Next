@@ -9,24 +9,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { reviewService } from "@/lib/services/review.service";
+import { useRouter, useSearchParams } from "next/navigation";
+import { SubmissionFullDetail } from "@/types/submissions";
 
-export type ShortlistStatus = "in_review" | "delivered";
-
-export interface ShortlistRow {
-  id: string;
-  requestTitle: string;
-  requestId: string;
-  shortlistSize: number;
-  status: ShortlistStatus;
-}
-
-interface ShortlistsTableProps {
-  data: ShortlistRow[];
-  onReview: (id: string) => void;
-  onTabChange?: (tab: "Shortlists" | "Top-N Candidates") => void;
-}
-
-const StatusBadge = ({ status }: { status: ShortlistStatus }) => {
+const StatusBadge = ({ status }: { status: string }) => {
   if (status === "in_review") {
     return (
       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-50 text-yellow-600 border border-yellow-200">
@@ -43,14 +29,13 @@ const StatusBadge = ({ status }: { status: ShortlistStatus }) => {
 
 const ITEMS_PER_PAGE = 10;
 
-export default function ShortlistsTable({
-  data,
-  onReview,
-  onTabChange,
-}: ShortlistsTableProps) {
+export default function ShortlistsTable() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [shortLists, setShortlists] = useState([]);
+  const [shortLists, setShortlists] = useState<SubmissionFullDetail[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") === "top-n" ? "top-n" : "shortlists";
 
   useEffect(() => {
     const fetchShortlists = async () => {
@@ -64,10 +49,10 @@ export default function ShortlistsTable({
     fetchShortlists();
   }, []);
 
-  const filtered = data.filter(
+  const filtered = shortLists.filter(
     (row) =>
-      row.requestTitle.toLowerCase().includes(search.toLowerCase()) ||
-      row.requestId.toLowerCase().includes(search.toLowerCase()),
+      row.job_requests.title.toLowerCase().includes(search.toLowerCase()) ||
+      row.id.toLowerCase().includes(search.toLowerCase()),
   );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
@@ -87,13 +72,24 @@ export default function ShortlistsTable({
         {/* Tabs */}
         <div className="flex border-b-2 border-gray-200 px-6 pt-4">
           <button
-            onClick={() => onTabChange?.("Shortlists")}
-            className="px-5 py-3 text-sm font-semibold text-gray-400 border-b-2 border-transparent -mb-0.5 transition-colors hover:text-gray-700"
+            onClick={() => router.push("/admin/shortlists")}
+            className={`px-5 py-3 text-sm font-semibold border-b-2 -mb-0.5 transition-colors ${
+              activeTab === "shortlists"
+                ? "text-[#F01E5A] border-[#F01E5A]"
+                : "text-gray-400 border-transparent hover:text-gray-700"
+            }`}
           >
             Shortlists
           </button>
-          <button className="px-5 py-3 text-sm font-semibold text-[#F01E5A] border-b-2 border-[#F01E5A] -mb-0.5">
-            Shortlists N
+          <button
+            onClick={() => router.push("/admin/shortlists?tab=top-n")}
+            className={`px-5 py-3 text-sm font-semibold border-b-2 -mb-0.5 transition-colors ${
+              activeTab === "top-n"
+                ? "text-[#F01E5A] border-[#F01E5A]"
+                : "text-gray-400 border-transparent hover:text-gray-700"
+            }`}
+          >
+            Top-N Candidates
           </button>
         </div>
 
@@ -138,7 +134,7 @@ export default function ShortlistsTable({
               </tr>
             </thead>
             <tbody>
-              {paginated.length === 0 ? (
+              {filtered.length === 0 ? (
                 <tr>
                   <td
                     colSpan={4}
@@ -155,21 +151,23 @@ export default function ShortlistsTable({
                   >
                     <td className="py-4 pr-4">
                       <p className="text-sm font-semibold">
-                        {row.requestTitle}
+                        {row.job_requests.title}
                       </p>
                       <p className="text-[11px] text-gray-400 font-mono mt-0.5">
-                        ID: {row.requestId}
+                        ID: {row.id}
                       </p>
                     </td>
                     <td className="py-4 pr-4 text-base font-semibold">
-                      {row.shortlistSize}
+                      {row.job_requests.shortlist_size}
                     </td>
                     <td className="py-4 pr-4">
                       <StatusBadge status={row.status} />
                     </td>
                     <td className="py-4">
                       <button
-                        onClick={() => onReview(row.id)}
+                        onClick={() =>
+                          router.push(`/admin/shortlists/${row.id}`)
+                        }
                         className="flex items-center gap-2 text-sm font-bold hover:text-[#F01E5A] transition-colors"
                       >
                         Review

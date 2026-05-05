@@ -49,7 +49,7 @@ export default function SubmissionsList({
   const router = useRouter();
   const [requests, setRequests] = useState<EmployerRequest[]>([]);
   return (
-    <div className="overflow-x-auto shadow rounded-lg p-4 bg-white">
+    <div className="overflow-x-auto shadow rounded-lg p-8 bg-white">
       <section className="flex gap-6 bg-white border-b pb-4 border-b-gray-200">
         <div className="flex items-center gap-2">
           <UserCircle2 className="text-[#FF0046]" />
@@ -125,17 +125,17 @@ export default function SubmissionsList({
           ))}
         </tbody>
       </table>
-      <section className="flex justify-between items-center">
-        <div className="flex text-gray-500 text-sm">
-          <ArrowLeft />
+      <section className="flex justify-between items-center mt-8">
+        <div className="flex items-center m-2 text-gray-500 text-sm">
+          <ArrowLeft width={18} />
           <h5>Prev</h5>
         </div>
         <div className=" text-gray-500 text-sm">
           {submissions.map((_, idx) => idx + 1)}
         </div>
-        <div className="flex text-[#FF0046] text-sm">
-          <ArrowRight />
+        <div className="flex items-center m-2 text-[#FF0046] text-sm">
           <h5>Next</h5>
+          <ArrowRight />
         </div>
       </section>
     </div>

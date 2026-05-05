@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { reviewService } from "@/lib/services/review.service";
 import { SubmissionFullDetail } from "@/types/submissions";
 import { Scoring } from "@/types/score";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   const [rejectOpen, setRejectOpen] = useState(false);
@@ -120,14 +120,16 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     }
   };
 
-  const handleSubmitToShortlist = ()=>{
-    if(!scores || !scoreOption){
-      toast("Score submission first before submitting")
-    } else{
-      toast("Submission Shortlisted")
-     router.push("/admin/shortlists")
+  const handleSubmitToShortlist = () => {
+    if (!scores || !scoreOption) {
+      toast("Score submission first before submitting");
+    } else {
+      toast.success("Submission Shortlisted");
+      setTimeout(() => {
+        router.push("/admin/shortlists");
+      }, 2000);
     }
-  }
+  };
   // }, 800);
   // return () => clearTimeout(timeout);
   // }, [scores, reviewNote]);
@@ -147,6 +149,7 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
       {/* Candidate bar */}
       {submissionDetail && (
         <>
+        <ToastContainer/>
           <div className="bg-white rounded-xl px-6 py-4 flex items-center justify-between shadow-sm border border-gray-100 mb-5">
             <div>
               <p className="font-bold text-base capitalize">

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CheckCircle, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { SubmissionFullDetail } from "@/types/submissions";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { reviewService } from "@/lib/services/review.service";
+import { toast } from "react-toastify";
 
 // export interface CandidateRow {
 //   id: string;
@@ -23,55 +24,86 @@ import { reviewService } from "@/lib/services/review.service";
 
 const ITEMS_PER_PAGE = 10;
 
-export default function ShortlistCandidates(
-  // {
-  // candidates,
-  // targetCount,
-  // onBack,
-  // onDeliver,
-// }: ShortlistCandidatesProps
-) {
+export default function ShortlistCandidates() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
-const [allCandidates, setAllCandidates]= useState<SubmissionFullDetail[]>([])
-const maxSelection = useState<SubmissionFullDetail>({shortlist_size : jobRequests.shortlist_size}:SubmissionFullDetail)
+  const [allCandidates, setAllCandidates] = useState<SubmissionFullDetail[]>([]);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const shortlistSize = allCandidates[0]?.job_requests?.shortlist_size ?? 0;
 
   const totalPages = Math.max(1, Math.ceil(allCandidates.length / ITEMS_PER_PAGE));
   const paginated = allCandidates.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
-  const router = useRouter()
+  const router = useRouter();
 
-  const toggle = (id: string) => {
+  const params = useParams();
+  const id = params.requestId as string;
+
+  const toggle = (candidateId: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(candidateId)) {
+        next.delete(candidateId);
+      } else if (next.size >= shortlistSize) {
+        toast.warning(`You can only select ${shortlistSize} candidate${shortlistSize !== 1 ? "s" : ""}`);
+        return prev;
+      } else {
+        next.add(candidateId);
+      }
       return next;
     });
   };
 
-  useEffect(()=>{
-const fetchShortlistedCandidates = async()=>{
-  const response = await reviewService.getShortListedCandidates(requestId, {})
-  setAllCandidates(response.data)
- 
-}
-  },[])
+  useEffect(() => {
+    const fetchShortlistedCandidates = async () => {
+      try {
+        const response = await reviewService.getShortListedCandidates(id, {});
+        setAllCandidates(response.data);
+      } catch (err: any) {
+        console.log("Error fetching shortlisted candidates", err.message);
+      }
+    };
+    if (id) fetchShortlistedCandidates();
+  }, [id]);
 
-const handleConfirmTopN = async(requestId: string , n: number)=>{
-  try{
-const response = await reviewService.confirmTopNCandidates(requestId, maxSelection[selected])
-return response.data
-  }catch(err:any){
-console.log("Error Selecting Top N candidates")
-  }
-}
 
-  const handleDeliver = (id) => {
-    onDeliver(Array.from(selected));
+  const handleDeliver = async () => {
+    try {
+      await reviewService.deliverFinalShortlist(id);
+      setShowSuccess(true);
+    } catch (err: any) {
+      console.log("Error delivering shortlists", err.message);
+    }
   };
 
   return (
     <div>
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="relative bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm mx-4 flex flex-col items-center text-center">
+            <button
+              onClick={() => setShowSuccess(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X size={18} />
+            </button>
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-emerald-50 mb-4">
+              <CheckCircle size={36} className="text-emerald-500" />
+            </div>
+            <h2 className="text-xl font-bold mb-1">Shortlist Delivered!</h2>
+            <p className="text-sm text-gray-400 mb-6">
+              Your top {shortlistSize} candidates have been successfully delivered.
+            </p>
+            <button
+              onClick={() => router.push("/admin/shortlists?tab=top-n")}
+              className="w-full py-3 bg-[#F01E5A] hover:bg-[#c0144a] text-white text-sm font-bold rounded-lg transition-colors"
+            >
+              View Top N
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Back */}
       <button
         onClick={()=>router.push("/admin/shortlists")}
@@ -90,12 +122,12 @@ console.log("Error Selecting Top N candidates")
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <p className="text-lg font-bold">
-            Select n candidates{" "}
-            <span className="text-[#F01E5A]">({selected.size})</span>
+            Select {shortlistSize} candidate{shortlistSize !== 1 ? "s" : ""}{" "}
+            <span className="text-[#F01E5A]">({selected.size}/{shortlistSize})</span>
           </p>
           <button
             onClick={handleDeliver}
-            disabled={selected.size === 0}
+            disabled={selected.size !== shortlistSize}
             className="px-6 py-3 bg-[#F01E5A] hover:bg-[#c0144a] disabled:opacity-40 disabled:cursor-default text-white text-sm font-bold rounded-lg transition-colors"
           >
             Deliver shortlist
