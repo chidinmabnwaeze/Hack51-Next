@@ -1,11 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Mail, Lock } from "lucide-react";
-import { UserRole } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { userAuth } from "@/lib/context";
 import { LoginProps } from "@/types/auth";
 import { authService } from "@/lib/services/auth.service";
+import { toast } from "react-toastify";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -46,25 +46,22 @@ export default function LoginForm() {
       };
 
       const data = await login(loginData);
-      console.log("FULL LOGIN RESPONSE", data);
       if (!data?.user) {
         throw new Error("User data not returned from API");
       }
 
-      //create a helper function to get the route based on the user role
+      toast.success("Welcome back!");
       const route = authService.getRoleRoute(data.user.role);
-      console.log("USER ROLE", data.user.role);
-      console.log("ROUTE", route);
       router.push(route);
     } catch (err: any) {
-      console.log("ERROR", err);
-
       if (err.status === 403) {
         router.push(`/auth/verify-email?email=${formData.email}`);
         return;
       }
 
-      setError(err.message || "Login failed");
+      const message = err.message || "Login failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -113,8 +110,9 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full mt-6 bg-[#FF0046] text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
+          className="w-full mt-6 flex items-center justify-center gap-2 bg-[#FF0046] text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-default"
         >
+          {isLoading && <div className="loader" style={{ width: "16px" }} />}
           {isLoading ? "Signing in..." : "Sign in"}
         </button>
       </form>

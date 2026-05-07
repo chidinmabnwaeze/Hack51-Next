@@ -5,6 +5,7 @@ import { userAuth } from "@/lib/context";
 import { UserRole } from "@/types/user";
 import { RegisterProps } from "@/types/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function RegisterForm() {
   const register = userAuth((state: any) => state.register);
@@ -79,16 +80,15 @@ export default function RegisterForm() {
         role: selectedRole,
       };
       await register(registrationData);
-      alert("Registration successful! Please verify your email.");
+      toast.success("Registration successful! Please verify your email.");
       router.push(`/auth/verify-email?email=${formData.email}`);
     } catch (err: any) {
-      console.log("FULL ERROR", err);
-      console.log("BACKEND ERROR", err?.response?.data);
-      setError(
+      const message =
         err?.response?.data?.message ||
-          err?.response?.data?.error ||
-          "Registration failed",
-      );
+        err?.response?.data?.error ||
+        "Registration failed";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -203,8 +203,9 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full mt-6 bg-[#FF0046] text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
+          className="w-full mt-6 flex items-center justify-center gap-2 bg-[#FF0046] text-white py-2 rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-default"
         >
+          {loading && <div className="loader" style={{ width: "16px" }} />}
           {loading ? "Creating account..." : "Create account"}
         </button>
       </form>

@@ -1,47 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeft, Link2, Download, ChevronDown } from "lucide-react";
+import { Link2, Download, ChevronDown } from "lucide-react";
 import RejectModal from "./RejectModal";
 import { useRouter } from "next/navigation";
 import { reviewService } from "@/lib/services/review.service";
 import { SubmissionFullDetail } from "@/types/submissions";
-import { Scoring } from "@/types/score";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   const [rejectOpen, setRejectOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"link" | "document">("link");
   const [scores, setScores] = useState<Record<string, number>>({});
-  const [scoreOption, setScoreOption] = useState({
-    criterion_id: "",
-    criterion_title: "",
-    weight: 0,
-    score_percent: 0,
-    reviewer_note: "",
-  });
   const [reviewNote, setReviewNote] = useState("");
   const [submissionDetail, setSubmissionDetail] =
     useState<SubmissionFullDetail | null>(null);
+  const [loadingDetail, setLoadingDetail] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   const router = useRouter();
-  const handleReject = (reason: string) => {
-    // TODO: wire to API
-    // console.log("Rejected:", submissionId, "Reason:", reason);
+
+  const handleReject = (_reason: string) => {
+    toast.info("Reject functionality coming soon");
   };
 
   useEffect(() => {
     const fetchSubmissionDetail = async (id: string) => {
       try {
+        setLoadingDetail(true);
         const response = await reviewService.getSubmissionsById(id);
         const data = response.data;
         setSubmissionDetail(data);
-        //store reviewer notes
         setReviewNote(data.reviewer_notes || "");
-
-        //store scores
         const restoredScores: Record<string, number> = {};
         if (Array.isArray(data.submission_scores)) {
           data.submission_scores.forEach((score: any) => {
@@ -50,7 +40,9 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
         }
         setScores(restoredScores);
       } catch (err: any) {
-        console.error("Error Fetching submission detail", err.message);
+        toast.error("Failed to load submission details");
+      } finally {
+        setLoadingDetail(false);
       }
     };
     fetchSubmissionDetail(id);
@@ -100,39 +92,39 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   const handleSubmitScores = async () => {
     if (!submissionDetail) return;
     try {
-      // setSaving(true);
-      // setSaved(false);
+      setSaving(true);
 
       const payload = buildScorePayload();
       if (!payload) return;
 
-      const response = await reviewService.scoreSubmission(
-        submissionDetail.id,
-        payload,
-      );
-
-      console.log("Scored successfully", response);
-      setSaved(true);
+      await reviewService.scoreSubmission(submissionDetail.id, payload);
+      toast.success("Score submitted successfully");
     } catch (err) {
-      console.error("Error scoring:", err);
+      toast.error("Failed to submit score. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleSubmitToShortlist = () => {
-    if (!scores || !scoreOption) {
-      toast("Score submission first before submitting");
-    } else {
-      toast.success("Submission Shortlisted");
+  const handleSubmitToShortlist = async () => {
+    if (!submissionDetail) return;
+
+    const hasScores = Object.keys(scores).length > 0;
+    if (!hasScores) {
+      toast.warning("Submit scores first before shortlisting");
+      return;
+    }
+
+    try {
+      await reviewService.triageSubmission(submissionDetail.id, { decision: "valid" });
+      toast.success("Submission shortlisted");
       setTimeout(() => {
-        router.push("/admin/shortlists");
+        router.push(`/admin/shortlists/${submissionDetail.job_requests.id}/candidates`);
       }, 2000);
+    } catch (err: any) {
+      toast.error("Error submitting to shortlists");
     }
   };
-  // }, 800);
-  // return () => clearTimeout(timeout);
-  // }, [scores, reviewNote]);
 
   const totalScore = submissionDetail
     ? submissionDetail.job_requests.snapshot_challenge.rubric_criteria.reduce(
@@ -146,10 +138,16 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
 
   return (
     <>
+
+      {loadingDetail && (
+        <div className="flex justify-center py-24">
+          <div className="loader" />
+        </div>
+      )}
+
       {/* Candidate bar */}
-      {submissionDetail && (
+      {!loadingDetail && submissionDetail && (
         <>
-        <ToastContainer aria-label="toast-container" />
           <div className="bg-white rounded-xl px-6 py-4 flex items-center justify-between shadow-sm border border-gray-100 mb-5">
             <div>
               <p className="font-bold text-base capitalize">
@@ -335,10 +333,10 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                 <button
                   onClick={handleSubmitScores}
                   disabled={saving}
-                  className="mt-6 px-5 py-2 bg-[#FF0046] text-white rounded-lg"
+                  className="mt-6 flex items-center gap-2 px-5 py-2 bg-[#FF0046] text-white rounded-lg disabled:opacity-60 disabled:cursor-default"
                 >
+                  {saving && <div className="loader" style={{ width: "16px" }} />}
                   {saving ? "Submitting..." : "Submit Score"}
-                  {/* Submit Score */}
                 </button>
               </div>
             </div>

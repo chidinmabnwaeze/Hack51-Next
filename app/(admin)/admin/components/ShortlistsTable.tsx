@@ -11,6 +11,7 @@ import {
 import { reviewService } from "@/lib/services/review.service";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SubmissionFullDetail } from "@/types/submissions";
+import { toast } from "react-toastify";
 
 const StatusBadge = ({ status }: { status: string }) => {
   if (status === "in_review") {
@@ -33,6 +34,7 @@ export default function ShortlistsTable() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [shortLists, setShortlists] = useState<SubmissionFullDetail[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab =
@@ -41,10 +43,13 @@ export default function ShortlistsTable() {
   useEffect(() => {
     const fetchShortlists = async () => {
       try {
+        setLoading(true);
         const response = await reviewService.getShortlists({});
         setShortlists(response.data);
       } catch (err: any) {
-        console.log("Error fetching shortlists", err.message);
+        toast.error("Failed to load shortlists");
+      } finally {
+        setLoading(false);
       }
     };
     fetchShortlists();
@@ -135,7 +140,13 @@ export default function ShortlistsTable() {
               </tr>
             </thead>
             <tbody>
-              {shortLists.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center">
+                    <div className="loader mx-auto" />
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td
                     colSpan={4}
@@ -145,7 +156,7 @@ export default function ShortlistsTable() {
                   </td>
                 </tr>
               ) : (
-                shortLists.map((row) => (
+                paginated.map((row) => (
                   <tr
                     key={row.id}
                     className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
@@ -167,7 +178,7 @@ export default function ShortlistsTable() {
                     <td className="py-4">
                       <button
                         onClick={() =>
-                          router.push(`/admin/shortlists/${row.id}`)
+                          router.push(`/admin/shortlists/${row.job_requests?.id ?? row.id}`)
                         }
                         className="flex items-center gap-2 text-sm font-bold hover:text-[#F01E5A] transition-colors"
                       >

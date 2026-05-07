@@ -17,7 +17,7 @@ export const reviewService = {
     return response;
   },
   triageSubmission: async (id: string, data: Record<string, any>) => {
-    const response = await api.post(`/admin/review/submissions/${id}`, data);
+    const response = await api.post(`/admin/review/submissions/${id}/triage`, data);
     console.log("TRIAGE SUBMISSION", response);
     return response;
   },
@@ -41,8 +41,8 @@ export const reviewService = {
     console.log("TOP N CANDIDATES", response);
     return response;
   },
-  deliverFinalShortlist: async (requestId: string) => {
-    const response = await api.post(`/admin/review/shortlists/${requestId}/deliver`);
+  deliverFinalShortlist: async (requestId: string, submissionIds: string[]) => {
+    const response = await api.post(`/admin/review/shortlists/${requestId}/deliver`, { submission_ids: submissionIds });
     console.log("FINAL SHORTLIST", response);
     return response;
   }

@@ -29,6 +29,8 @@ export default function ShortlistCandidates() {
   const [page, setPage] = useState(1);
   const [allCandidates, setAllCandidates] = useState<SubmissionFullDetail[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [delivering, setDelivering] = useState(false);
 
   const shortlistSize = allCandidates[0]?.job_requests?.shortlist_size ?? 0;
 
@@ -57,22 +59,27 @@ export default function ShortlistCandidates() {
   useEffect(() => {
     const fetchShortlistedCandidates = async () => {
       try {
+        setLoading(true);
         const response = await reviewService.getShortListedCandidates(id, {});
         setAllCandidates(response.data);
       } catch (err: any) {
-        console.log("Error fetching shortlisted candidates", err.message);
+        toast.error("Failed to load candidates");
+      } finally {
+        setLoading(false);
       }
     };
     if (id) fetchShortlistedCandidates();
   }, [id]);
 
-
   const handleDeliver = async () => {
     try {
-      await reviewService.deliverFinalShortlist(id);
+      setDelivering(true);
+      await reviewService.deliverFinalShortlist(id, Array.from(selected));
       setShowSuccess(true);
     } catch (err: any) {
-      console.log("Error delivering shortlists", err.message);
+      toast.error("Failed to deliver shortlist. Please try again.");
+    } finally {
+      setDelivering(false);
     }
   };
 
@@ -127,10 +134,11 @@ export default function ShortlistCandidates() {
           </p>
           <button
             onClick={handleDeliver}
-            disabled={selected.size !== shortlistSize}
-            className="px-6 py-3 bg-[#F01E5A] hover:bg-[#c0144a] disabled:opacity-40 disabled:cursor-default text-white text-sm font-bold rounded-lg transition-colors"
+            disabled={selected.size !== shortlistSize || delivering}
+            className="flex items-center gap-2 px-6 py-3 bg-[#F01E5A] hover:bg-[#c0144a] disabled:opacity-40 disabled:cursor-default text-white text-sm font-bold rounded-lg transition-colors"
           >
-            Deliver shortlist
+            {delivering && <div className="loader" style={{ width: "16px" }} />}
+            {delivering ? "Delivering..." : "Deliver shortlist"}
           </button>
         </div>
 
@@ -155,7 +163,20 @@ export default function ShortlistCandidates() {
               </tr>
             </thead>
             <tbody>
-              {allCandidates.map((row) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center">
+                    <div className="loader mx-auto" />
+                  </td>
+                </tr>
+              ) : allCandidates.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center text-sm text-gray-400">
+                    No candidates found
+                  </td>
+                </tr>
+              ) : null}
+              {!loading && paginated.map((row) => (
                 <tr
                   key={row.id}
                   className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors"

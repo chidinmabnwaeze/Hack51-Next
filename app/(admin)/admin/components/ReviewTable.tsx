@@ -38,25 +38,21 @@ export default function ReviewTable() {
   ];
   const router = useRouter();
   const [requests, setRequests] = useState<EmployerRequest[]>([]);
-  // const [submissions, setSubmissions] = useState<Record<string, any[]>>({});
-  const [submissionStats, setSubmissionStats] = useState<Record<string, Stats>>(
-    {},
-  );
+  const [submissionStats, setSubmissionStats] = useState<Record<string, Stats>>({});
   const [loading, setLoading] = useState(true);
+  const [reviewing, setReviewing] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRequests = async () => {
       setLoading(true);
       try {
         const response = await reviewService.getRequests({});
-        console.log("FETCHED REQUESTS", response);
-
         const requestsData = Array.isArray(response)
           ? response
           : ((response as any).data ?? []);
         setRequests(requestsData);
       } catch (err: any) {
-        console.log("ERROR FETCHING REQUESTS",err);
+        toast.error("Failed to load requests");
       } finally {
         setLoading(false);
       }
@@ -93,17 +89,13 @@ export default function ReviewTable() {
 
   const handleReviewClick = async (requestId: string) => {
     try {
-      const res = await reviewService.getAllRequestSubmissions(requestId, {});
-
-      const submissionRecord = res.data;
-      console.log(submissionRecord);
-      if (res) {
-        router.push(`/admin/review/${requestId}/submissions/`);
-      } else {
-        toast("Request not found");
-      }
+      setReviewing(requestId);
+      await reviewService.getAllRequestSubmissions(requestId, {});
+      router.push(`/admin/review/${requestId}/submissions/`);
     } catch (err: any) {
-      console.error("ERROR FETCHING SUBMISSIONS", err.message);
+      toast.error("Failed to load submissions");
+    } finally {
+      setReviewing(null);
     }
   };
 
@@ -125,8 +117,8 @@ export default function ReviewTable() {
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={5} className="py-8 text-center text-gray-500">
-                Loading requests...
+              <td colSpan={5} className="py-12 text-center">
+                <div className="loader mx-auto" />
               </td>
             </tr>
           )}
@@ -185,10 +177,15 @@ export default function ReviewTable() {
               <td className="py-2 px-4 flex items-center gap-2">
                 <button
                   onClick={() => handleReviewClick(request.id)}
-                  className=" flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
+                  disabled={reviewing === request.id}
+                  className="flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded disabled:opacity-50 disabled:cursor-default"
                 >
-                  <Eye />
-                  Review
+                  {reviewing === request.id ? (
+                    <div className="loader" style={{ width: "16px" }} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
+                  {reviewing === request.id ? "Loading..." : "Review"}
                 </button>
               </td>
             </tr>
