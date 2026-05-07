@@ -134,22 +134,22 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
   // return () => clearTimeout(timeout);
   // }, [scores, reviewNote]);
 
-  // const totalScore = submissionDetail
-  // ? submissionDetail.job_requests.snapshot_challenge.rubric_criteria.reduce(
-  //     (acc, item) => {
-  //       const score = scores[item.id] ?? 0;
-  //       return acc + (score * item.weight) / 100;
-  //     },
-  //     0
-  //   )
-  // : 0;
+  const totalScore = submissionDetail
+    ? submissionDetail.job_requests.snapshot_challenge.rubric_criteria.reduce(
+        (acc, item) => {
+          const score = scores[item.id] ?? 0;
+          return acc + (score * item.weight) / 100;
+        },
+        0,
+      )
+    : 0;
 
   return (
     <>
       {/* Candidate bar */}
       {submissionDetail && (
         <>
-        <ToastContainer/>
+        <ToastContainer aria-label="toast-container" />
           <div className="bg-white rounded-xl px-6 py-4 flex items-center justify-between shadow-sm border border-gray-100 mb-5">
             <div>
               <p className="font-bold text-base capitalize">
@@ -320,8 +320,7 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                 <div className="mt-5">
                   <p className="text-sm font-bold mb-1">Total Score</p>
                   <span className="text-4xl font-bold text-[#F01E5A]">
-                    {submissionDetail.total_score}
-                    {/* {totalScore} */}
+                    {totalScore}
                   </span>
                   <span className="text-2xl font-semibold text-gray-800">
                     /100
