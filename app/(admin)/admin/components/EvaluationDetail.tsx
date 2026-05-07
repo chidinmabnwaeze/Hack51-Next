@@ -116,7 +116,7 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     }
 
     try {
-      await reviewService.triageSubmission(submissionDetail.id, { decision: "valid" });
+      await reviewService.triageSubmission(submissionDetail.id, { decision: "valid" , triage_reason: "All deliverables present"});
       toast.success("Submission shortlisted");
       setTimeout(() => {
         router.push(`/admin/shortlists/${submissionDetail.job_requests.id}/candidates`);

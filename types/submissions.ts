@@ -7,9 +7,17 @@ export interface CandidateSubmission {
   integrity_declared: boolean;
 }
 
+export type SubmissionStatus =
+  | "submitted"
+  | "under_review"
+  | "returned"
+  | "scored"
+  | "shortlisted"
+  | "rejected";
+
 export interface SubmissionListProps {
   id: string;
-  status: "submitted";
+  status: SubmissionStatus;
   artifact_urls: string[];
   submission_statement: string;
   triage_decision: string | null;
@@ -19,14 +27,14 @@ export interface SubmissionListProps {
   resubmit_count: number;
   submitted_at: string;
   updated_at: string;
-   users: {
+  users: {
     id: string;
     email: string;
     last_name: string;
     avatar_url: string | null;
     first_name: string;
   };
-  job_request:JobRequests
+  job_request: JobRequests;
 }
 
 export interface JobRequests extends EmployerRequest {
@@ -46,7 +54,8 @@ export type Stats = {
 
 export interface SubmissionFullDetail {
   id: string;
-  status: "submitted" | "published" | "under_review"
+  // status: "submitted" | "published" | "under_review"
+  status: SubmissionStatus;
   artifact_urls: string[];
   artifact_type: string;
   submission_statement: string;
@@ -105,4 +114,3 @@ export interface SubmissionFullDetail {
   };
   submission_scores: number[];
 }
-
