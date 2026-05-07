@@ -50,17 +50,17 @@ export default function ShortlistsTable() {
     fetchShortlists();
   }, []);
 
-  // const filtered = shortLists.filter(
-  //   (row) =>
-  //     row.job_requests.title.toLowerCase().includes(search.toLowerCase()) ||
-  //     row.id.toLowerCase().includes(search.toLowerCase()),
-  // );
+  const filtered = shortLists.filter(
+    (row) =>
+      row.job_requests?.title.toLowerCase().includes(search.toLowerCase()) ||
+      row.id.toLowerCase().includes(search.toLowerCase()),
+  );
 
-  // const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
-  // const paginated = filtered.slice(
-  //   (page - 1) * ITEMS_PER_PAGE,
-  //   page * ITEMS_PER_PAGE,
-  // );
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginated = filtered.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE,
+  );
 
   return (
     <div>
@@ -152,14 +152,14 @@ export default function ShortlistsTable() {
                   >
                     <td className="py-4 pr-4">
                       <p className="text-sm font-semibold">
-                        {/* {row.job_requests.title} */}
+                        {row.job_requests?.title}
                       </p>
                       <p className="text-[11px] text-gray-400 font-mono mt-0.5">
                         ID: {row.id}
                       </p>
                     </td>
                     <td className="py-4 pr-4 text-base font-semibold">
-                      {row.job_requests.shortlist_size}
+                      {row.job_requests?.shortlist_size}
                     </td>
                     <td className="py-4 pr-4">
                       <StatusBadge status={row.status} />
@@ -192,7 +192,7 @@ export default function ShortlistsTable() {
               Prev
             </button>
 
-            {/* <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5">
               {Array.from(
                 { length: Math.min(3, totalPages) },
                 (_, i) => i + 1,
@@ -212,16 +212,16 @@ export default function ShortlistsTable() {
               {totalPages > 3 && (
                 <span className="text-sm text-gray-400">4...{totalPages}</span>
               )}
-            </div> */}
+            </div>
 
-            {/* <button
+            <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
               className="flex items-center gap-1.5 text-sm font-semibold disabled:text-gray-300 hover:text-[#F01E5A] transition-colors disabled:cursor-default"
             >
               Next
               <ChevronRight size={16} />
-            </button> */}
+            </button>
           </div>
         </div>
       </div>
