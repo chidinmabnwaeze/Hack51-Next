@@ -1,6 +1,8 @@
 import type { Shortlists } from "../components/ShortlistTable";
 import ChallengeButton from "../components/ChallengeButton";
 import ShortlistTable from "../components/ShortlistTable";
+import { useEffect, useState } from "react";
+import { employerService } from "@/lib/services/employer.service";
 
 export default function ShortlistPage() {
   const shortlists: Shortlists[] = [
@@ -40,6 +42,16 @@ export default function ShortlistPage() {
       date_delivered: 12 - 1 - 2026,
     },
   ];
+
+  const [shortlist, setShortlists] = useState([]);
+
+  useEffect(() => {
+    const fetchShortlistedCandidates = async () => {
+      const response = await employerService.getShortlists();
+      setShortlists(response.data);
+    };
+    fetchShortlistedCandidates();
+  }, []);
 
   return (
     <div>
