@@ -19,7 +19,7 @@ export interface SubmissionListProps {
   id: string;
   status: SubmissionStatus;
   artifact_urls: string[];
-  submission_statement: string; 
+  submission_statement: string;
   triage_decision: string | null;
   triage_reason: string | null;
   reviewer_notes: string | null;
@@ -113,4 +113,26 @@ export interface SubmissionFullDetail {
     };
   };
   submission_scores: number[];
+}
+export interface TriageSubmission {
+  id: string;
+  job_request_id: string;
+  candidate_id: string;
+  status: SubmissionStatus
+  artifact_urls: string[];
+  artifact_type: "link";
+  submission_statement: string;
+  integrity_declared: boolean;
+  triage_decision: "valid";
+  triage_reason: string;
+  triaged_by: string;
+  triaged_at: string;
+  reviewer_notes: string;
+  total_score: number;
+  scored_by: string;
+  scored_at: string;
+  resubmit_count: number;
+  submitted_at: string;
+  created_at: string;
+  updated_at: string;
 }

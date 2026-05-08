@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeftIcon } from "lucide-react";
 import SubmissionsList from "@/app/(admin)/admin/components/SubmissionsList";
 import { useEffect, useState } from "react";
-import {reviewService } from "@/lib/services/review.service";
+import { reviewService } from "@/lib/services/review.service";
 import { SubmissionListProps } from "@/types/submissions";
 
 export default function SubmissionsPage() {
@@ -42,18 +42,27 @@ export default function SubmissionsPage() {
         <ArrowLeftIcon className="inline-block mr-1" />
         Back to review
       </span>
-      <section className="flex justify-between mt-4">
-        <div>
-          <h1 className="text-2xl font-bold mb-1">Submissions</h1>
-          <p className="text-gray-500 text-sm mb-6">Request ID: {requestId}</p>
+      {loading && (
+        <div className="flex justify-center py-24">
+          <div className="loader" />
         </div>
-      </section>
-      {loading && <p>Loading submissions...</p>}
-      <SubmissionsList
-        submissions={submissions}
-        requestId={requestId}
-        detailed
-      />
+      )}
+      {!loading && (
+        <section className=" mt-4">
+          <div>
+            <h1 className="text-2xl font-bold mb-1">Submissions</h1>
+            <p className="text-gray-500 text-sm mb-6">
+              Request ID: {requestId}
+            </p>
+          </div>
+
+          <SubmissionsList
+            submissions={submissions}
+            requestId={requestId}
+            detailed
+          />
+        </section>
+      )}
     </div>
   );
 }

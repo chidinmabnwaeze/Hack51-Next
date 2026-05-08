@@ -116,10 +116,11 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     }
 
     try {
-      await reviewService.triageSubmission(submissionDetail.id, { decision: "valid" , triage_reason: "All deliverables present"});
       toast.success("Submission shortlisted");
       setTimeout(() => {
-        router.push(`/admin/shortlists/${submissionDetail.job_requests.id}/candidates`);
+        router.push(
+          `/admin/shortlists/${submissionDetail.job_requests.id}/candidates?shortlist_size=${submissionDetail.job_requests.shortlist_size}`,
+        );
       }, 2000);
     } catch (err: any) {
       toast.error("Error submitting to shortlists");
@@ -138,7 +139,6 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
 
   return (
     <>
-
       {loadingDetail && (
         <div className="flex justify-center py-24">
           <div className="loader" />
@@ -335,7 +335,9 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
                   disabled={saving}
                   className="mt-6 flex items-center gap-2 px-5 py-2 bg-[#FF0046] text-white rounded-lg disabled:opacity-60 disabled:cursor-default"
                 >
-                  {saving && <div className="loader" style={{ width: "16px" }} />}
+                  {saving && (
+                    <div className="loader" style={{ width: "16px" }} />
+                  )}
                   {saving ? "Submitting..." : "Submit Score"}
                 </button>
               </div>

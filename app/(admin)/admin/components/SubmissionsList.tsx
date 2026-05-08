@@ -3,10 +3,13 @@
 import { ArrowLeft, ArrowRight, Eye, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SubmissionListProps } from "@/types/submissions";
+import { SubmissionFullDetail, SubmissionListProps } from "@/types/submissions";
 import { EmployerRequest } from "@/types/employer";
 import { formatDate } from "@/lib/globalFunction";
 import { useState } from "react";
+import { SubmissionStatus } from "@/types/submissions";
+import { reviewService } from "@/lib/services/review.service";
+import { toast } from "react-toastify";
 
 interface SubmissionsTableProps {
   submissions: SubmissionListProps[];
@@ -14,20 +17,20 @@ interface SubmissionsTableProps {
   detailed?: boolean;
 }
 
-const badgeClasses = (status: string) => {
+const badgeClasses = (status: SubmissionStatus) => {
   const key = status.toLowerCase();
   switch (true) {
-    case key.includes("open"):
+    case key.includes("under_review"):
       return "bg-blue-100 text-blue-800";
     case key.includes("evaluation"):
     case key.includes("submitted"):
       return "bg-yellow-100 text-yellow-800";
-    case key.includes("In Evaluation"):
+    case key.includes("scored"):
       return "bg-green-100 text-green-800";
     case key.includes("draft"):
       return "bg-gray-100 text-gray-800";
-    case key.includes("submission rejected"):
-      return "bg-gray-200 text-gray-500";
+    case key.includes("rejected"):
+      return "bg-red-200 text-red-500";
     default:
       return "bg-gray-100 text-gray-800";
   }
@@ -48,21 +51,50 @@ export default function SubmissionsList({
 
   const router = useRouter();
   const [requests, setRequests] = useState<EmployerRequest[]>([]);
+  const [triageSubmission, setTriageSubmission] =
+    useState<SubmissionFullDetail | null>(null);
+  const [evaluatingId, setEvaluatingId] = useState<string | null>(null);
+
+  const handleTriageSubmission = async (id: string) => {
+    setEvaluatingId(id);
+    try {
+      const response = await reviewService.triageSubmission(id, {
+        decision: "valid",
+        reason: "All deliverables present",
+      });
+      setTriageSubmission(response.data);
+
+      toast("Success!, Request under review");
+      setTimeout(() => {
+        router.push(`/admin/review/${requestId}/submissions/${id}`);
+      }, 3000);
+    } catch (err: any) {
+      toast.error("Failed to begin evaluation, something went wrong");
+    } finally {
+      setEvaluatingId(null);
+    }
+  };
   return (
     <div className="overflow-x-auto shadow rounded-lg p-8 bg-white">
-      <section className="flex gap-6 bg-white border-b pb-4 border-b-gray-200">
-        <div className="flex items-center gap-2">
-          <UserCircle2 className="text-[#FF0046]" />
-          <div>
-            <h1 className="font-bold">Magrib Constructions</h1>
-            <p className="text-sm text-gray-500">magrib@gmail.com</p>
+      {triageSubmission && (
+        <section
+          className="flex gap-10 bg-white border-b pb-4 border-b-gray-200"
+          // key={index}
+        >
+          <div className="flex items-center gap-4">
+            <UserCircle2 className="text-[#FF0046]" />
+            <div>
+              <h1 className="font-bold">Magrib Constructions</h1>
+              <p className="text-sm text-gray-500">magrib@gmail.com</p>
+            </div>
           </div>
-        </div>
-        <div>
-          <h1 className="font-bold">Senior Product Designer</h1>
-          <p className="text-sm text-gray-500">{requestId}</p>
-        </div>
-      </section>
+          <div>
+            {/* <h1 className="font-bold">{triageSubmission.job_requests.title}</h1> */}
+            <h1 className="font-bold">Product Designer</h1>
+            <p className="text-sm text-gray-500">{requestId}</p>
+          </div>
+        </section>
+      )}
       <table className="min-w-full bg-white">
         <thead>
           <tr className="bg-gray-50">
@@ -111,14 +143,19 @@ export default function SubmissionsList({
               </td>
               <td className="py-2 px-4 flex gap-2">
                 <button
-                  onClick={() => {
-                    router.push(
-                      `/admin/review/${requestId}/submissions/${sub.id}`,
-                    );
-                  }}
+                  // onClick={() => {
+                  //   router.push(
+                  //     `/admin/review/${requestId}/submissions/${sub.id}`,
+                  //   );
+                  // }}
+                  onClick={() => handleTriageSubmission(sub.id)}
                   className=" flex gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
                 >
-                  Evaluate
+                  {evaluatingId && (
+                    <div className="loader" style={{ width: "12px" }} />
+                  )}
+                  {evaluatingId ? "Begin evaluation..." : "Evaluate"}
+                  {/* Evaluate */}
                 </button>
               </td>
             </tr>
