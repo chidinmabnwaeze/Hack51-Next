@@ -2,6 +2,7 @@
 
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export interface Shortlists {
   id?: string;
@@ -27,6 +28,8 @@ export default function ShortlistTable({
     "Date Delivered",
     "Actions",
   ];
+
+  const [shortlist, setShortlists] = useState([])
 
   return (
     <div className="overflow-x-auto">

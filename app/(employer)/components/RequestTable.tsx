@@ -35,7 +35,7 @@ export default function RequestTable({
   const headers = [
     "Request Title",
     "Role Level",
-    "Submissions",
+    // "Submissions",
     "Deadline",
     "Status",
     "Actions",
