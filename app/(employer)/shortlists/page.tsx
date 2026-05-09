@@ -43,15 +43,15 @@ export default function ShortlistPage() {
     },
   ];
 
-  const [shortlist, setShortlists] = useState([]);
+  // const [shortlist, setShortlists] = useState([]);
 
-  useEffect(() => {
-    const fetchShortlistedCandidates = async () => {
-      const response = await employerService.getShortlists();
-      setShortlists(response.data);
-    };
-    fetchShortlistedCandidates();
-  }, []);
+  // useEffect(() => {
+  //   const fetchShortlistedCandidates = async () => {
+  //     const response = await employerService.getShortlists();
+  //     setShortlists(response.data);
+  //   };
+  //   fetchShortlistedCandidates();
+  // }, []);
 
   return (
     <div>

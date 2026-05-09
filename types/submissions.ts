@@ -136,3 +136,17 @@ export interface TriageSubmission {
   created_at: string;
   updated_at: string;
 }
+
+export interface ConfirmProps {
+candidate_id : string;
+submission_id: string;
+rank: number;
+}
+
+export interface ShortlistProps {
+  id: string;
+  title: string;
+  role_level: string;
+  shortlist_size: number;
+  status: SubmissionStatus;
+}

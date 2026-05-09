@@ -8,25 +8,27 @@ import { EmployerRequest } from "@/types/employer";
 import { useEffect, useState } from "react";
 import { Stats } from "@/types/submissions";
 import { toast } from "react-toastify";
+import { formatDate } from "@/lib/globalFunction";
+import { badgeClasses } from "@/lib/globalFunction";
 
-const badgeClasses = (status: string) => {
-  const key = status.toLowerCase();
-  switch (true) {
-    case key.includes("published"):
-      return "bg-blue-100 text-blue-800";
-    case key.includes("evaluation"):
-    case key.includes("in progress"):
-      return "bg-yellow-100 text-yellow-800";
-    case key.includes("shortlist"):
-      return "bg-green-100 text-green-800";
-    case key.includes("draft"):
-      return "bg-gray-100 text-gray-800";
-    case key.includes("closed"):
-      return "bg-gray-200 text-gray-500";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
+// const badgeClasses = (status: string) => {
+//   const key = status.toLowerCase();
+//   switch (true) {
+//     case key.includes("published"):
+//       return "bg-blue-100 text-blue-800 border border-blue-200 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold";
+//     case key.includes("evaluation"):
+//     case key.includes("in progress"):
+//       return "bg-yellow-100 text-yellow-800";
+//     case key.includes("shortlist"):
+//       return "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200";
+//     case key.includes("draft"):
+//       return "bg-gray-100 text-gray-800";
+//     case key.includes("closed"):
+//       return "bg-gray-200 text-gray-500";
+//     default:
+//       return "bg-gray-100 text-gray-800";
+//   }
+// };
 
 export default function ReviewTable() {
   const headers = [
@@ -166,7 +168,7 @@ export default function ReviewTable() {
                 )}
               </td>
 
-              <td className="py-2 px-4">{request.deadline ?? "-"}</td>
+              <td className="py-2 px-4">{request.deadline ? formatDate(request.deadline) : "-"}</td>
               <td className="py-2 px-4">
                 <span
                   className={`px-2 py-1 rounded text-xs font-bold ${badgeClasses(request.status)}`}

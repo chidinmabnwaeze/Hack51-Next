@@ -10,31 +10,13 @@ import { useState } from "react";
 import { SubmissionStatus } from "@/types/submissions";
 import { reviewService } from "@/lib/services/review.service";
 import { toast } from "react-toastify";
+import { badgeClasses } from "@/lib/globalFunction";
 
 interface SubmissionsTableProps {
   submissions: SubmissionListProps[];
   requestId: string;
   detailed?: boolean;
 }
-
-const badgeClasses = (status: SubmissionStatus) => {
-  const key = status.toLowerCase();
-  switch (true) {
-    case key.includes("under_review"):
-      return "bg-blue-100 text-blue-800";
-    case key.includes("evaluation"):
-    case key.includes("submitted"):
-      return "bg-yellow-100 text-yellow-800";
-    case key.includes("scored"):
-      return "bg-green-100 text-green-800";
-    case key.includes("draft"):
-      return "bg-gray-100 text-gray-800";
-    case key.includes("rejected"):
-      return "bg-red-200 text-red-500";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
 
 export default function SubmissionsList({
   submissions,
@@ -43,7 +25,7 @@ export default function SubmissionsList({
 }: SubmissionsTableProps) {
   const headers = [
     "Candidate name",
-    "Submission ID",
+    "Candidate Email",
     "Date",
     "Status",
     "Action",
@@ -143,19 +125,13 @@ export default function SubmissionsList({
               </td>
               <td className="py-2 px-4 flex gap-2">
                 <button
-                  // onClick={() => {
-                  //   router.push(
-                  //     `/admin/review/${requestId}/submissions/${sub.id}`,
-                  //   );
-                  // }}
                   onClick={() => handleTriageSubmission(sub.id)}
                   className=" flex gap-2 text-gray-500 hover:text-gray-700 mr-2 border border-gray-200 px-3 py-1 rounded"
                 >
-                  {evaluatingId && (
+                  {evaluatingId === sub.id && (
                     <div className="loader" style={{ width: "12px" }} />
                   )}
-                  {evaluatingId ? "Begin evaluation..." : "Evaluate"}
-                  {/* Evaluate */}
+                  {evaluatingId === sub.id ? "Begin evaluation..." : "Evaluate"}
                 </button>
               </td>
             </tr>

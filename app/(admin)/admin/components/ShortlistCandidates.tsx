@@ -7,6 +7,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { reviewService } from "@/lib/services/review.service";
 import { toast } from "react-toastify";
 import { formatDate } from "@/lib/globalFunction";
+import { ConfirmProps } from "@/types/submissions";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -73,7 +74,20 @@ export default function ShortlistCandidates() {
   const handleConfirm = async () => {
     try {
       setConfirming(true);
-      await reviewService.confirmTopNCandidates(id, shortlistSize);
+
+      const selectedCandidates = allCandidates.filter((candidate) =>
+        selected.has(candidate.users.id),
+      );
+
+      const confirmData = selectedCandidates.map((candidate, index) => ({
+        candidate_id: candidate.users.id,
+        submission_id: candidate.id,
+        rank: index + 1,
+      }));
+
+      await reviewService.confirmTopNCandidates(id, {
+        selections: confirmData,
+      });
       setConfirmed(true);
       toast.success("Candidates confirmed. You can now deliver the shortlist.");
     } catch (err: any) {
@@ -150,18 +164,28 @@ export default function ShortlistCandidates() {
           <div className="flex items-center gap-3">
             <button
               onClick={handleConfirm}
-              disabled={selected.size !== shortlistSize || confirmed || confirming}
+              disabled={
+                selected.size !== shortlistSize || confirmed || confirming
+              }
               className="flex items-center gap-2 px-6 py-3 border-2 border-[#F01E5A] text-[#F01E5A] hover:bg-red-50 disabled:opacity-40 disabled:cursor-default text-sm font-bold rounded-lg transition-colors"
             >
-              {confirming && <div className="loader" style={{ width: "16px" }} />}
-              {confirming ? "Confirming..." : confirmed ? "Confirmed" : "Confirm selection"}
+              {confirming && (
+                <div className="loader" style={{ width: "16px" }} />
+              )}
+              {confirming
+                ? "Confirming..."
+                : confirmed
+                  ? "Confirmed"
+                  : "Confirm selection"}
             </button>
             <button
               onClick={handleDeliver}
               disabled={!confirmed || delivering}
               className="flex items-center gap-2 px-6 py-3 bg-[#F01E5A] hover:bg-[#c0144a] disabled:opacity-40 disabled:cursor-default text-white text-sm font-bold rounded-lg transition-colors"
             >
-              {delivering && <div className="loader" style={{ width: "16px" }} />}
+              {delivering && (
+                <div className="loader" style={{ width: "16px" }} />
+              )}
               {delivering ? "Delivering..." : "Deliver shortlist"}
             </button>
           </div>
@@ -214,8 +238,8 @@ export default function ShortlistCandidates() {
                     <td className="py-4 pr-3">
                       <input
                         type="checkbox"
-                        checked={selected.has(row.id)}
-                        onChange={() => toggle(row.id)}
+                        checked={selected.has(row.users.id)}
+                        onChange={() => toggle(row.users.id)}
                         onClick={(e) => e.stopPropagation()}
                         className="w-4 h-4 rounded accent-[#F01E5A] cursor-pointer"
                       />

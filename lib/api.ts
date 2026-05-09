@@ -38,12 +38,13 @@ api.interceptors.response.use(
       } catch (refreshError) {
         authService.logout();
         const message = err?.data?.message || "Request failed";
-        
+
         return Promise.reject(new Error("Session expired. "));
       }
     }
 
     console.log("ERROR", err.data.message);
+    console.log("FULL ERROR", err.response?.data);
 
     return Promise.reject(err.data.message);
   },

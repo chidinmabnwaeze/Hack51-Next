@@ -36,9 +36,9 @@ export const reviewService = {
     console.log("SHORTLISTED CANDIDATES", response);
     return response;
   },
-  confirmTopNCandidates: async (requestId: string, n: number) => {
-     const response = await api.post(`/admin/review/shortlists/${requestId}/confirm`, { n });
-    console.log("TOP N CANDIDATES", response);
+  confirmTopNCandidates: async (requestId: string, params: Record<string, any>) => {
+     const response = await api.post(`/admin/review/shortlists/${requestId}/confirm`, params);
+     console.log("TOP N CANDIDATES", response);
     return response;
   },
   deliverFinalShortlist: async (requestId: string, submissionIds: string[]) => {
@@ -49,20 +49,3 @@ export const reviewService = {
 
 };
 
-
-
-
-//   postRequests: async (data: RequestProps) => {
-//     const response = await api.post("/requests", data);
-//     return response;
-//   },
-
-//   getRequestById: async (requestId: string) => {
-//     const response = await api.get(`/admin/review/requests/${requestId}/submissions`);
-//     return response;
-//   },
-//   getSubmissionById: async (id: string) => {
-//     const response = await api.get(`/admin/review/submissions/${id}`);
-//     return response;
-//   }
-// };

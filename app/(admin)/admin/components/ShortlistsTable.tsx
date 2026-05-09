@@ -12,6 +12,8 @@ import { reviewService } from "@/lib/services/review.service";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SubmissionFullDetail } from "@/types/submissions";
 import { toast } from "react-toastify";
+import { ShortlistProps } from "@/types/submissions";
+import { badgeClasses } from "@/lib/globalFunction";
 
 const StatusBadge = ({ status }: { status: string }) => {
   if (status === "in_review") {
@@ -33,7 +35,7 @@ const ITEMS_PER_PAGE = 10;
 export default function ShortlistsTable() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [shortLists, setShortlists] = useState<SubmissionFullDetail[]>([]);
+  const [shortLists, setShortlists] = useState<ShortlistProps[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -57,7 +59,7 @@ export default function ShortlistsTable() {
 
   const filtered = shortLists.filter(
     (row) =>
-      row.job_requests?.title.toLowerCase().includes(search.toLowerCase()) ||
+      row.title.toLowerCase().includes(search.toLowerCase()) ||
       row.id.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -129,6 +131,9 @@ export default function ShortlistsTable() {
                   Request Title
                 </th>
                 <th className="text-left text-xs font-semibold text-gray-400 pb-3 pr-4">
+                  Role Level
+                </th>
+                <th className="text-left text-xs font-semibold text-gray-400 pb-3 pr-4">
                   Shortlist Size(n)
                 </th>
                 <th className="text-left text-xs font-semibold text-gray-400 pb-3 pr-4">
@@ -162,27 +167,31 @@ export default function ShortlistsTable() {
                     className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="py-4 pr-4">
-                      <p className="text-sm font-semibold">
-                        {row.job_requests?.title}
+                      <p className="text-sm font-semibold capitalize">
+                        {row?.title}
                       </p>
                       <p className="text-[11px] text-gray-400 font-mono mt-0.5">
                         ID: {row.id}
                       </p>
                     </td>
-                    <td className="py-4 pr-4 text-base font-semibold">
-                      {row.job_requests?.shortlist_size}
+                    <td className="py-4 pr-4 text-base font-semibold capitalize">
+                      {row?.role_level}
                     </td>
-                    <td className="py-4 pr-4">
+                    <td className="py-4 pr-4 text-base font-semibold">
+                      {row?.shortlist_size}
+                    </td>
+                    <td className="py-4 pr-4 ">
+                      {/* {`${badgeClasses(row.status)}`} */}
                       <StatusBadge status={row.status} />
                     </td>
                     <td className="py-4">
                       <button
                         onClick={() =>
-                          router.push(`/admin/shortlists/${row.job_requests?.id ?? row.id}`)
+                          router.push(`/admin/shortlists/${row?.id ?? row.id}`)
                         }
                         className="flex items-center gap-2 text-sm font-bold hover:text-[#F01E5A] transition-colors"
                       >
-                        Review
+                        View
                         <Eye size={15} />
                       </button>
                     </td>

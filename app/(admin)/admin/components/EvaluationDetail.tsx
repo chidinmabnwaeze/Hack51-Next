@@ -48,29 +48,6 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     fetchSubmissionDetail(id);
   }, [id]);
 
-  //admin scores the candidates' submission
-  // const scoreSubmission = async (id: string, data: Scoring) => {
-  //   try {
-  //     const scoreData: Scoring = {
-  //       scores: [
-  //         {
-  //           criterion_id: scoreOption.criterion_id,
-  //           criterion_title: scoreOption.criterion_title,
-  //           weight: scoreOption.weight,
-  //           score_percent: scoreOption.score_percent,
-  //         },
-  //       ],
-  //       reviewer_notes: reviewNote,
-  //     };
-
-  //     const response = await reviewService.scoreSubmission(id, scoreData);
-  //     setScores(response.data);
-  //     setReviewNote(reviewNote);
-  //   } catch (err) {
-  //     console.log("Error scoring with rubric :", err);
-  //   }
-  // };
-
   const buildScorePayload = () => {
     if (!submissionDetail) return null;
 
@@ -88,7 +65,6 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
     };
   };
 
-  // useEffect(() => {
   const handleSubmitScores = async () => {
     if (!submissionDetail) return;
     try {
