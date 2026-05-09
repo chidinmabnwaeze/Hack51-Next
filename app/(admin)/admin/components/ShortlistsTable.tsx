@@ -105,7 +105,7 @@ export default function ShortlistsTable() {
           {/* Search + Filter */}
           <div className="flex items-center gap-3 mb-5">
             <div className="flex-1 flex items-center gap-2.5 bg-white border border-gray-200 rounded-3xl px-4 py-2.5">
-              <Search size={15} className="text-gray-400 flex-shrink-0" />
+              <Search size={15} className="text-gray-400 shrink-0" />
               <input
                 type="text"
                 placeholder="Search by id, name.."
