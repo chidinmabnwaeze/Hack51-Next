@@ -12,7 +12,7 @@ import { reviewService } from "@/lib/services/review.service";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SubmissionFullDetail } from "@/types/submissions";
 import { toast } from "react-toastify";
-import { ShortlistProps } from "@/types/submissions";
+import { ShortlistProps } from "@/types/shortlist";
 import { badgeClasses } from "@/lib/globalFunction";
 
 const StatusBadge = ({ status }: { status: string }) => {

@@ -1,94 +1,44 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Download, Plus, Lock, ExternalLink } from "lucide-react";
 import TalentListModal from "./LockedListModal";
+import { employerService } from "@/lib/services/employer.service";
+import { ShortlistedCandidatesProps } from "@/types/shortlist";
+import { toast } from "react-toastify";
 
-interface CriterionBreakdown {
-  label: string;
-  weight: string;
-  score: string;
-}
-
-interface Candidate {
-  id: string;
-  name: string;
-  totalScore: number;
-  maxScore: number;
-  criteria: CriterionBreakdown[];
-  expertReviewNotes: string;
-}
-
-interface ShortlistedCandidatesProps {
-  shortlistId?: string;
-  title?: string;
-}
-
-const mockCandidates: Candidate[] = [
-  {
-    id: "1",
-    name: "Sarah Ikemefuna",
-    totalScore: 87,
-    maxScore: 100,
-    criteria: [
-      { label: "Technical execution", weight: "40%", score: "80%" },
-      { label: "Technical Know how", weight: "30%", score: "20%" },
-      { label: "Technical execution", weight: "30%", score: "50%" },
-    ],
-    expertReviewNotes: "Exceptional clarity and good time management.",
-  },
-  {
-    id: "2",
-    name: "Johnson ike",
-    totalScore: 77,
-    maxScore: 100,
-    criteria: [
-      { label: "Technical execution", weight: "40%", score: "80%" },
-      { label: "Technical Know how", weight: "30%", score: "20%" },
-      { label: "Technical execution", weight: "30%", score: "50%" },
-    ],
-    expertReviewNotes: "Exceptional clarity and good time management.",
-  },
-  {
-    id: "3",
-    name: "Rabiu Suleiman",
-    totalScore: 75,
-    maxScore: 100,
-    criteria: [
-      { label: "Technical execution", weight: "40%", score: "80%" },
-      { label: "Technical Know how", weight: "30%", score: "20%" },
-      { label: "Technical execution", weight: "30%", score: "50%" },
-    ],
-    expertReviewNotes: "Exceptional clarity and good time management.",
-  },
-  {
-    id: "4",
-    name: "Amos Odofin",
-    totalScore: 70,
-    maxScore: 100,
-    criteria: [
-      { label: "Technical execution", weight: "40%", score: "80%" },
-      { label: "Technical Know how", weight: "30%", score: "20%" },
-      { label: "Technical execution", weight: "30%", score: "50%" },
-    ],
-    expertReviewNotes: "Exceptional clarity and good time management.",
-  },
-];
-
-export default function ShortlistedCandidates({
-  shortlistId,
-  title = "Shortlists",
-}: ShortlistedCandidatesProps) {
+export default function ShortlistedCandidates() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"shortlisted" | "all">(
     "shortlisted",
   );
+  const [candidate, setCandidate] = useState<ShortlistedCandidatesProps | null>(
+    null,
+  );
+  const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-
-  const candidates = activeTab === "shortlisted" ? mockCandidates : [];
-
   const onClose = () => setIsOpen(false);
+  const params = useParams();
+  const id = params.id as string;
+
+  activeTab === "shortlisted" ? candidate : [];
+
+  useEffect(() => {
+    const fetchCandidates = async (id: string) => {
+      try {
+        setLoading(true);
+        const response = await employerService.getShortlistById(id);
+        const data = response;
+        setCandidate(data);
+      } catch (error: any) {
+        toast.error("Error fetching candidates:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCandidates(id);
+  }, [activeTab]);
 
   return (
     <div>
@@ -104,7 +54,7 @@ export default function ShortlistedCandidates({
       {/* Page header */}
       <section className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold">{title}</h1>
+          <h1 className="text-3xl font-bold capitalize">{`${candidate?.title} Role Shortlists`}</h1>
           <p className="text-gray-500 mt-1 text-sm">
             Review candidates from completed requests
           </p>
@@ -122,6 +72,11 @@ export default function ShortlistedCandidates({
       </section>
 
       {/* Candidates card */}
+      {loading && (
+            <div className="flex justify-center py-24">
+              <div className="loader" />
+            </div>
+          )}
       <div className="mt-6 bg-white rounded-2xl shadow-sm border border-gray-100">
         {/* Tabs */}
         <div className="flex gap-6 px-6 pt-4 border-b border-gray-100">
@@ -133,7 +88,7 @@ export default function ShortlistedCandidates({
                 : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
-            Shortlisted({mockCandidates.length})
+            Shortlisted({candidate?.shortlists.length})
           </button>
           <button
             onClick={() => {
@@ -147,24 +102,33 @@ export default function ShortlistedCandidates({
             }`}
           >
             <Lock size={13} />
-            All scored candidates({mockCandidates.length})
+            All scored candidates({candidate?.shortlists.length})
           </button>
         </div>
 
         {/* Candidate rows */}
         <div>
-          {candidates.map((candidate, index) => (
+          
+          {!loading && candidate?.shortlists.length === 0 && (
+            <div className="flex justify-center py-24">
+              <p className="text-gray-500">No candidates found.</p>
+            </div>
+          )}
+          {candidate?.shortlists.map((shortlist, index) => (
             <div
-              key={candidate.id}
+              key={shortlist.id}
               className={`grid grid-cols-[2fr_1fr_2fr_2fr] gap-6 px-6 py-6 ${
-                index !== candidates.length - 1
+                index !== candidate.shortlists.length - 1
                   ? "border-b border-gray-100"
                   : ""
               }`}
             >
               {/* Name + View Artifacts */}
               <div className="flex flex-col justify-center gap-4">
-                <span className="text-2xl font-bold">{candidate.name}</span>
+                <span className="text-2xl font-bold">
+                  {shortlist.users.first_name} {shortlist.users.last_name}
+                </span>
+
                 <button className="flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 w-fit">
                   View Artifacts
                   <ExternalLink size={14} />
@@ -176,10 +140,12 @@ export default function ShortlistedCandidates({
                 <span className="text-xs text-gray-500 mb-2">
                   Total Request score
                 </span>
+
                 <span className="text-4xl font-bold text-[#FF0046]">
-                  {candidate.totalScore}
+                  {shortlist.submissions.total_score}
+
                   <span className="text-lg font-normal text-gray-400">
-                    /{candidate.maxScore}
+                    /100
                   </span>
                 </span>
               </div>
@@ -189,17 +155,21 @@ export default function ShortlistedCandidates({
                 <span className="text-xs text-gray-500 mb-3">
                   Criterion Breakdown
                 </span>
+
                 <div className="flex flex-col gap-1">
-                  {candidate.criteria.map((criterion, i) => (
-                    <div key={i} className="flex justify-between text-sm">
-                      <span className="text-gray-700">
-                        {criterion.label}({criterion.weight})
-                      </span>
-                      <span className="text-[#FF0046] font-medium ml-4">
-                        {criterion.score}
-                      </span>
-                    </div>
-                  ))}
+                  {shortlist.submissions.submission_scores.map(
+                    (criterion, i) => (
+                      <div key={i} className="flex justify-between text-sm">
+                        <span className="text-gray-700">
+                          {criterion.criterion_title} ({criterion.weight}%)
+                        </span>
+
+                        <span className="text-[#FF0046] font-medium ml-4">
+                          {criterion.score_percent}%
+                        </span>
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
 
@@ -208,9 +178,10 @@ export default function ShortlistedCandidates({
                 <span className="text-xs text-gray-500 mb-2">
                   Expert Review Notes
                 </span>
+
                 <textarea
                   readOnly
-                  value={candidate.expertReviewNotes}
+                  value={shortlist.submissions.reviewer_notes}
                   rows={4}
                   className="border border-gray-200 rounded-lg p-3 text-sm text-gray-600 resize-none bg-white w-full"
                 />

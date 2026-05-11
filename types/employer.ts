@@ -66,17 +66,17 @@ export interface UpdateRequestPayload {
 //   description?: string;
 // }
 
-export interface Shortlist {
-  id: string;
-  request_id: string;
-  candidates: Candidate[];
-}
+// export interface Shortlist {
+//   id: string;
+//   request_id: string;
+//   candidates: Candidate[];
+// }
 
-export interface Candidate {
-  id: string;
-  name: string;
-  score: number;
-}
+// export interface Candidate {
+//   id: string;
+//   name: string;
+//   score: number;
+// }
 
 export interface PaymentInitResponse {
   authorization_url: string;

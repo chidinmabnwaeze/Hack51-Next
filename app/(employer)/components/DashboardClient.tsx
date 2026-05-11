@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import ChallengeButton from "./ChallengeButton";
+import { useEffect, useState } from "react";
+import { employerService } from "@/lib/services/employer.service";
+import { EmployerDashboardProps } from "@/types/dashboard";
 
 interface DashboardProps {
   title: string;
@@ -45,6 +48,28 @@ export default function DashboardClient({
       info: "Completed Hiring Cycles",
     },
   ];
+
+  const Titles = [
+    "Total Active Requests",
+    "Submissions Received",
+    "In Evaluation",
+    "Shortlisted Candidates",
+  ];
+  const [dasboardData, setDashboardData] =
+    useState<EmployerDashboardProps | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        // const data = await employerService.getDashboardData();
+        // setDashboardData(data);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   return (
     <div>
@@ -114,7 +139,12 @@ export default function DashboardClient({
             </Link>
           </div>
         </div>
-        <p className="text-gray-500 text-sm py-4">No active requests. <a href="/requests" className="text-[#FF0046] hover:underline">View all requests</a></p>
+        <p className="text-gray-500 text-sm py-4">
+          No active requests.{" "}
+          <a href="/requests" className="text-[#FF0046] hover:underline">
+            View all requests
+          </a>
+        </p>
       </section>
 
       <section className="bg-white p-8 shadow mt-8 rounded-2xl">

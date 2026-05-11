@@ -54,7 +54,6 @@ export type Stats = {
 
 export interface SubmissionFullDetail {
   id: string;
-  // status: "submitted" | "published" | "under_review"
   status: SubmissionStatus;
   artifact_urls: string[];
   artifact_type: string;
@@ -118,7 +117,7 @@ export interface TriageSubmission {
   id: string;
   job_request_id: string;
   candidate_id: string;
-  status: SubmissionStatus
+  status: SubmissionStatus;
   artifact_urls: string[];
   artifact_type: "link";
   submission_statement: string;
@@ -138,15 +137,8 @@ export interface TriageSubmission {
 }
 
 export interface ConfirmProps {
-candidate_id : string;
-submission_id: string;
-rank: number;
+  candidate_id: string;
+  submission_id: string;
+  rank: number;
 }
 
-export interface ShortlistProps {
-  id: string;
-  title: string;
-  role_level: string;
-  shortlist_size: number;
-  status: SubmissionStatus;
-}

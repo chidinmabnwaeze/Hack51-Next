@@ -18,8 +18,8 @@ export default function RequestsPage() {
       setLoading(true);
       try {
         const data = await employerService.getRequests({ page: 1, limit: 50 });
-        console.log("ALL",data);
-        
+        console.log("ALL", data);
+
         setRequests(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching requests", error);
@@ -29,7 +29,6 @@ export default function RequestsPage() {
     };
     fetchRequests();
   }, []);
-
 
   const filtered = requests.filter((r) => {
     if (activeTab === "drafts") return r.status === "draft";
@@ -86,10 +85,13 @@ export default function RequestsPage() {
       </div>
 
       <section className="mt-6 shadow bg-white p-6 rounded-2xl">
-        {loading ? (
-          <p className="text-gray-500 text-sm">Loading requests...</p>
-        ) : filtered.length === 0 ? (
-          <p className="text-gray-500 text-sm">No requests found.</p>
+        {loading && (
+          <div className="flex justify-center py-24">
+            <div className="loader" />
+          </div>
+        )}{" "}
+        {filtered.length === 0 ? (
+          <p className="text-gray-500 text-sm text-center">No requests found.</p>
         ) : (
           <RequestTable requests={filtered} detailed />
         )}

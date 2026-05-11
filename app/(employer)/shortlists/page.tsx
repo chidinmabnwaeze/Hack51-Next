@@ -1,58 +1,10 @@
-import type { Shortlists } from "../components/ShortlistTable";
+// import type { Shortlists } from "../components/ShortlistTable";
 import ChallengeButton from "../components/ChallengeButton";
 import ShortlistTable from "../components/ShortlistTable";
 import { useEffect, useState } from "react";
 import { employerService } from "@/lib/services/employer.service";
 
 export default function ShortlistPage() {
-  const shortlists: Shortlists[] = [
-    {
-      id: "REQ-2401-09",
-      title: "Senior Product Designer",
-      role: "Product Designer (L3)",
-      shortlist_size: 5,
-      date_delivered: 12 - 1 - 2026,
-    },
-    {
-      id: "REQ-2401-12",
-      title: "Backend Engineer (Go/Rust)",
-      role: "Backend Engineer (L4)",
-      shortlist_size: 5,
-      date_delivered: 12 - 1 - 2026,
-    },
-    {
-      id: "REQ-2401-15",
-      title: "Marketing Lead (Growth)",
-      role: "Marketing Lead (L4)",
-      shortlist_size: 5,
-      date_delivered: 12 - 1 - 2026,
-    },
-    {
-      id: "REQ-2402-01",
-      title: "Q2 Junior Frontend Intake",
-      role: "Frontend Engineer (L1)",
-      shortlist_size: 5,
-      date_delivered: 12 - 1 - 2026,
-    },
-    {
-      id: "REQ-2312-05",
-      title: "Staff Data Scientist",
-      role: "Data Scientist (L5)",
-      shortlist_size: 5,
-      date_delivered: 12 - 1 - 2026,
-    },
-  ];
-
-  // const [shortlist, setShortlists] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchShortlistedCandidates = async () => {
-  //     const response = await employerService.getShortlists();
-  //     setShortlists(response.data);
-  //   };
-  //   fetchShortlistedCandidates();
-  // }, []);
-
   return (
     <div>
       <section className="flex justify-between items-center">
@@ -79,34 +31,12 @@ export default function ShortlistPage() {
         </div>
       </section>
 
-      <div className="flex flex-col md:flex-row justify-between items-center mt-6 gap-4">
-        <input
-          type="text"
-          placeholder="Search requests by title or ID..."
-          className="border border-gray-100 p-2 rounded-lg shadow w-full md:w-1/2"
-        />
-        <div className="flex gap-2">
-          <button className="border border-gray-200 px-4 py-2 rounded hover:bg-gray-50">
-            Filter Status
-          </button>
-          <button className="border border-gray-200 px-4 py-2 rounded hover:bg-gray-50">
-            Sort
-          </button>
-        </div>
-      </div>
+     
 
-      <section className="mt-6 shadow bg-white p-6 rounded-2xl">
-        <ShortlistTable shortlists={shortlists} detailed />
-      </section>
-
-      <div className="flex justify-end items-center mt-4 gap-2">
-        <button className="px-4 py-2 border border-[#FF0046] rounded text-[#FF0046] hover:bg-gray-50">
-          PREV
-        </button>
-        <button className="px-4 py-2 border border-[#FF0046] rounded text-[#FF0046] hover:bg-gray-50">
-          NEXT
-        </button>
-      </div>
+      {/* <section className="mt-6 shadow p-6 rounded-2xl"> */}
+        <ShortlistTable />
+      {/* </section> */}
+    
     </div>
   );
 }

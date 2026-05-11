@@ -4,10 +4,10 @@ import {
   CreateRequestPayload,
   UpdateRequestPayload,
   Challenge,
-  Shortlist,
   PaymentInitResponse,
 } from "@/types/employer";
 import { EmployerRoles } from "@/types/catalog";
+import { ShortlistedCandidatesProps } from "@/types/shortlist";
 
 export const employerService = {
   // =========================
@@ -82,12 +82,12 @@ export const employerService = {
   // =========================
   //  SHORTLISTS
   // =========================
-  getShortlists: async (): Promise<Shortlist[]> => {
+  getShortlists: async (): Promise<ShortlistedCandidatesProps[]> => {
     const res = await api.get("/employer/shortlists");
     return res.data;
   },
 
-  getShortlistById: async (id: string): Promise<Shortlist> => {
+  getShortlistById: async (id: string): Promise<ShortlistedCandidatesProps> => {
     const res = await api.get(`/employer/shortlists/${id}`);
     return res.data;
   },
