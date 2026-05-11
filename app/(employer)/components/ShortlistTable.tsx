@@ -59,7 +59,7 @@ export default function ShortlistTable() {
             </div>
           </div>
 
-          <div className=" bg-white shadow rounded-lg mt-5 px-5 py-2">
+          <div className=" bg-white shadow rounded-2xl mt-5 px-5 py-2">
             <table className="min-w-full bg-white">
               <thead>
                 <tr className="bg-gray-50">

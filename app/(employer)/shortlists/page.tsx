@@ -32,11 +32,8 @@ export default function ShortlistPage() {
       </section>
 
      
-
-      {/* <section className="mt-6 shadow p-6 rounded-2xl"> */}
-        <ShortlistTable />
-      {/* </section> */}
-    
+      <ShortlistTable />
+     
     </div>
   );
 }

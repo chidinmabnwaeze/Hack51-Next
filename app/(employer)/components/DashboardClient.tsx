@@ -5,6 +5,7 @@ import ChallengeButton from "./ChallengeButton";
 import { useEffect, useState } from "react";
 import { employerService } from "@/lib/services/employer.service";
 import { EmployerDashboardProps } from "@/types/dashboard";
+import { toast } from "react-toastify";
 
 interface DashboardProps {
   title: string;
@@ -55,16 +56,16 @@ export default function DashboardClient({
     "In Evaluation",
     "Shortlisted Candidates",
   ];
-  const [dasboardData, setDashboardData] =
+  const [dashboardData, setDashboardData] =
     useState<EmployerDashboardProps | null>(null);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // const data = await employerService.getDashboardData();
-        // setDashboardData(data);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
+        const data = await employerService.getDashboardData();
+        setDashboardData(data);
+      } catch (error:any) {
+        toast.error("Error fetching dashboard data:", error);
       }
     };
 
