@@ -41,7 +41,7 @@ export default function Challenge() {
   if (loading) return <div className="loader mx-auto my-24" />;
 
   return (
-    <div className="mt-8">
+    <div className=" bg-white p-8 rounded-xl shadow-md w-full mt-10 md:w-3/4 mx-auto">
       <h1 className="text-2xl font-bold">Challenge Details</h1>
       <p className="text-gray-500 text-sm mt-1">Select the challenge for this role</p>
 

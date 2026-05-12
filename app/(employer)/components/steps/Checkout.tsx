@@ -46,7 +46,9 @@ export default function Checkout() {
       <h2 className="border-b border-b-gray-300 text-xl font-bold">Checkout</h2>
 
       {loading ? (
-        <p className="mt-6 text-gray-600">Loading checkout details…</p>
+        <div className="flex justify-center py-24">
+          <div className="loader" />
+        </div>
       ) : checkoutRequest ? (
         <>
           <div className="flex items-center justify-between mt-6">

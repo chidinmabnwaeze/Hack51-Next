@@ -3,11 +3,12 @@
 import { useRequestStore } from "@/lib/context/useRequestStore";
 
 export default function RoleDetails() {
-  const { role } = useRequestStore();
+  const { role, role_level } = useRequestStore();
 
   if (!role) return null;
 
   const skillLevels = role.catalog_skill_levels ?? [];
+ 
   const capabilities = (role as any).catalog_capabilities ?? [];
 //  const capabilities = (role as any).catalog_capabilities ?? role.capabilities ?? [];
   return (
@@ -21,7 +22,8 @@ export default function RoleDetails() {
       <div className="flex items-center mt-3">
         <label className="font-semibold w-32">Skill Level</label>
         <span className="text-gray-700 capitalize">
-          {skillLevels.map((s) => s.level.replace(/-/g, " ")).join(", ") || "—"}
+          {/* {skillLevels.map((s) => s.level.replace(/-/g, " ")).join(", ") || "—"} */}
+           {role_level?.level.replace(/-/g, " ") || "—"}
         </span>
       </div>
 

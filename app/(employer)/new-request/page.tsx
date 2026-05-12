@@ -128,9 +128,9 @@ export default function NewRequestPage() {
             <button
               onClick={handleSaveAsDraft}
               disabled={submitting !== null}
-              className="border border-gray-300 hover:bg-gray-50 disabled:opacity-60 text-gray-700 font-bold py-2 px-4 rounded-lg ml-4"
+              className="  border border-[#FF0046] hover:bg-[#FF0046] hover:text-white disabled:opacity-60 text-[#FF0046] font-bold py-2 px-4 rounded-lg ml-4"
             >
-              {submitting === "draft" ? "Saving..." : "Save as Draft"}
+              {submitting === "draft" ? "Creating Request..." : "Submit Request"}
             </button>
           </>
         )}
@@ -141,7 +141,7 @@ export default function NewRequestPage() {
               reset();
               router.push("/requests");
             }}
-            className="bg-[#FF0046] hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg ml-4"
+            className="bg-[#FF0046] hover:bg-red-700 text-white flex justify-center items-center max-w-xs mx-auto font-bold py-2 px-4 rounded-lg ml-4"
           >
             Go to Requests
           </button>
