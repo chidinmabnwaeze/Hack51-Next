@@ -2,6 +2,34 @@
 import Link from "next/link";
 import { Lock, RefreshCw, NotepadText, Check, X, Bell } from "lucide-react";
 import SubmissionTable from "../component.tsx/SubmissionTable";
+import { dashboardService } from "@/lib/services/dashboard.service";
+import { toast } from "react-toastify/unstyled";
+import { useEffect, useState } from "react";
+import { CandidateDashboardProps } from "@/types/dashboard";
+
+
+
+export default function CandidateDashboardPage() {
+ const headers = ["Request Title", "Deadline", "Status", "Actions"];
+  const [dashboardData, setDashboardData] =
+    useState<CandidateDashboardProps | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const data = await dashboardService.getCandidateDashboardData();
+        setDashboardData(data);
+      } catch (error: any) {
+        toast.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
 const stats = [
   {
@@ -64,7 +92,6 @@ function ActionCell({ status }: { status: string }) {
   );
 }
 
-export default function CandidateDashboardPage() {
   return (
     <>
       <div className="mb-6">
@@ -79,7 +106,7 @@ export default function CandidateDashboardPage() {
         {stats.map((s) => (
           <div
             key={s.label}
-            className={`bg-white rounded-xl border-t-2 ${s.border} p-5 shadow-sm`}
+            className={`bg-white rounded-xl border-t-4 ${s.border} p-5 shadow-sm`}
           >
             <div className="text-xl mb-2 text-[#FF1F5A]">{s.icon}</div>
             <p className="text-sm text-gray-600 mb-1">{s.label}</p>

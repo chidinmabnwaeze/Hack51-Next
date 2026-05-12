@@ -3,12 +3,12 @@
 import Link from "next/link";
 import ChallengeButton from "./ChallengeButton";
 import { useEffect, useState } from "react";
-import { employerService } from "@/lib/services/employer.service";
 import { EmployerDashboardProps } from "@/types/dashboard";
 import { toast } from "react-toastify";
 import { FileBadge, PenSquareIcon, Users, CheckCircle } from "lucide-react";
 import { badgeClasses } from "@/lib/globalFunction";
 import router from "next/router";
+import { dashboardService } from "@/lib/services/dashboard.service";
 
 interface DashboardProps {
   title: string;
@@ -26,7 +26,7 @@ export default function DashboardClient({
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const data = await employerService.getDashboardData();
+        const data = await dashboardService.getEmployerDashboardData();
         setDashboardData(data);
       } catch (error: any) {
         toast.error("Error fetching dashboard data:", error);

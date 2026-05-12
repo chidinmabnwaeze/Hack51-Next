@@ -8,17 +8,8 @@ import {
 } from "@/types/employer";
 import { EmployerRoles } from "@/types/catalog";
 import { ShortlistedCandidatesProps } from "@/types/shortlist";
-import { EmployerDashboardProps } from "@/types/dashboard";
 
 export const employerService = {
-  // =========================
-  //  DASHBOARD
-  // =========================
-  getDashboardData: async (): Promise<EmployerDashboardProps> => {
-    const res = await api.get("/employer/dashboard");
-    return res.data;
-  },
-
   // =========================
   //  CATALOG
   // =========================

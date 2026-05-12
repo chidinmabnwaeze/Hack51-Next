@@ -4,30 +4,58 @@ import Image from "next/image";
 import EvaluationBarChart from "./EvaluationBarChart";
 import RequestPieChart from "./RequestPieChart";
 import CustomActiveShapePieChart from "./RequestPieChart";
+import { AdminDashboardProps } from "@/types/dashboard";
+import { useEffect } from "react";
+import { useState } from "react";
+import { dashboardService } from "@/lib/services/dashboard.service";
+import { toast } from "react-toastify";
 
 export default function DashboardClient() {
+  const headers = ["Request Title", "Deadline", "Status", "Actions"];
+  const [dashboardData, setDashboardData] =
+    useState<AdminDashboardProps | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const data = await dashboardService.getAdminDashboardData();
+        setDashboardData(data);
+      } catch (error: any) {
+        toast.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   const metrics = [
     {
       name: "Total Users",
-      value: "1,234",
-      icon: FileSpreadsheet,
-      info: "12% more than last month",
-    },
-    {
-      name: "Invalid Submissions",
-      value: 45,
+      value: dashboardData?.users.total,
       icon: FileSpreadsheet,
       info: "2 more than last month",
     },
+
+    {
+      name: "Submissions Received",
+      value: dashboardData?.stats.submissions_received,
+      icon: FileSpreadsheet,
+      info: "12% more than last month",
+    },
+
     {
       name: "Evaluated Submissions",
-      value: 30,
+      value: dashboardData?.stats.evaluated_submissions,
       icon: FileSpreadsheet,
       info: "Pending review",
     },
     {
       name: "Shortlisted Candidates",
-      value: 5,
+      value: dashboardData?.stats.shortlists_delivered,
       icon: FileSpreadsheet,
       info: "Completed Hiring Cycles",
     },
@@ -37,13 +65,12 @@ export default function DashboardClient() {
     <div>
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {metrics.map((metric, index) => (
           <div
-            className="bg-white p-6 rounded-lg shadow border-t-4 border-[#FF0046]"
+            className="card bg-white p-6 rounded-lg shadow border-t-4 border-[#FF0046]"
             key={index}
           >
-            {/* <Image src ={metric.icon} className="text-[#FF0046] mb-3" alt="icon" /> */}
             <metric.icon className="text-[#FF0046] mb-3" />
             <h3 className="text-gray-600 text-sm font-medium mb-2">
               {metric.name}
@@ -52,7 +79,7 @@ export default function DashboardClient() {
             <p className="text-xs text-green-400">{metric.info}</p>
           </div>
         ))}
-      </div>
+      </section>
 
       <section className="flex justify-between items-center">
         <div className="shadow bg-white rounded-lg p-3 w-1/2 mr-10 ">
@@ -67,13 +94,77 @@ export default function DashboardClient() {
             <FileSpreadsheet className="text-[#FF0046]" />
             <h1 className="font-bold">Reviewers evaluation per day </h1>
           </div>
-         <EvaluationBarChart/>
+          <EvaluationBarChart />
         </div>
       </section>
 
       <div className="bg-white p-6 rounded-lg shadow mt-6">
         <h2 className="text-xl font-bold mb-4">Recent Requests</h2>
-        <p className="text-gray-500 text-sm py-4">No recent requests.</p>
+{/* 
+        {loading ? (
+          <div className="flex justify-center py-24">
+            <div className="loader" />
+          </div>
+        ) : dashboardData?.requests?.total === 0 ? (
+          <p className="text-gray-500 text-sm py-4">No recent requests.</p>
+        ) : (
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr className="bg-gray-50">
+                {headers.map((h) => (
+                  <th
+                    key={h}
+                    className="py-2 px-4 border-b border-gray-100 text-left text-sm font-semibold text-gray-600"
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {dashboardData?.requests?.slice(0, 3).map((req) => (
+                <tr
+                  key={req.id}
+                  className="border-b border-gray-100 hover:bg-gray-50"
+                >
+                  <td className="py-3 px-4">
+                    <span className="font-semibold text-sm">{req.title}</span>
+
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      ID: {req.id.slice(0, 8)}…
+                    </p>
+                  </td>
+
+                  <td className="py-3 px-4 text-sm text-gray-600">
+                    <span>
+                      {req.deadline
+                        ? new Date(req.deadline).toLocaleDateString()
+                        : "—"}
+                    </span>
+                    <span className="ml-2 text-xs text-gray-400">
+                      ({daysLeft(req.deadline)})
+                    </span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-bold capitalize ${badgeClasses(req.status)}`}
+                    >
+                      {req.status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 flex gap-2">
+                    <button
+                      onClick={() => router.push(`/requests/${req.id}`)}
+                      className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )} */}
       </div>
     </div>
   );
