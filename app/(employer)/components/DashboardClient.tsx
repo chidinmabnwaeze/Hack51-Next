@@ -6,56 +6,20 @@ import { useEffect, useState } from "react";
 import { employerService } from "@/lib/services/employer.service";
 import { EmployerDashboardProps } from "@/types/dashboard";
 import { toast } from "react-toastify";
+import { FileBadge, PenSquareIcon, Users, CheckCircle } from "lucide-react";
+import { badgeClasses } from "@/lib/globalFunction";
+import router from "next/router";
 
 interface DashboardProps {
   title: string;
   description: string;
 }
 
-interface Metrics {
-  name: string;
-  value: number;
-  status: string;
-  info: string;
-}
-
 export default function DashboardClient({
   title,
   description,
 }: DashboardProps) {
-  const metrics: Metrics[] = [
-    {
-      name: "Total Active Requests",
-      value: 120,
-      status: "Current",
-      info: "12% more than last month",
-    },
-    {
-      name: "Submissions Received",
-      value: 45,
-      status: "Growth",
-      info: "2 more than last month",
-    },
-    {
-      name: "In Evaluation",
-      value: 30,
-      status: "Action Needed",
-      info: "Pending review",
-    },
-    {
-      name: "Shortlisted Candidates",
-      value: 5,
-      status: "Success",
-      info: "Completed Hiring Cycles",
-    },
-  ];
-
-  const Titles = [
-    "Total Active Requests",
-    "Submissions Received",
-    "In Evaluation",
-    "Shortlisted Candidates",
-  ];
+  const headers = ["Request Title", "Deadline", "Status", "Actions"];
   const [dashboardData, setDashboardData] =
     useState<EmployerDashboardProps | null>(null);
 
@@ -64,13 +28,22 @@ export default function DashboardClient({
       try {
         const data = await employerService.getDashboardData();
         setDashboardData(data);
-      } catch (error:any) {
+      } catch (error: any) {
         toast.error("Error fetching dashboard data:", error);
       }
     };
 
     fetchDashboardData();
   }, []);
+
+  const daysLeft = (deadline: string) => {
+    if (!deadline) return "—";
+    const diff = Math.ceil(
+      (new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+    );
+    if (diff < 0) return "Expired";
+    return `${diff}d`;
+  };
 
   return (
     <div>
@@ -84,43 +57,73 @@ export default function DashboardClient({
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-        {metrics.map((metric, index) => (
-          <div
-            key={index}
-            className="bg-white p-8 rounded-lg shadow border-t-3 border-[#FF0046]"
-          >
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">{metric.name}</h3>
-              <div
-                className={`px-3 py-1 rounded text-xs font-bold ${
-                  metric.status === "Success"
-                    ? "bg-green-100 text-green-800"
-                    : metric.status === "Growth"
-                      ? "bg-green-100 text-green-800"
-                      : metric.status === "Action Needed"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {metric.status}
-              </div>
-            </div>
-            <p className="text-2xl font-bold">{metric.value}</p>
-            <p
-              className={`text-sm ${
-                metric.status === "Current"
-                  ? "text-green-500"
-                  : metric.status === "Growth"
-                    ? "text-green-500"
-                    : metric.status === "Action Needed"
-                      ? "text-red-500"
-                      : "text-gray-500"
-              }`}
+        <div className="card bg-white p-8 rounded-lg shadow border-t-3 border-[#FF0046]">
+          <FileBadge className="w-6 h-6 text-[#FF0046] mb-2" />
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Total Requests</h3>
+            <div
+              className={`px-3 py-1 rounded-full text-xs font-bold text-green-500 bg-green-100`}
             >
-              {metric.info}
-            </p>
+              CURRENT
+            </div>
           </div>
-        ))}
+
+          <p className="text-2xl font-bold mt-2">
+            {dashboardData?.summary.total_requests}
+          </p>
+          <p className={`text-sm text-green-500`}>Steady Progress</p>
+        </div>
+
+        <div className="card bg-white p-8 rounded-lg shadow border-t-3 border-[#FF0046]">
+          <Users className="w-6 h-6 text-[#FF0046] mb-2" />
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Submissions Received</h3>
+            <div
+              className={`px-3 py-1 rounded-full text-xs font-bold text-green-500 bg-green-100`}
+            >
+              GROWTH
+            </div>
+          </div>
+
+          <p className="text-2xl font-bold mt-2">
+            {dashboardData?.summary.total_submissions}
+          </p>
+          <p className={`text-sm text-green-500`}>Request Submissions</p>
+        </div>
+
+        <div className="card bg-white p-8 rounded-lg shadow border-t-3 border-[#FF0046]">
+          <PenSquareIcon className="w-6 h-6 text-[#FF0046] mb-2" />
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">In Evaluation</h3>
+            <div
+              className={`px-3 py-1 rounded-full text-xs font-bold text-yellow-600 bg-yellow-100`}
+            >
+              ACTION NEEDED
+            </div>
+          </div>
+
+          <p className="text-2xl font-bold mt-2">
+            {dashboardData?.summary.total_evaluations}
+          </p>
+          <p className={`text-sm text-yellow-600`}>Pending Evaluation</p>
+        </div>
+
+        <div className="card bg-white p-8 rounded-lg shadow border-t-3 border-[#FF0046]">
+          <CheckCircle className="w-6 h-6 text-[#FF0046] mb-2" />
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Shortlisted Candidates</h3>
+            <div
+              className={`px-3 py-1 rounded-full text-xs font-bold text-green-500 bg-green-100`}
+            >
+              SUCCESS
+            </div>
+          </div>
+
+          <p className="text-2xl font-bold mt-2">
+            {dashboardData?.summary.total_shortlists_delivered}
+          </p>
+          <p className={`text-sm text-green-500`}>Completed Hiring Cycles</p>
+        </div>
       </section>
 
       <section className="bg-white p-4 shadow mt-8 rounded-2xl">
@@ -140,12 +143,63 @@ export default function DashboardClient({
             </Link>
           </div>
         </div>
-        <p className="text-gray-500 text-sm py-4">
-          No active requests.{" "}
-          <a href="/requests" className="text-[#FF0046] hover:underline">
-            View all requests
-          </a>
-        </p>
+
+        <table className="min-w-full bg-white">
+          <thead>
+            <tr className="bg-gray-50">
+              {headers.map((h) => (
+                <th
+                  key={h}
+                  className="py-2 px-4 border-b border-gray-100 text-left text-sm font-semibold text-gray-600"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {dashboardData?.active_requests.slice(0, 3).map((req) => (
+              <tr
+                key={req.id}
+                className="border-b border-gray-100 hover:bg-gray-50"
+              >
+                <td className="py-3 px-4">
+                  <span className="font-semibold text-sm">{req.title}</span>
+
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    ID: {req.id.slice(0, 8)}…
+                  </p>
+                </td>
+
+                <td className="py-3 px-4 text-sm text-gray-600">
+                  <span>
+                    {req.deadline
+                      ? new Date(req.deadline).toLocaleDateString()
+                      : "—"}
+                  </span>
+                  <span className="ml-2 text-xs text-gray-400">
+                    ({daysLeft(req.deadline)})
+                  </span>
+                </td>
+                <td className="py-3 px-4">
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold capitalize ${badgeClasses(req.status)}`}
+                  >
+                    {req.status}
+                  </span>
+                </td>
+                <td className="py-3 px-4 flex gap-2">
+                  <button
+                    onClick={() => router.push(`/requests/${req.id}`)}
+                    className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 px-3 py-1 rounded"
+                  >
+                    View
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <section className="bg-white p-8 shadow mt-8 rounded-2xl">

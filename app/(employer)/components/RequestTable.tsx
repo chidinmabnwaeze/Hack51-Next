@@ -58,15 +58,6 @@ export default function RequestTable({
     }
   };
 
-  // const handlePublishRequest = async (id: string) => {
-  //   try {
-  //     const res = await employerService.publishRequest(id);
-  //     console.log("REQUEST RES", res);
-  //   } catch (error) {
-  //     console.error("Error publishing request:", error);
-  //   }
-  // };
-
   if (requests.length === 0) {
     return <p className="text-gray-500 text-sm py-4">No requests found.</p>;
   }
