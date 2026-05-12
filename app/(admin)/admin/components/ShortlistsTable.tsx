@@ -139,9 +139,9 @@ export default function ShortlistsTable() {
                 <th className="text-left text-xs font-semibold text-gray-400 pb-3 pr-4">
                   Status
                 </th>
-                <th className="text-left text-xs font-semibold text-gray-400 pb-3">
+                {/* <th className="text-left text-xs font-semibold text-gray-400 pb-3">
                   Action
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -184,7 +184,7 @@ export default function ShortlistsTable() {
                       {/* {`${badgeClasses(row.status)}`} */}
                       <StatusBadge status={row.status} />
                     </td>
-                    <td className="py-4">
+                    {/* <td className="py-4">
                       <button
                         onClick={() =>
                           router.push(`/admin/shortlists/${row?.id ?? row.id}`)
@@ -194,7 +194,7 @@ export default function ShortlistsTable() {
                         View
                         <Eye size={15} />
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               )}
