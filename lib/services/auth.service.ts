@@ -63,8 +63,7 @@ console.log("REGISTER RESPONSE", response);
 
   getCurrentUser: () => {
     const user = localStorage.getItem("user");
-    console.log("CURRENT USER", user);
-    return user ? JSON.parse(user).data : null;
+    return user ? JSON.parse(user) : null;
   },
 
   refreshToken: async () => {

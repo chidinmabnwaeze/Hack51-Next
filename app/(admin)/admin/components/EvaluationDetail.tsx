@@ -39,6 +39,7 @@ export default function EvaluationDetail({ id }: SubmissionFullDetail) {
           });
         }
         setScores(restoredScores);
+        toast.success("Submission details loaded successfully");
       } catch (err: any) {
         toast.error("Failed to load submission details");
       } finally {

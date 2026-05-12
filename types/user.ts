@@ -5,12 +5,9 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
-  // timezone: string;
   avatar_url?: string;
   role: UserRole;
   workspace?: string[];
-  // is_internal: boolean;
-  // verified_at?: string;
   is_verified: boolean;
   is_active: boolean;
   last_login?: string;

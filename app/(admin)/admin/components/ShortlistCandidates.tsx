@@ -62,6 +62,7 @@ export default function ShortlistCandidates() {
         setLoading(true);
         const response = await reviewService.getShortListedCandidates(id, {});
         setAllCandidates(response.data);
+        toast.success("Candidates loaded successfully");
       } catch (err: any) {
         toast.error("Failed to load candidates");
       } finally {
@@ -153,50 +154,56 @@ export default function ShortlistCandidates() {
       </p>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-          <p className="text-lg font-bold">
-            Select {shortlistSize} candidate{shortlistSize !== 1 ? "s" : ""}{" "}
-            <span className="text-[#F01E5A]">
-              ({selected.size}/{shortlistSize})
-            </span>
-          </p>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleConfirm}
-              disabled={
-                selected.size !== shortlistSize || confirmed || confirming
-              }
-              className="flex items-center gap-2 px-6 py-3 border-2 border-[#F01E5A] text-[#F01E5A] hover:bg-red-50 disabled:opacity-40 disabled:cursor-default text-sm font-bold rounded-lg transition-colors"
-            >
-              {confirming && (
-                <div className="loader" style={{ width: "16px" }} />
-              )}
-              {confirming
-                ? "Confirming..."
-                : confirmed
-                  ? "Confirmed"
-                  : "Confirm selection"}
-            </button>
-            <button
-              onClick={handleDeliver}
-              disabled={!confirmed || delivering}
-              className="flex items-center gap-2 px-6 py-3 bg-[#F01E5A] hover:bg-[#c0144a] disabled:opacity-40 disabled:cursor-default text-white text-sm font-bold rounded-lg transition-colors"
-            >
-              {delivering && (
-                <div className="loader" style={{ width: "16px" }} />
-              )}
-              {delivering ? "Delivering..." : "Deliver shortlist"}
-            </button>
+        {loading ? (
+          <div className="flex justify-center py-24">
+            <div className="loader" />
           </div>
-        </div>
+        ) : (
+          <>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <p className="text-lg font-bold">
+                Select {shortlistSize} candidate{shortlistSize !== 1 ? "s" : ""}{" "}
+                <span className="text-[#F01E5A]">
+                  ({selected.size}/{shortlistSize})
+                </span>
+              </p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleConfirm}
+                  disabled={
+                    selected.size !== shortlistSize || confirmed || confirming
+                  }
+                  className="flex items-center gap-2 px-6 py-3 border-2 border-[#F01E5A] text-[#F01E5A] hover:bg-red-50 disabled:opacity-40 disabled:cursor-default text-sm font-bold rounded-lg transition-colors"
+                >
+                  {confirming && (
+                    <div className="loader" style={{ width: "16px" }} />
+                  )}
+                  {confirming
+                    ? "Confirming..."
+                    : confirmed
+                      ? "Confirmed"
+                      : "Confirm selection"}
+                </button>
+                <button
+                  onClick={handleDeliver}
+                  disabled={!confirmed || delivering}
+                  className="flex items-center gap-2 px-6 py-3 bg-[#F01E5A] hover:bg-[#c0144a] disabled:opacity-40 disabled:cursor-default text-white text-sm font-bold rounded-lg transition-colors"
+                >
+                  {delivering && (
+                    <div className="loader" style={{ width: "16px" }} />
+                  )}
+                  {delivering ? "Delivering..." : "Deliver shortlist"}
+                </button>
+              </div>
+            </div>
 
-        {/* Table */}
-        <div className="px-6">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="w-10 pb-3 pt-4" />
+            {/* Table */}
+            <div className="px-6">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="w-10 pb-3 pt-4" />
                 <th className="text-left text-xs font-semibold text-gray-400 pb-3 pt-4 pr-4">
                   Submission ID
                 </th>
@@ -212,13 +219,7 @@ export default function ShortlistCandidates() {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="py-12 text-center">
-                    <div className="loader mx-auto" />
-                  </td>
-                </tr>
-              ) : allCandidates.length === 0 ? (
+              {allCandidates.length === 0 ? (
                 <tr>
                   <td
                     colSpan={5}
@@ -228,8 +229,7 @@ export default function ShortlistCandidates() {
                   </td>
                 </tr>
               ) : null}
-              {!loading &&
-                paginated.map((row) => (
+              {paginated.map((row) => (
                   <tr
                     key={row.id}
                     className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors"
@@ -305,6 +305,8 @@ export default function ShortlistCandidates() {
             </button>
           </div>
         </div>
+        </>
+      )}
       </div>
     </div>
   );

@@ -7,10 +7,8 @@ import { toast } from "react-toastify/unstyled";
 import { useEffect, useState } from "react";
 import { CandidateDashboardProps } from "@/types/dashboard";
 
-
-
 export default function CandidateDashboardPage() {
- const headers = ["Request Title", "Deadline", "Status", "Actions"];
+  const headers = ["Request Title", "Deadline", "Status", "Actions"];
   const [dashboardData, setDashboardData] =
     useState<CandidateDashboardProps | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,8 +19,9 @@ export default function CandidateDashboardPage() {
         setLoading(true);
         const data = await dashboardService.getCandidateDashboardData();
         setDashboardData(data);
+        toast.success("Dashboard data loaded successfully");
       } catch (error: any) {
-        toast.error("Error fetching dashboard data:", error);
+        toast.error("Error fetching dashboard data: " + error.message);
       } finally {
         setLoading(false);
       }
@@ -31,66 +30,66 @@ export default function CandidateDashboardPage() {
     fetchDashboardData();
   }, []);
 
-const stats = [
-  {
-    label: "Active Submissions",
-    value: "32",
-    sub: "Currently reviewing",
-    icon: <NotepadText />,
-    border: "border-[#FF1F5A]",
-  },
-  {
-    label: "Challenges Passed",
-    value: "16",
-    sub: "",
-    icon: <Check />,
-    border: "border-[#FF1F5A]",
-  },
-  {
-    label: "Submissions Rejected",
-    value: "1",
-    sub: "Fix and resubmit",
-    icon: <X />,
-    border: "border-[#FF1F5A]",
-  },
-  {
-    label: "New Challenges",
-    value: "120",
-    sub: "in the last 30 days",
-    icon: <Bell />,
-    border: "border-[#FF1F5A]",
-  },
-];
+  const stats = [
+    {
+      label: "Active Submissions",
+      value: dashboardData?.summary.total_submissions,
+      sub: "Currently reviewing",
+      icon: <NotepadText />,
+      border: "border-[#FF1F5A]",
+    },
+    {
+      label: "Scored Challenges",
+      value: dashboardData?.summary.by_status.scored,
+      sub: "",
+      icon: <Check />,
+      border: "border-[#FF1F5A]",
+    },
+    {
+      label: "Submissions Under Review",
+      value: dashboardData?.summary.by_status.under_review,
+      sub: "Fix and resubmit",
+      icon: <X />,
+      border: "border-[#FF1F5A]",
+    },
+    {
+      label: "Shortlisted Challenges",
+      value: dashboardData?.summary.total_shortlisted,
+      sub: "in the last 30 days",
+      icon: <Bell />,
+      border: "border-[#FF1F5A]",
+    },
+  ];
 
-function StatusBadge({ status }: { status: string }) {
-  if (status === "rejected") {
+  function StatusBadge({ status }: { status: string }) {
+    if (status === "rejected") {
+      return (
+        <span className="px-3 py-1 rounded-full border border-[#FF1F5A] text-[#FF1F5A] text-xs font-medium">
+          Rejected
+        </span>
+      );
+    }
     return (
-      <span className="px-3 py-1 rounded-full border border-[#FF1F5A] text-[#FF1F5A] text-xs font-medium">
-        Rejected
+      <span className="px-3 py-1 rounded-full border border-blue-300 text-blue-500 text-xs font-medium">
+        Pending evaluation
       </span>
     );
   }
-  return (
-    <span className="px-3 py-1 rounded-full border border-blue-300 text-blue-500 text-xs font-medium">
-      Pending evaluation
-    </span>
-  );
-}
 
-function ActionCell({ status }: { status: string }) {
-  if (status === "rejected") {
+  function ActionCell({ status }: { status: string }) {
+    if (status === "rejected") {
+      return (
+        <span className="font-semibold text-gray-800 text-sm cursor-pointer hover:text-[#FF1F5A] transition-colors flex items-center gap-1">
+          <RefreshCw size={13} /> Resubmit
+        </span>
+      );
+    }
     return (
-      <span className="font-semibold text-gray-800 text-sm cursor-pointer hover:text-[#FF1F5A] transition-colors flex items-center gap-1">
-        <RefreshCw size={13} /> Resubmit
+      <span className="text-gray-400 text-sm flex items-center gap-1">
+        <Lock size={13} /> Locked
       </span>
     );
   }
-  return (
-    <span className="text-gray-400 text-sm flex items-center gap-1">
-      <Lock size={13} /> Locked
-    </span>
-  );
-}
 
   return (
     <>

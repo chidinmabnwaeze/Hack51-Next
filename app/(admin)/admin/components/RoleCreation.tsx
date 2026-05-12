@@ -1,10 +1,18 @@
 "use client";
 
-import { PlusCircle, Pencil, Trash2, Check, ChevronRight, Eye } from "lucide-react";
+import {
+  PlusCircle,
+  Pencil,
+  Trash2,
+  Check,
+  ChevronRight,
+  Eye,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import ReviewTable from "./ReviewTable";
 import { useRouter } from "next/navigation";
 import { catalogService } from "@/lib/services/catalog.service";
+import { toast } from "react-toastify";
 
 type Role = {
   id: number;
@@ -25,12 +33,14 @@ export default function RoleCreation() {
         console.log("FETCH ROLES", response);
         setRoles(response.data);
         setLoading(false);
+        toast.success("Roles loaded successfully");
       } catch (err: any) {
         console.error(
           "ERROR FETCHING ROLES",
           err.response?.data || err.message,
         );
         setLoading(false);
+        toast.error("Failed to load roles");
       }
     };
     fetchRoles();
@@ -56,8 +66,10 @@ export default function RoleCreation() {
         { id: createdRole.id, name: createdRole.name, isEditing: false },
       ]);
       setRoleName("");
+      toast.success("Role created successfully");
     } catch (err: any) {
       console.error("ERROR CREATING ROLE", err.response?.data || err.message);
+      toast.error("Failed to create role");
     }
   };
 
@@ -88,8 +100,10 @@ export default function RoleCreation() {
           role.id === id ? { ...role, name: roleName } : role,
         ),
       );
+      toast.success("Role updated successfully");
     } catch (err: any) {
       console.error("ERROR EDITING ROLE", err.response?.data || err.message);
+      toast.error("Failed to update role");
     }
   };
 
@@ -98,8 +112,10 @@ export default function RoleCreation() {
       const deleteRole = await catalogService.deleteRole(id.toString());
       setRoles((prev) => prev.filter((role) => role.id !== id));
       console.log("DELETE ROLE", deleteRole);
+      toast.success("Role deleted successfully");
     } catch (err: any) {
       console.log(err.message);
+      toast.error("Failed to delete role");
     }
   };
 
@@ -121,7 +137,9 @@ export default function RoleCreation() {
 
       {/* Roles */}
       {loading ? (
-        <p className="text-gray-500 mt-4">Loading roles...</p>
+        <div className="flex justify-center py-24">
+          <div className="loader" />
+        </div>
       ) : (
         <div className="mt-4">
           {roles.map((role) => (
@@ -179,7 +197,9 @@ export default function RoleCreation() {
                 <Eye
                   size={18}
                   className="cursor-pointer text-gray-400 hover:text-blue-500 transition"
-                  onClick={() => router.push(`/admin/catalog/roles/${role.id}/view`)}
+                  onClick={() =>
+                    router.push(`/admin/catalog/roles/${role.id}/view`)
+                  }
                 />
 
                 <Trash2
@@ -197,9 +217,6 @@ export default function RoleCreation() {
           )}
         </div>
       )}
-      {/* <div>
-         <button onClick={() => router.push(`/admin/catalog/${role.id}/skills`)}>Save</button>
-      </div> */}
     </div>
   );
 }

@@ -40,7 +40,9 @@ export default function ReviewTable() {
   ];
   const router = useRouter();
   const [requests, setRequests] = useState<EmployerRequest[]>([]);
-  const [submissionStats, setSubmissionStats] = useState<Record<string, Stats>>({});
+  const [submissionStats, setSubmissionStats] = useState<Record<string, Stats>>(
+    {},
+  );
   const [loading, setLoading] = useState(true);
   const [reviewing, setReviewing] = useState<string | null>(null);
 
@@ -53,6 +55,7 @@ export default function ReviewTable() {
           ? response
           : ((response as any).data ?? []);
         setRequests(requestsData);
+        toast.success("Requests loaded successfully");
       } catch (err: any) {
         toast.error("Failed to load requests");
       } finally {
@@ -168,7 +171,9 @@ export default function ReviewTable() {
                 )}
               </td>
 
-              <td className="py-2 px-4">{request.deadline ? formatDate(request.deadline) : "-"}</td>
+              <td className="py-2 px-4">
+                {request.deadline ? formatDate(request.deadline) : "-"}
+              </td>
               <td className="py-2 px-4">
                 <span
                   className={`px-2 py-1 rounded text-xs font-bold ${badgeClasses(request.status)}`}

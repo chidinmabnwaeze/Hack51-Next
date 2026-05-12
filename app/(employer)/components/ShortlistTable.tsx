@@ -81,18 +81,14 @@ export default function ShortlistTable() {
                         <span className="font-semibold capitalize">
                           {list.title}
                         </span>
-                        {/* {detailed && ( */}
+
                         <>
                           {list.id && (
                             <small className="text-gray-500">
                               ID: {list.id}
                             </small>
                           )}
-                          {/* {list.title && (
-                        <small className="text-gray-500">{list.role}</small>
-                      )} */}
                         </>
-                        {/* )} */}
                       </div>
                     </td>
 
@@ -122,9 +118,6 @@ export default function ShortlistTable() {
                         <Eye size={15} />
                         View
                       </button>
-                      {/* <button className="text-red-500 hover:text-red-700">
-                  Close Request
-                </button> */}
                     </td>
                   </tr>
                 ))}

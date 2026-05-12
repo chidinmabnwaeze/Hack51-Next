@@ -4,6 +4,7 @@ import { submissionService } from "@/lib/services/submission.service";
 import Link from "next/link";
 import { Search, Lock, RefreshCw, Eye, ChevronDown } from "lucide-react";
 import { toast } from "react-toastify";
+import { formatDate } from "@/lib/globalFunction";
 
 export default function SubmissionTable() {
   function StatusBadge({ status }: { status: string }) {
@@ -73,66 +74,74 @@ export default function SubmissionTable() {
     fetchSubmissions();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <>
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-gray-100">
-            <th className="pb-3 text-sm font-medium text-gray-500 text-left">
-              Challenge Details
-            </th>
-            <th className="pb-3 text-sm font-medium text-gray-500 text-left">
-              Submission Date
-            </th>
-            <th className="pb-3 text-sm font-medium text-gray-500 text-left">
-              Status
-            </th>
-            <th className="pb-3 text-sm font-medium text-gray-500 text-right">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {submissions.map((sub, i) => (
-            <tr key={i} className="border-b border-gray-50 last:border-0">
-              <td className="py-4">
-                <p className="font-semibold text-gray-900 text-sm">
-                  {sub.job_requests.title}
-                </p>
-                <p className="text-xs text-gray-400">{sub.id}</p>
-              </td>
-              <td className="py-4 text-sm text-gray-700">
-                {sub.job_requests.deadline}
-              </td>
-              <td className="py-4">
-                <StatusBadge status={sub.status} />
-              </td>
-              <td className="py-4 text-right">
-                <ActionCell status={sub.status} subId={sub.id} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
-        <button className="text-sm text-gray-500 flex items-center gap-1">
-          ← Prev
-        </button>
-        <div className="flex items-center gap-2 text-sm">
-          <span className="w-7 h-7 flex items-center justify-center rounded-full bg-[#FF1F5A] text-white font-medium">
-            1
-          </span>
-          <span className="text-gray-500">2</span>
-          <span className="text-gray-500">3</span>
-          <span className="text-gray-500">4...10</span>
+      {loading ? (
+        <div className="flex justify-center py-24">
+          <div className="loader" />
         </div>
-        <button className="text-sm text-[#FF1F5A] flex items-center gap-1 font-medium">
-          Next →
-        </button>
-      </div>
+      ) : (
+        <>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="pb-3 text-sm font-medium text-gray-500 text-left">
+                  Challenge Details
+                </th>
+                <th className="pb-3 text-sm font-medium text-gray-500 text-left">
+                  Submission Date
+                </th>
+                <th className="pb-3 text-sm font-medium text-gray-500 text-left">
+                  Status
+                </th>
+                <th className="pb-3 text-sm font-medium text-gray-500 text-right">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {submissions.map((sub, i) => (
+                <tr key={i} className="border-b border-gray-50 last:border-0">
+                  <td className="py-4">
+                    <p className="font-semibold text-gray-900 text-sm">
+                      {sub.job_requests.title}
+                    </p>
+                    <p className="text-xs text-gray-400">{sub.id}</p>
+                  </td>
+                  <td className="py-4 text-sm text-gray-700">
+                    {sub.job_requests.deadline
+                      ? formatDate(sub.job_requests.deadline)
+                      : "-"}
+                  </td>
+                  <td className="py-4">
+                    <StatusBadge status={sub.status} />
+                  </td>
+                  <td className="py-4 text-right">
+                    <ActionCell status={sub.status} subId={sub.id} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
+            <button className="text-sm text-gray-500 flex items-center gap-1">
+              ← Prev
+            </button>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="w-7 h-7 flex items-center justify-center rounded-full bg-[#FF1F5A] text-white font-medium">
+                1
+              </span>
+              <span className="text-gray-500">2</span>
+              <span className="text-gray-500">3</span>
+              <span className="text-gray-500">4...10</span>
+            </div>
+            <button className="text-sm text-[#FF1F5A] flex items-center gap-1 font-medium">
+              Next →
+            </button>
+          </div>
+        </>
+      )}
     </>
   );
 }

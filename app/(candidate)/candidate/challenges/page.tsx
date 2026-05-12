@@ -7,14 +7,20 @@ import { EmployerRequest } from "@/types/employer";
 
 export default function FindChallengesPage() {
   const [challenges, setChallenges] = useState<EmployerRequest[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchChallenges = async () => {
-      const response = await challengeService.getCandidateChallenges();
-      setChallenges(response.data);
-    };
-
-    fetchChallenges();
+    try {
+      const fetchChallenges = async () => {
+        const response = await challengeService.getCandidateChallenges();
+        setChallenges(response.data);
+      };
+      fetchChallenges();
+    } catch (error) {
+      console.error("Error fetching challenges:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   return (
@@ -49,42 +55,48 @@ export default function FindChallengesPage() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-3 gap-4">
-          {challenges.map((c) => (
-            <div
-              key={c.id}
-              className="border border-gray-200 rounded-xl p-4 hover:border-[#FF1F5A] hover:shadow-sm transition-all group"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center">
-                    <span className="text-white text-[9px] font-bold">N</span>
+        {loading ? (
+          <div className="flex justify-center py-24">
+            <div className="loader" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-4">
+            {challenges.map((c) => (
+              <div
+                key={c.id}
+                className="border border-gray-200 rounded-xl p-4 hover:border-[#FF1F5A] hover:shadow-sm transition-all group"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center">
+                      <span className="text-white text-[9px] font-bold">N</span>
+                    </div>
+                    <span className="text-xs text-gray-500">{c?.company}</span>
                   </div>
-                  <span className="text-xs text-gray-500">{c?.company}</span>
+                  <div className="flex items-center gap-1 bg-red-50 text-[#FF1F5A] text-[10px] font-medium px-2 py-0.5 rounded-full">
+                    <Clock size={10} />
+                    {c.deadline} days left
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 bg-red-50 text-[#FF1F5A] text-[10px] font-medium px-2 py-0.5 rounded-full">
-                  <Clock size={10} />
-                  {c.deadline} days left
+
+                <h3 className="font-bold text-gray-900 text-sm mb-1">
+                  {c.title}
+                </h3>
+                <p className="text-xs text-gray-500 mb-4">
+                  Level: {c.role_level}
+                </p>
+
+                <div className="flex justify-end">
+                  <Link href={`/candidate/challenges/${c.id}`}>
+                    <span className="text-[#FF1F5A] text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                      Details →
+                    </span>
+                  </Link>
                 </div>
               </div>
-
-              <h3 className="font-bold text-gray-900 text-sm mb-1">
-                {c.title}
-              </h3>
-              <p className="text-xs text-gray-500 mb-4">
-                Level: {c.role_level}
-              </p>
-
-              <div className="flex justify-end">
-                <Link href={`/candidate/challenges/${c.id}`}>
-                  <span className="text-[#FF1F5A] text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                    Details →
-                  </span>
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

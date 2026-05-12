@@ -63,62 +63,32 @@ export interface AdminDashboardProps {
 }
 
 export interface CandidateDashboardProps {
- "summary": {
-      "total_submissions": 4,
-      "total_shortlisted": 0,
-      "unread_notifications": 12,
-      "by_status": {
-        "under_review": 1,
-        "scored": 3
+ summary: {
+      total_submissions: number;
+      total_shortlisted: number;
+      unread_notifications: number;
+      by_status: {
+        under_review: number;
+        scored: number;
       }
     },
-    "recent_submissions": [
+    recent_submissions: [
       {
-        "id": "4ef9ef79-0fdf-440f-9b7f-f20546048270",
-        "status": "under_review",
-        "submitted_at": "2026-05-08T15:45:31.821517+00:00",
-        "job_requests": {
-          "title": "lawyer",
-          "deadline": "2026-05-30T00:00:00+00:00",
-          "role_type": "cd965369-cc5a-47c6-aac6-b4c2a086031f"
+        id: string;
+        status: "under_review",
+        submitted_at: string;
+        job_requests: {
+          title: string;
+          deadline: string;
+          role_type: string;
         }
       },
-      {
-        "id": "54513699-ff1e-4bab-be77-438fcfed7a7f",
-        "status": "scored",
-        "submitted_at": "2026-05-08T14:29:09.493939+00:00",
-        "job_requests": {
-          "title": "Farm Manager",
-          "deadline": "2026-05-22T00:00:00+00:00",
-          "role_type": "5db8941c-089d-42e9-8617-5b95a02ddc41"
-        }
-      },
-      {
-        "id": "4c0bc2aa-003c-4105-9d9a-b16aa0cfd925",
-        "status": "scored",
-        "submitted_at": "2026-04-28T00:47:17.893321+00:00",
-        "job_requests": {
-          "title": "Accountant",
-          "deadline": "2026-05-09T00:00:00+00:00",
-          "role_type": "95914b2c-2875-46dd-8fe5-2a328a7b7a34"
-        }
-      },
-      {
-        "id": "5bd362d3-2f8f-4fac-9763-e60ca55cae55",
-        "status": "scored",
-        "submitted_at": "2026-04-28T00:08:09.766133+00:00",
-        "job_requests": {
-          "title": "Doctor",
-          "deadline": "2026-06-13T00:00:00+00:00",
-          "role_type": "81474c60-2dec-47ff-8fe1-e6dfffbbc59e"
-        }
-      }
+    
     ],
-    "shortlists": [],
-    "profile": {
-      "skills": [],
-      "experience_years": null,
-      "location": null
+    shortlists: string[],
+    profile: {
+      skills: string[],
+      experience_years: number | null,
+      location: string | null
     }
-  },
-}
+  };
