@@ -94,7 +94,7 @@ export default function ChallengeDetailPage() {
                   className="flex items-center gap-2 text-sm text-gray-700"
                 >
                   <span className="w-2.5 h-2.5 rounded-full bg-[#FF1F5A] flex-shrink-0" />
-                  {challenge?.challenges?.deliverables}
+                  {deliver}
                 </li>
                ))}
             </ul>

@@ -40,7 +40,7 @@ export default function ShortlistsTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab =
-    searchParams.get("tab") === "top-n" ? "top-n" : "shortlists";
+    searchParams.get("tab") === "all" ? "all" : "top-n shortlists";
 
   useEffect(() => {
     const fetchShortlists = async () => {
@@ -82,22 +82,22 @@ export default function ShortlistsTable() {
           <button
             onClick={() => router.push("/admin/shortlists")}
             className={`px-5 py-3 text-sm font-semibold border-b-2 -mb-0.5 transition-colors ${
-              activeTab === "shortlists"
+              activeTab === "top-n shortlists"
                 ? "text-[#F01E5A] border-[#F01E5A]"
                 : "text-gray-400 border-transparent hover:text-gray-700"
             }`}
           >
-            Shortlists
+           Top-N Shortlists
           </button>
           <button
-            onClick={() => router.push("/admin/shortlists?tab=top-n")}
+            onClick={() => router.push("/admin/shortlists?tab=all")}
             className={`px-5 py-3 text-sm font-semibold border-b-2 -mb-0.5 transition-colors ${
-              activeTab === "top-n"
+              activeTab === "all"
                 ? "text-[#F01E5A] border-[#F01E5A]"
                 : "text-gray-400 border-transparent hover:text-gray-700"
             }`}
           >
-            Top-N Candidates
+            All Candidates
           </button>
         </div>
 

@@ -30,7 +30,6 @@ export default function DashboardClient({
         setLoading(true);
         const data = await dashboardService.getEmployerDashboardData();
         setDashboardData(data);
-        // toast.success("Dashboard data loaded successfully");
       } catch (error: any) {
         toast.error("Error fetching dashboard data: " + error.message);
       } finally {

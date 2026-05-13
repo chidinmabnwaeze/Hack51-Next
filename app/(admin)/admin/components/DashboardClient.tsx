@@ -9,12 +9,14 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { dashboardService } from "@/lib/services/dashboard.service";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function DashboardClient() {
   const headers = ["Request Title", "Deadline", "Status", "Actions"];
   const [dashboardData, setDashboardData] =
     useState<AdminDashboardProps | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -22,7 +24,7 @@ export default function DashboardClient() {
         setLoading(true);
         const data = await dashboardService.getAdminDashboardData();
         setDashboardData(data);
-        toast.success("Dashboard data loaded successfully");
+      
       } catch (error: any) {
         toast.error("Error fetching dashboard data ");
       } finally {
@@ -61,6 +63,15 @@ export default function DashboardClient() {
       info: "Completed Hiring Cycles",
     },
   ];
+
+ const daysLeft = (deadline: string) => {
+    if (!deadline) return "—";
+    const diff = Math.ceil(
+      (new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+    );
+    if (diff < 0) return "Expired";
+    return `${diff}d`;
+  };
 
   return (
     <div>
@@ -102,17 +113,18 @@ export default function DashboardClient() {
                 <h1 className="font-bold">Reviewers evaluation per day </h1>
               </div>
               <EvaluationBarChart />
+              {/* <CustomActiveShapePieChart /> */}
             </div>
           </section>
 
           <div className="bg-white p-6 rounded-lg shadow mt-6">
             <h2 className="text-xl font-bold mb-4">Recent Requests</h2>
-            {/* 
-        {loading ? (
+         
+        {/* {loading ? (
           <div className="flex justify-center py-24">
             <div className="loader" />
           </div>
-        ) : dashboardData?.requests?.total === 0 ? (
+        ) : dashboardData?.requests?.data === 0 ? (
           <p className="text-gray-500 text-sm py-4">No recent requests.</p>
         ) : (
           <table className="min-w-full bg-white">
@@ -171,7 +183,7 @@ export default function DashboardClient() {
               ))}
             </tbody>
           </table>
-        )} */}
+        )}  */}
           </div>
         </>
       )}
