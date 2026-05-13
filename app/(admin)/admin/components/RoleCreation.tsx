@@ -22,7 +22,7 @@ type Role = {
 
 export default function RoleCreation() {
   const [roles, setRoles] = useState<Role[]>([]);
-  const [roleName, setRoleName] = useState("");
+  // const [roleName, setRoleName] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -53,19 +53,32 @@ export default function RoleCreation() {
     ]);
   };
 
-  const handleCreate = async () => {
-    if (!roleName.trim()) return;
+  const handleCreate = async (roleId: number) => {
+    const currentRole = roles.find((r) => r.id === roleId);
+
+    if (!currentRole?.name.trim()) return;
 
     try {
       const createdRole = await catalogService.createRole({
-        name: roleName,
+        name: currentRole.name,
       });
+
       console.log("CREATE ROLE", createdRole);
-      setRoles((prev) => [
-        ...prev,
-        { id: createdRole.id, name: createdRole.name, isEditing: false },
-      ]);
-      setRoleName("");
+
+      setRoles((prev) => {
+        const filtered = prev.filter((r) => r.id !== roleId);
+
+        //save role to top
+        return [
+          {
+            id: createdRole.id,
+            name: createdRole.name,
+            isEditing: false,
+          },
+          ...filtered,
+        ];
+      });
+
       toast.success("Role created successfully");
     } catch (err: any) {
       console.error("ERROR CREATING ROLE", err.response?.data || err.message);
@@ -73,36 +86,44 @@ export default function RoleCreation() {
     }
   };
 
-  // const handleChange = (id: number, value: string) => {
-  //   setRoles((prev) =>
-  //     prev.map((role) => (role.id === id ? { ...role, name: value } : role)),
-  //   );
-  // };
+  const handleEdit = (id: number) => {
+    setRoles((prev) =>
+      prev.map((role) =>
+        role.id === id ? { ...role, isEditing: true } : role,
+      ),
+    );
+  };
 
-  // const handleSave = async (id: number) => {
-  //   setRoles((prev) =>
-  //     prev.map((role) =>
-  //       role.id === id && role.trim()
-  //         ? { ...role, isEditing: false }
-  //         : role,
-  //     ),
-  //   );
-  // };
+  const handleSaveEdit = async (id: number) => {
+    const currentRole = roles.find((r) => r.id === id);
 
-  const handleEdit = async (id: number) => {
+    if (!currentRole?.name.trim()) return;
+
     try {
-      const editRole = await catalogService.updateRole(id.toString(), {
-        name: roles.find((role) => role.id === id)?.name || "",
+      const response = await catalogService.updateRole(id.toString(), {
+        name: currentRole.name,
       });
-      console.log("EDIT ROLE", editRole);
+
+      const updatedRole = response.data;
+
+      console.log("UPDATED ROLE", updatedRole);
+
       setRoles((prev) =>
         prev.map((role) =>
-          role.id === id ? { ...role, name: roleName } : role,
+          role.id === id
+            ? {
+                ...role,
+                name: updatedRole.name,
+                isEditing: false,
+              }
+            : role,
         ),
       );
+
       toast.success("Role updated successfully");
     } catch (err: any) {
-      console.error("ERROR EDITING ROLE", err.response?.data || err.message);
+      console.error("ERROR UPDATING ROLE", err.response?.data || err.message);
+
       toast.error("Failed to update role");
     }
   };
@@ -165,10 +186,23 @@ export default function RoleCreation() {
                 {role.isEditing ? (
                   <input
                     type="text"
-                    value={roleName}
+                    value={role.name}
                     autoFocus
                     placeholder="Type role name..."
-                    onChange={(e) => setRoleName(e.target.value)}
+                    onChange={(e) =>
+                      setRoles((prev) =>
+                        prev.map((r) =>
+                          r.id === role.id ? { ...r, name: e.target.value } : r,
+                        ),
+                      )
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        role.id.toString().length > 10
+                          ? handleSaveEdit(role.id)
+                          : handleCreate(role.id);
+                      }
+                    }}
                     className="w-full bg-red-50 border border-red-200 px-3 py-2 rounded-md outline-none focus:ring-2 focus:ring-red-200"
                   />
                 ) : (
@@ -184,7 +218,11 @@ export default function RoleCreation() {
                   <Check
                     size={18}
                     className="cursor-pointer text-green-600 hover:scale-110 transition"
-                    onClick={handleCreate}
+                    onClick={() =>
+                      role.id.toString().length > 10
+                        ? handleSaveEdit(role.id)
+                        : handleCreate(role.id)
+                    }
                   />
                 ) : (
                   <Pencil
